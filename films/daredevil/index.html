@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
+<link rel="preconnect" href="https://cdn.simpleicons.org">
+<link rel="preconnect" href="https://fonts.cdnfonts.com">
 <meta charset="UTF-8">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.cdnfonts.com; font-src 'self' data: https://fonts.gstatic.com https://fonts.cdnfonts.com; img-src 'self' data: https:; connect-src 'self'; form-action 'self'; upgrade-insecure-requests">
@@ -11,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.cdnfonts.com/css/tafkir-arabic-trial" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#080a08;--panel:#111510;--text:#f4f7ef;--muted:#b0b9a9;--accent:#c8ff4d;--border:#293126}
 *{box-sizing:border-box}
@@ -41,25 +43,28 @@ h1{font-size:clamp(34px,6vw,56px);line-height:1.12;margin:12px 0}
 .imdb-icon img{display:block;width:42px;height:auto;object-fit:contain}
 footer{max-width:1000px;margin:auto;padding:25px 22px;border-top:1px solid var(--border);color:var(--muted);font-size:12px}
 @media(max-width:650px){header{align-items:flex-start;flex-direction:column;gap:18px}nav{gap:14px}main{padding-top:38px}.film-layout{grid-template-columns:1fr;gap:24px}.detail-poster{width:min(66%,230px);margin:auto;display:block}.details-list{grid-template-columns:95px minmax(0,1fr)}}
-</style>
-<script src="/sodo/site.js?v=20261125-24" defer></script>
+.production-panel{border:1px solid var(--border);border-radius:13px;background:var(--panel);padding:18px 20px;margin-top:16px}.production-panel h2{font-size:16px;margin:0 0 14px}.production-companies{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.company-item{display:flex;align-items:center;gap:10px;min-width:0;padding:9px;border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none;background:#0c100c;transition:border-color .2s ease,transform .2s ease}.company-item:hover{border-color:var(--accent);transform:translateY(-2px)}.company-mark{width:38px;height:38px;flex:0 0 38px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:#20271d;border:1px solid #34402b;padding:7px}.company-mark img{width:100%;height:100%;object-fit:contain}.company-mark-text{font-size:11px;font-weight:800;letter-spacing:-.4px;color:var(--accent)}.company-name{font-size:11px;line-height:1.35;overflow-wrap:anywhere}@media(max-width:650px){.production-companies{grid-template-columns:repeat(2,minmax(0,1fr))}.company-item{gap:7px;padding:7px}.company-mark{width:32px;height:32px;flex-basis:32px}.company-name{font-size:10px}}.streaming-links{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-top:14px}.streaming-icon{color:var(--text);width:42px;height:42px;display:inline-flex;align-items:center;justify-content:center;padding:9px;border:1px solid var(--border);border-radius:10px;background:var(--panel);text-decoration:none;transition:border-color .2s ease,transform .2s ease}.streaming-icon:hover{border-color:var(--accent);transform:translateY(-2px)}.streaming-icon img{display:block;width:22px;height:22px;object-fit:contain}.streaming-icon:focus-visible{outline:2px solid var(--accent);outline-offset:3px}</style>
+<script src="/sodo/site.js?v=20261125-25" defer></script>
 </head>
 <body>
 <header><a class="logo" href="/sodo/">SODO.</a><nav><a href="/sodo/">Home</a><a href="/sodo/about/">About</a><a href="/sodo/thoughts/">Thoughts</a><a class="active" href="/sodo/films/">Films</a><a href="/sodo/projects/">Projects</a></nav></header>
 <main>
 <a class="back-link" href="/sodo/films/#series">← Back to cinema</a>
 <section class="film-layout">
-<img class="detail-poster" src="https://image.tmdb.org/t/p/original/aY6oJg7KSGU02dtRy0NSzEzQ8B6.jpg" alt="Daredevil (2015–2018) poster">
+<img class="detail-poster" src="https://image.tmdb.org/t/p/original/aY6oJg7KSGU02dtRy0NSzEzQ8B6.jpg" alt="Daredevil (2015–2018) poster" fetchpriority="high" decoding="async" fetchpriority="high" decoding="async">
 <div class="film-copy">
 <div class="eyebrow">Cinema / Series notes</div>
 <h1>Daredevil</h1>
 <div class="meta-line">2015–2018 · IMDb 8.6</div>
 <h2>Story</h2>
 <p class="story">Blind lawyer Matt Murdock uses his heightened senses to fight crime in New York by night, balancing his work in the courtroom with his life as the masked vigilante Daredevil.</p>
-<a class="imdb-icon" href="https://www.imdb.com/title/tt3322312/" target="_blank" rel="noopener noreferrer" aria-label="Open IMDb page" title="IMDb"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/3840px-IMDB_Logo_2016.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="IMDb"></a>
+<a class="imdb-icon" href="https://www.imdb.com/title/tt3322312/" target="_blank" rel="noopener noreferrer" aria-label="Open IMDb page" title="IMDb"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/3840px-IMDB_Logo_2016.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="IMDb" decoding="async"></a>
 <div class="details-panel">
 <h2>Series details</h2>
 <dl class="details-list">
 <dt>Year</dt><dd>2015–2018</dd><dt>IMDb rating</dt><dd>8.6/10</dd><dt>Genre</dt><dd>Action · Crime · Drama · Superhero</dd><dt>Creator</dt><dd>Drew Goddard</dd><dt>Cast</dt><dd>Charlie Cox, Vincent D’Onofrio, Deborah Ann Woll</dd><dt>Seasons</dt><dd>3</dd><dt>Episodes</dt><dd>39</dd><dt>Network</dt><dd>Netflix</dd>
-</dl></div>
-</div></section></main><footer>© 2026 SODO. — Think. Feel. Create.</footer></body></html>
+</dl></div><div class="production-panel"><h2>Production companies</h2><div class="production-companies"><a class="company-item" href="https://abc.com/" target="_blank" rel="noopener noreferrer" title="ABC Studios"><span class="company-mark"><img src="https://cdn.simpleicons.org/abc/FFFFFF" alt="" loading="lazy" decoding="async"></span><span class="company-name">ABC Studios</span></a>
+<a class="company-item" href="https://www.marvel.com/" target="_blank" rel="noopener noreferrer" title="Marvel Television"><span class="company-mark"><img src="https://cdn.simpleicons.org/marvel/FFFFFF" alt="" loading="lazy" decoding="async"></span><span class="company-name">Marvel Television</span></a>
+<span class="company-item" title="DeKnight Productions"><span class="company-mark"><span class="company-mark-text" aria-hidden="true">DK</span></span><span class="company-name">DeKnight Productions</span></span>
+<span class="company-item" title="Goddard Textiles"><span class="company-mark"><span class="company-mark-text" aria-hidden="true">GT</span></span><span class="company-name">Goddard Textiles</span></span></div></div>
+<div class="streaming-links" aria-label="Official series platform pages"><a class="streaming-icon" href="https://www.netflix.com/title/80018294" target="_blank" rel="noopener noreferrer" aria-label="Netflix page" title="Netflix"><img src="https://cdn.simpleicons.org/netflix/FFFFFF" alt="" loading="lazy" decoding="async"></a></div></div></section></main><footer>© 2026 SODO. — Think. Feel. Create.</footer></body></html>
