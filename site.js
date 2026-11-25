@@ -77,7 +77,20 @@
       "PERSPECTIVE": "وجهة نظر",
       "CREATIVITY": "إبداع",
       "DIGITAL SPACE": "مساحة رقمية",
-      "CREATIVE EXPLORATION": "استكشاف إبداعي"
+      "CREATIVE EXPLORATION": "استكشاف إبداعي",
+      "01 / ABOUT": "01 / من نحن",
+      "02 / EXPLORE": "02 / استكشف",
+      "01 — IDEAS": "01 — أفكار",
+      "02 — CINEMA": "02 — سينما",
+      "03 — WORK": "03 — مشاريع",
+      "01 — A BEGINNING": "01 — بداية",
+      "02 — PERSPECTIVE": "02 — وجهة نظر",
+      "03 — CREATIVITY": "03 — إبداع",
+      "01 — DIGITAL SPACE": "01 — مساحة رقمية",
+      "02 — CREATIVE EXPLORATION": "02 — استكشاف إبداعي",
+      "03 — COMING SOON": "03 — قريبًا",
+      "Switch to light mode": "تفعيل الوضع النهاري",
+      "Switch to dark mode": "تفعيل الوضع الليلي"
     },
 
     en: {
@@ -108,6 +121,8 @@
       "اختر اللغة": "Choose language",
       "الوضع النهاري": "Light mode",
       "الوضع الليلي": "Dark mode",
+      "تفعيل الوضع النهاري": "Switch to light mode",
+      "تفعيل الوضع الليلي": "Switch to dark mode",
       "مساحة للاستكشاف.": "A space for exploration.",
       "وجهات نظر مختلفة.": "Different perspectives.",
       "ملاحظات وتأملات وأفكار تستحق المشاركة.": "Notes, reflections and ideas worth sharing.",
@@ -175,6 +190,8 @@
       "Choose language": "Выбрать язык",
       "Light mode": "Светлая тема",
       "Dark mode": "Тёмная тема",
+      "Switch to light mode": "Включить светлую тему",
+      "Switch to dark mode": "Включить тёмную тему",
       "A space for exploration.": "Пространство для открытий.",
       "Different perspectives.": "Разные взгляды.",
       "Notes, reflections and ideas worth sharing.": "Заметки, размышления и идеи, которыми стоит делиться.",
@@ -202,7 +219,20 @@
       "PERSPECTIVE": "ВЗГЛЯД",
       "CREATIVITY": "ТВОРЧЕСТВО",
       "DIGITAL SPACE": "ЦИФРОВОЕ ПРОСТРАНСТВО",
-      "CREATIVE EXPLORATION": "ТВОРЧЕСКИЙ ПОИСК"
+      "CREATIVE EXPLORATION": "ТВОРЧЕСКИЙ ПОИСК",
+      "01 / ABOUT": "01 / О ПРОЕКТЕ",
+      "02 / EXPLORE": "02 / ИССЛЕДОВАТЬ",
+      "01 — IDEAS": "01 — ИДЕИ",
+      "02 — CINEMA": "02 — КИНО",
+      "03 — WORK": "03 — ПРОЕКТЫ",
+      "01 — A BEGINNING": "01 — НАЧАЛО",
+      "02 — PERSPECTIVE": "02 — ВЗГЛЯД",
+      "03 — CREATIVITY": "03 — ТВОРЧЕСТВО",
+      "01 — DIGITAL SPACE": "01 — ЦИФРОВОЕ ПРОСТРАНСТВО",
+      "02 — CREATIVE EXPLORATION": "02 — ТВОРЧЕСКИЙ ПОИСК",
+      "03 — COMING SOON": "03 — СКОРО",
+      "Switch to light mode": "Включить светлую тему",
+      "Switch to dark mode": "Включить тёмную тему"
     }
   };
 
@@ -313,6 +343,34 @@
       document.title = titles[lang][page];
     }
 
+    const descriptions = {
+      ar: {
+        "index.html": "SODO مساحة للأفكار والثقافة والسينما والإبداع.",
+        "about.html": "تعرّف على SODO وفكرته ومساحته المخصصة للأفكار والثقافة والإبداع.",
+        "thoughts.html": "أفكار وتأملات وملاحظات تستحق التفكير والمشاركة.",
+        "films.html": "مساحة لاستكشاف السينما والحكايات والتجارب البصرية.",
+        "projects.html": "مشاريع وتجارب إبداعية وأفكار تتحول إلى واقع."
+      },
+      en: {
+        "index.html": "SODO — a space for ideas, culture, cinema, and creativity.",
+        "about.html": "Discover SODO, its idea, and its space for culture and creative exploration.",
+        "thoughts.html": "Thoughts, reflections, and notes worth thinking about and sharing.",
+        "films.html": "Explore cinema, storytelling, and visual experiences with SODO.",
+        "projects.html": "Creative projects, experiments, and ideas taking shape."
+      },
+      ru: {
+        "index.html": "SODO — пространство для идей, культуры, кино и творчества.",
+        "about.html": "Познакомьтесь с SODO — пространством для культуры, идей и творчества.",
+        "thoughts.html": "Мысли, размышления и заметки, которыми стоит делиться.",
+        "films.html": "Исследуйте кино, истории и визуальные впечатления вместе с SODO.",
+        "projects.html": "Творческие проекты, эксперименты и идеи в процессе развития."
+      }
+    };
+    const description = document.querySelector('meta[name="description"]');
+    if (description && descriptions[lang][page]) {
+      description.setAttribute("content", descriptions[lang][page]);
+    }
+
     const code = document.querySelector(".language-code");
 
     if (code) {
@@ -329,8 +387,8 @@
     if (themeButton) {
       const light = document.body.classList.contains("light-mode");
       const label = light
-        ? dictionary["Light mode"] || "Light mode"
-        : dictionary["Dark mode"] || "Dark mode";
+        ? dictionary["Switch to dark mode"] || "Switch to dark mode"
+        : dictionary["Switch to light mode"] || "Switch to light mode";
 
       themeButton.setAttribute("aria-label", label);
       themeButton.setAttribute("title", label);
@@ -353,8 +411,8 @@
       const dictionary = translations[lang] || translations.ar;
 
       const label = light
-        ? (dictionary["Light mode"] || "Light mode")
-        : (dictionary["Dark mode"] || "Dark mode");
+        ? (dictionary["Switch to dark mode"] || "Switch to dark mode")
+        : (dictionary["Switch to light mode"] || "Switch to light mode");
 
       button.title = label;
       button.setAttribute("aria-label", label);
@@ -408,6 +466,13 @@
       if (!tools.contains(event.target)) {
         menu.classList.remove("open");
         trigger.setAttribute("aria-expanded", "false");
+      }
+    });
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && menu.classList.contains("open")) {
+        menu.classList.remove("open");
+        trigger.setAttribute("aria-expanded", "false");
+        trigger.focus();
       }
     });
     tools.querySelector(".theme-toggle").addEventListener("click", () => {
