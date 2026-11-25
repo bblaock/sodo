@@ -281,35 +281,37 @@
   };
 
   const originalTextNodes = new WeakMap();
+  const originalElementTexts = new WeakMap();
   const originalAttributes = new WeakMap();
 
   function translateText(root, dictionary) {
+    // Keep the original source text so switching languages remains reversible.
+    root.querySelectorAll("*").forEach(element => {
+      if (element.matches("[data-i18n],script,style,code,pre")) return;
+      if (element.children.length !== 0) return;
+      if (!originalElementTexts.has(element)) originalElementTexts.set(element, element.textContent || "");
+      const original = originalElementTexts.get(element);
+      const trimmed = original.trim();
+      if (!trimmed) return;
+      const normalized = trimmed.replace(/\s+/g, " ");
+      const translated = dictionary[normalized] ?? dictionary[trimmed];
+      element.textContent = translated !== undefined ? original.replace(trimmed, translated) : original;
+    });
+
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
     const nodes = [];
     while (walker.nextNode()) nodes.push(walker.currentNode);
-
     nodes.forEach(node => {
-      if (node.parentElement && node.parentElement.closest("[data-i18n],script,style,code,pre")) return;
+      const parent = node.parentElement;
+      if (!parent || parent.closest("[data-i18n],script,style,code,pre")) return;
+      if (parent.children.length === 0) return;
       if (!originalTextNodes.has(node)) originalTextNodes.set(node, node.nodeValue);
       const original = originalTextNodes.get(node);
       const trimmed = original.trim();
       if (!trimmed) return;
-      const normalized = trimmed.replace(/\\s+/g, " ");
+      const normalized = trimmed.replace(/\s+/g, " ");
       const translated = dictionary[normalized] ?? dictionary[trimmed];
-      if (translated !== undefined) node.nodeValue = original.replace(trimmed, translated);
-      else node.nodeValue = original;
-    });
-
-    // Translate complete text-only elements as a unit. This catches paragraphs
-    // whose source text is split across several HTML text nodes by line breaks.
-    root.querySelectorAll("*").forEach(element => {
-      if (element.matches("[data-i18n],script,style,code,pre")) return;
-      if (element.children.length !== 0) return;
-      const original = element.textContent || "";
-      const normalized = original.trim().replace(/\\s+/g, " ");
-      if (!normalized) return;
-      const translated = dictionary[normalized];
-      if (translated !== undefined) element.textContent = translated;
+      node.nodeValue = translated !== undefined ? original.replace(trimmed, translated) : original;
     });
 
     root.querySelectorAll("*").forEach(element => {
@@ -325,7 +327,6 @@
       });
     });
   }
-
   function applyLanguage(language) {
     const lang = translations[language] ? language : "ar";
     const dictionary = translations[lang];
