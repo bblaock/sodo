@@ -1334,11 +1334,12 @@
   function initialize() {
     try {
       const glassMode = new URLSearchParams(window.location.search).get("glass");
-      if (glassMode === "1") {
+      if (glassMode === "off") {
+        sessionStorage.removeItem("sodo-glass-preview");
+      } else {
         sessionStorage.setItem("sodo-glass-preview", "1");
-        sessionStorage.removeItem("sodo-welcome-dismissed");
+        if (glassMode === "1") sessionStorage.removeItem("sodo-welcome-dismissed");
       }
-      if (glassMode === "off") sessionStorage.removeItem("sodo-glass-preview");
       if (sessionStorage.getItem("sodo-glass-preview") === "1") {
         document.body.classList.add("sodo-glass-preview");
       }
