@@ -456,9 +456,9 @@
           ${icons.globe}<span class="language-code">AR</span>
         </button>
         <div class="language-menu" id="site-language-menu" role="menu">
-          <button class="language-option" type="button" data-lang="ar" role="menuitem">${flagIcons.ar}<span>العربية</span></button>
-          <button class="language-option" type="button" data-lang="en" role="menuitem">${flagIcons.en}<span>English</span></button>
-          <button class="language-option" type="button" data-lang="ru" role="menuitem">${flagIcons.ru}<span>Русский</span></button>
+          <button class="language-option" type="button" data-lang="ar" role="menuitem" aria-label="العربية">${flagIcons.ar}</button>
+          <button class="language-option" type="button" data-lang="en" role="menuitem" aria-label="English">${flagIcons.en}</button>
+          <button class="language-option" type="button" data-lang="ru" role="menuitem" aria-label="Русский">${flagIcons.ru}</button>
         </div>
       </div>
       <button class="site-tool-button theme-toggle" type="button" aria-label="Toggle theme"></button>
