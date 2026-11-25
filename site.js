@@ -1,721 +1,375 @@
+/* SODO — Complete multilingual system: Arabic, English, Russian */
 
-const translations = {
-  ar: {
-    home:"الرئيسية", about:"من نحن", thoughts:"أفكار",
-    films:"سينما", projects:"مشاريع",
-    language:"اللغة", discover:"اكتشف SODO",
-    aboutTitle:"أكثر من<br><span>مجرد موقع.</span>",
-    aboutIntro:"SODO مساحة شخصية للأفكار والثقافة والسينما والاستكشاف الإبداعي. مكان يلتقي فيه الفضول بالتعبير.",
-    idea:"الفكرة وراء SODO",
-    ideaText:"تتمحور هذه المساحة حول الأشياء التي تجعلنا نفكر ونشعر ونرى العالم بصورة مختلفة.",
-    ideaText2:"من التأملات الشخصية إلى الأفلام والمشاريع والاكتشافات الإبداعية، يجمع SODO اهتمامات مختلفة في مكان واحد.",
-    ideaText3:"إنه عمل مستمر في التطور، دائم الاستكشاف.",
-    eyebrow:"مساحة شخصية",
-    heroText:"مساحة للأفكار والثقافة والسينما والاستكشاف الإبداعي. مكان ما بين ما نفكر فيه وما نصنعه.",
-    explore:"اكتشف SODO", space:"مساحة للاستكشاف",
-    different:"وجهات نظر مختلفة",
-    notes:"ملاحظات وتأملات وأفكار تستحق المشاركة.",
-    cinema:"قصص وتجارب سينمائية وبصرية.",
-    work:"تجارب إبداعية وأعمال قيد التطوير.",
-    thoughtsIntro:"مجموعة من الأفكار والتأملات والتفاصيل الصغيرة التي تستحق التفكير. بعض الأفكار تستحق مكانًا تبقى فيه.",
-    beginning:"كل فكرة تبدأ من مكان ما.",
-    beginningText:"أحيانًا، كل ما نحتاجه هو فكرة بسيطة تفتح الباب لشيء جديد.",
-    closer:"انظر عن قرب قليلًا.",
-    closerText:"أصغر التفاصيل قد تحمل أحيانًا أكبر الحكايات.",
-    imagination:"اترك مساحة للخيال.",
-    imaginationText:"ليس كل شيء بحاجة إلى سبب. بعض الأشياء تستحق أن نصنعها لأنها ببساطة تشبهنا.",
-    filmsIntro:"السينما أكثر من مجرد صور متحركة. إنها مشاعر ووجهات نظر وحكايات وعوالم تنتظر الاكتشاف.",
-    beyond:"ما وراء الإطار",
-    beyondText:"حكايات تبقى معنا.",
-    poetry:"شعرية الصورة",
-    poetryText:"حين تتحدث الصور بصوت أعلى من الكلمات.",
-    art:"فن السينما",
-    artText:"رحلة عبر الضوء والصوت والشعور.",
-    projectsIntro:"مساحة للتجارب والأفكار الإبداعية والأشياء التي تُبنى بدافع الفضول والشغف. كل مشروع يبدأ بفكرة.",
-    website:"موقع SODO",
-    websiteText:"مساحة رقمية شخصية للأفكار والسينما والإبداع والتعبير.",
-    visual:"تجارب بصرية",
-    visualText:"استكشاف الهوية البصرية والتصميم والألوان والإمكانات الإبداعية.",
-    more:"المزيد من الأفكار",
-    moreText:"ستجد التجارب والمشاريع الجديدة مكانها هنا مع مرور الوقت.",
-    coming:"قريبًا",
-    footer:"جميع الحقوق محفوظة",
-    themeLight:"الوضع النهاري",
-    themeDark:"الوضع الليلي"
-  },
+(() => {
+  "use strict";
 
-  en: {
-    home:"Home", about:"About", thoughts:"Thoughts",
-    films:"Films", projects:"Projects",
-    language:"Language", discover:"Discover SODO",
-    aboutTitle:"More than<br><span>a website.</span>",
-    aboutIntro:"SODO is a personal space for ideas, culture, cinema and creative exploration. A place where curiosity meets expression.",
-    idea:"The idea behind SODO",
-    ideaText:"This space is built around the things that make us think, feel and see the world differently.",
-    ideaText2:"From personal reflections to films, projects and creative discoveries, SODO brings different interests together in one place.",
-    ideaText3:"It is a work in progress — always evolving, always exploring.",
-    eyebrow:"A Personal Space",
-    heroText:"A space for ideas, culture, cinema and creative exploration. Somewhere between what we think and what we create.",
-    explore:"Discover SODO",
-    space:"A space to explore.",
-    different:"Different perspectives.",
-    notes:"Notes, reflections and ideas worth sharing.",
-    cinema:"Stories, cinema and visual experiences.",
-    work:"Creative experiments and things in progress.",
-    thoughtsIntro:"A collection of ideas, reflections, and little things worth thinking about. Some thoughts deserve a place to stay.",
-    beginning:"Every idea starts somewhere.",
-    beginningText:"Sometimes, all it takes is a simple thought to open the door to something new.",
-    closer:"Look a little closer.",
-    closerText:"The smallest details can sometimes tell the biggest stories.",
-    imagination:"Make room for imagination.",
-    imaginationText:"Not everything needs a reason. Some things are worth creating simply because they feel right.",
-    filmsIntro:"Cinema is more than moving images. It is emotion, perspective, storytelling, and worlds waiting to be discovered.",
-    beyond:"Beyond the Frame",
-    beyondText:"Stories that stay with us.",
-    poetry:"Visual Poetry",
-    poetryText:"When images speak louder than words.",
-    art:"The Art of Cinema",
-    artText:"A journey through light, sound, and feeling.",
-    projectsIntro:"A space for experiments, creative ideas, and things built with curiosity and passion. Every project begins with an idea.",
-    website:"SODO Website",
-    websiteText:"A personal digital space for thoughts, cinema, creativity, and expression.",
-    visual:"Visual Experiments",
-    visualText:"Exploring visual identity, design, colors, and creative possibilities.",
-    more:"More Ideas",
-    moreText:"New experiments and projects will find their place here over time.",
-    coming:"Coming Soon",
-    footer:"All rights reserved",
-    themeLight:"Light mode",
-    themeDark:"Dark mode"
-  },
+  const translations = {
+    ar: {
+      "Home": "الرئيسية",
+      "About": "عن الموقع",
+      "Thoughts": "أفكار",
+      "Films": "سينما",
+      "Projects": "مشاريع",
+      "A space for ideas": "مساحة للأفكار",
+      "Stories on screen": "حكايات على الشاشة",
+      "Ideas into reality": "تحويل الأفكار إلى واقع",
+      "ABOUT SODO / 01": "عن SODO / 01",
+      "More than": "أكثر من",
+      "a website.": "مجرد موقع.",
+      "Thoughts.": "أفكار.",
+      "Films.": "سينما.",
+      "Projects.": "مشاريع.",
+      "Every idea starts somewhere.": "كل فكرة تبدأ من مكان ما.",
+      "Look a little closer.": "انظر عن قرب قليلًا.",
+      "Make room for imagination.": "اترك مساحة للخيال.",
+      "Beyond the Frame": "ما وراء الإطار",
+      "Visual Poetry": "شعرية الصورة",
+      "The Art of Cinema": "فن السينما",
+      "SODO Website": "موقع SODO",
+      "Visual Experiments": "تجارب بصرية",
+      "More Ideas": "المزيد من الأفكار",
+      "Coming Soon": "قريبًا",
+      "A Personal Space": "مساحة شخصية",
+      "Discover SODO": "اكتشف SODO",
+      "Language": "اللغة",
+      "Choose language": "اختر اللغة",
+      "Light mode": "الوضع النهاري",
+      "Dark mode": "الوضع الليلي",
+      "A space for exploration.": "مساحة للاستكشاف.",
+      "Different perspectives.": "وجهات نظر مختلفة.",
+      "Notes, reflections and ideas worth sharing.": "ملاحظات وتأملات وأفكار تستحق المشاركة.",
+      "Stories, cinema and visual experiences.": "قصص وتجارب سينمائية وبصرية.",
+      "Creative experiments and things in progress.": "تجارب إبداعية وأعمال قيد التطوير.",
+      "SODO is a personal space for ideas, culture, cinema and creative exploration. A place where curiosity meets expression.": "SODO مساحة شخصية للأفكار والثقافة والسينما والاستكشاف الإبداعي. مكان يلتقي فيه الفضول بالتعبير.",
+      "The idea behind SODO.": "الفكرة وراء SODO.",
+      "This space is built around the things that make us think, feel and see the world differently.": "تتمحور هذه المساحة حول الأشياء التي تجعلنا نفكر ونشعر ونرى العالم بصورة مختلفة.",
+      "From personal reflections to films, projects and creative discoveries, SODO brings different interests together in one place.": "من التأملات الشخصية إلى الأفلام والمشاريع والاكتشافات الإبداعية، يجمع SODO اهتمامات مختلفة في مكان واحد.",
+      "It is a work in progress — always evolving, always exploring.": "إنه عمل مستمر في التطور، دائم الاستكشاف.",
+      "A collection of ideas, reflections, and little things worth thinking about. Some thoughts deserve a place to stay.": "مجموعة من الأفكار والتأملات والتفاصيل الصغيرة التي تستحق التفكير. بعض الأفكار تستحق مكانًا تبقى فيه.",
+      "Sometimes, all it takes is a simple thought to open the door to something new.": "أحيانًا، كل ما نحتاجه هو فكرة بسيطة تفتح الباب لشيء جديد.",
+      "The smallest details can sometimes tell the biggest stories.": "أصغر التفاصيل قد تحمل أحيانًا أكبر الحكايات.",
+      "Not everything needs a reason. Some things are worth creating simply because they feel right.": "ليس كل شيء بحاجة إلى سبب. بعض الأشياء تستحق أن نصنعها لأنها ببساطة تشبهنا.",
+      "Cinema is more than moving images. It is emotion, perspective, storytelling, and worlds waiting to be discovered.": "السينما أكثر من مجرد صور متحركة. إنها مشاعر ووجهات نظر وحكايات وعوالم تنتظر الاكتشاف.",
+      "Stories that stay with us.": "حكايات تبقى معنا.",
+      "When images speak louder than words.": "حين تتحدث الصور بصوت أعلى من الكلمات.",
+      "A journey through light, sound, and feeling.": "رحلة عبر الضوء والصوت والشعور.",
+      "A space for experiments, creative ideas, and things built with curiosity and passion. Every project begins with an idea.": "مساحة للتجارب والأفكار الإبداعية والأشياء التي تُبنى بدافع الفضول والشغف. كل مشروع يبدأ بفكرة.",
+      "A personal digital space for thoughts, cinema, creativity, and expression.": "مساحة رقمية شخصية للأفكار والسينما والإبداع والتعبير.",
+      "Exploring visual identity, design, colors, and creative possibilities.": "استكشاف الهوية البصرية والتصميم والألوان والإمكانات الإبداعية.",
+      "New experiments and projects will find their place here over time.": "ستجد التجارب والمشاريع الجديدة مكانها هنا مع مرور الوقت.",
+      "All rights reserved": "جميع الحقوق محفوظة",
+      "A BEGINNING": "بداية",
+      "PERSPECTIVE": "وجهة نظر",
+      "CREATIVITY": "إبداع",
+      "DIGITAL SPACE": "مساحة رقمية",
+      "CREATIVE EXPLORATION": "استكشاف إبداعي"
+    },
 
-  ru: {
-    home:"Главная", about:"О нас", thoughts:"Мысли",
-    films:"Кино", projects:"Проекты",
-    language:"Язык", discover:"Открыть SODO",
-    aboutTitle:"Больше, чем<br><span>просто сайт.</span>",
-    aboutIntro:"SODO — личное пространство для идей, культуры, кино и творческого поиска. Место, где любопытство встречается с самовыражением.",
-    idea:"Идея SODO",
-    ideaText:"Это пространство посвящено тому, что помогает нам думать, чувствовать и по-другому смотреть на мир.",
-    ideaText2:"От личных размышлений до фильмов, проектов и творческих открытий — SODO объединяет разные интересы в одном месте.",
-    ideaText3:"Это проект, который постоянно развивается и продолжает исследовать новое.",
-    eyebrow:"Личное пространство",
-    heroText:"Пространство для идей, культуры, кино и творчества. Где-то между тем, о чём мы думаем, и тем, что создаём.",
-    explore:"Откройте SODO",
-    space:"Пространство для открытий.",
-    different:"Разные взгляды.",
-    notes:"Заметки, размышления и идеи, которыми стоит делиться.",
-    cinema:"Истории, кино и визуальные впечатления.",
-    work:"Творческие эксперименты и проекты в процессе.",
-    thoughtsIntro:"Коллекция идей, размышлений и маленьких вещей, над которыми стоит задуматься. Некоторые мысли заслуживают своего места.",
-    beginning:"Каждая идея откуда-то начинается.",
-    beginningText:"Иногда достаточно простой мысли, чтобы открыть дверь чему-то новому.",
-    closer:"Присмотритесь внимательнее.",
-    closerText:"Самые маленькие детали порой рассказывают самые большие истории.",
-    imagination:"Оставьте место воображению.",
-    imaginationText:"Не всему нужна причина. Некоторые вещи стоит создавать просто потому, что они близки нам.",
-    filmsIntro:"Кино — это больше, чем движущиеся изображения. Это эмоции, взгляды, истории и миры, ожидающие открытия.",
-    beyond:"За пределами кадра",
-    beyondText:"Истории, которые остаются с нами.",
-    poetry:"Визуальная поэзия",
-    poetryText:"Когда изображения говорят громче слов.",
-    art:"Искусство кино",
-    artText:"Путешествие через свет, звук и чувства.",
-    projectsIntro:"Пространство для экспериментов, творческих идей и проектов, созданных из любопытства и увлечённости. Каждый проект начинается с идеи.",
-    website:"Сайт SODO",
-    websiteText:"Личное цифровое пространство для мыслей, кино, творчества и самовыражения.",
-    visual:"Визуальные эксперименты",
-    visualText:"Исследование визуального стиля, дизайна, цветов и творческих возможностей.",
-    more:"Больше идей",
-    moreText:"Со временем здесь появятся новые эксперименты и проекты.",
-    coming:"Скоро",
-    footer:"Все права защищены",
-    themeLight:"Светлая тема",
-    themeDark:"Тёмная тема"
-  }
-};
+    en: {
+      "الرئيسية": "Home",
+      "من نحن": "About",
+      "عن الموقع": "About",
+      "أفكار": "Thoughts",
+      "سينما": "Films",
+      "مشاريع": "Projects",
+      "مساحة شخصية": "A Personal Space",
+      "اكتشف SODO": "Discover SODO",
+      "اللغة": "Language",
+      "اختر اللغة": "Choose language",
+      "الوضع النهاري": "Light mode",
+      "الوضع الليلي": "Dark mode",
+      "مساحة للاستكشاف.": "A space for exploration.",
+      "وجهات نظر مختلفة.": "Different perspectives.",
+      "ملاحظات وتأملات وأفكار تستحق المشاركة.": "Notes, reflections and ideas worth sharing.",
+      "قصص وتجارب سينمائية وبصرية.": "Stories, cinema and visual experiences.",
+      "تجارب إبداعية وأعمال قيد التطوير.": "Creative experiments and things in progress.",
+      "أكثر من": "More than",
+      "مجرد موقع.": "a website.",
+      "الفكرة وراء SODO.": "The idea behind SODO.",
+      "كل فكرة تبدأ من مكان ما.": "Every idea starts somewhere.",
+      "انظر عن قرب قليلًا.": "Look a little closer.",
+      "اترك مساحة للخيال.": "Make room for imagination.",
+      "ما وراء الإطار": "Beyond the Frame",
+      "شعرية الصورة": "Visual Poetry",
+      "فن السينما": "The Art of Cinema",
+      "موقع SODO": "SODO Website",
+      "تجارب بصرية": "Visual Experiments",
+      "المزيد من الأفكار": "More Ideas",
+      "قريبًا": "Coming Soon",
+      "جميع الحقوق محفوظة": "All rights reserved"
+    },
 
-const icons = {
-  sun: `<svg viewBox="0 0 24 24" aria-hidden="true">
-    <circle cx="12" cy="12" r="4"></circle>
-    <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path>
-  </svg>`,
+    ru: {
+      "Home": "Главная",
+      "About": "О проекте",
+      "Thoughts": "Мысли",
+      "Films": "Кино",
+      "Projects": "Проекты",
+      "A space for ideas": "Пространство для идей",
+      "Stories on screen": "Истории на экране",
+      "Ideas into reality": "От идей к реальности",
+      "ABOUT SODO / 01": "О SODO / 01",
+      "More than": "Больше, чем",
+      "a website.": "просто сайт.",
+      "Thoughts.": "Мысли.",
+      "Films.": "Кино.",
+      "Projects.": "Проекты.",
+      "Every idea starts somewhere.": "Каждая идея откуда-то начинается.",
+      "Look a little closer.": "Присмотритесь внимательнее.",
+      "Make room for imagination.": "Оставьте место воображению.",
+      "Beyond the Frame": "За пределами кадра",
+      "Visual Poetry": "Визуальная поэзия",
+      "The Art of Cinema": "Искусство кино",
+      "SODO Website": "Сайт SODO",
+      "Visual Experiments": "Визуальные эксперименты",
+      "More Ideas": "Больше идей",
+      "Coming Soon": "Скоро",
+      "A Personal Space": "Личное пространство",
+      "Discover SODO": "Открыть SODO",
+      "Language": "Язык",
+      "Choose language": "Выбрать язык",
+      "Light mode": "Светлая тема",
+      "Dark mode": "Тёмная тема",
+      "A space for exploration.": "Пространство для открытий.",
+      "Different perspectives.": "Разные взгляды.",
+      "Notes, reflections and ideas worth sharing.": "Заметки, размышления и идеи, которыми стоит делиться.",
+      "Stories, cinema and visual experiences.": "Истории, кино и визуальные впечатления.",
+      "Creative experiments and things in progress.": "Творческие эксперименты и проекты в процессе.",
+      "SODO is a personal space for ideas, culture, cinema and creative exploration. A place where curiosity meets expression.": "SODO — личное пространство для идей, культуры, кино и творческого поиска. Место, где любопытство встречается с самовыражением.",
+      "The idea behind SODO.": "Идея SODO.",
+      "This space is built around the things that make us think, feel and see the world differently.": "Это пространство посвящено тому, что помогает нам думать, чувствовать и по-другому смотреть на мир.",
+      "From personal reflections to films, projects and creative discoveries, SODO brings different interests together in one place.": "От личных размышлений до фильмов, проектов и творческих открытий — SODO объединяет разные интересы в одном месте.",
+      "It is a work in progress — always evolving, always exploring.": "Это проект, который постоянно развивается и продолжает исследовать новое.",
+      "A collection of ideas, reflections, and little things worth thinking about. Some thoughts deserve a place to stay.": "Коллекция идей, размышлений и маленьких вещей, над которыми стоит задуматься. Некоторые мысли заслуживают своего места.",
+      "Sometimes, all it takes is a simple thought to open the door to something new.": "Иногда достаточно простой мысли, чтобы открыть дверь чему-то новому.",
+      "The smallest details can sometimes tell the biggest stories.": "Самые маленькие детали порой рассказывают самые большие истории.",
+      "Not everything needs a reason. Some things are worth creating simply because they feel right.": "Не всему нужна причина. Некоторые вещи стоит создавать просто потому, что они близки нам.",
+      "Cinema is more than moving images. It is emotion, perspective, storytelling, and worlds waiting to be discovered.": "Кино — это больше, чем движущиеся изображения. Это эмоции, взгляды, истории и миры, ожидающие открытия.",
+      "Stories that stay with us.": "Истории, которые остаются с нами.",
+      "When images speak louder than words.": "Когда изображения говорят громче слов.",
+      "A journey through light, sound, and feeling.": "Путешествие через свет, звук и чувства.",
+      "A space for experiments, creative ideas, and things built with curiosity and passion. Every project begins with an idea.": "Пространство для экспериментов, творческих идей и проектов, созданных из любопытства и увлечённости. Каждый проект начинается с идеи.",
+      "A personal digital space for thoughts, cinema, creativity, and expression.": "Личное цифровое пространство для мыслей, кино, творчества и самовыражения.",
+      "Exploring visual identity, design, colors, and creative possibilities.": "Исследование визуального стиля, дизайна, цветов и творческих возможностей.",
+      "New experiments and projects will find their place here over time.": "Со временем здесь появятся новые эксперименты и проекты.",
+      "All rights reserved": "Все права защищены",
+      "A BEGINNING": "НАЧАЛО",
+      "PERSPECTIVE": "ВЗГЛЯД",
+      "CREATIVITY": "ТВОРЧЕСТВО",
+      "DIGITAL SPACE": "ЦИФРОВОЕ ПРОСТРАНСТВО",
+      "CREATIVE EXPLORATION": "ТВОРЧЕСКИЙ ПОИСК"
+    }
+  };
 
-  moon: `<svg viewBox="0 0 24 24" aria-hidden="true">
-    <path d="M20.5 15.5A8.5 8.5 0 0 1 8.5 3.5 8.5 8.5 0 1 0 20.5 15.5Z"></path>
-  </svg>`,
+  const icons = {
+    sun: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path></svg>',
+    moon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 15.5A8.5 8.5 0 0 1 8.5 3.5 8.5 8.5 0 1 0 20.5 15.5Z"></path></svg>',
+    globe: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"></path></svg>'
+  };
 
-  globe: `<svg viewBox="0 0 24 24" aria-hidden="true">
-    <circle cx="12" cy="12" r="9"></circle>
-    <path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"></path>
-  </svg>`
-};
+  const getPreference = (key, fallback) => {
+    try { return localStorage.getItem(key) || fallback; }
+    catch (_) { return fallback; }
+  };
 
-const style = document.createElement("style");
+  const savePreference = (key, value) => {
+    try { localStorage.setItem(key, value); } catch (_) {}
+  };
 
-style.textContent = `
-body.light-mode {
-  --bg: #f4f5ef !important;
-  --surface: #ffffff !important;
-  --panel: #ffffff !important;
-  --line: #d9dfd0 !important;
-  --border: #d9dfd0 !important;
-  --text: #171b14 !important;
-  --muted: #626b5c !important;
-  background: #f4f5ef !important;
-  color: #171b14 !important;
-}
+  function translateText(root, dictionary) {
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
 
-body.light-mode header,
-body.light-mode footer {
-  border-color: #d9dfd0 !important;
-}
+    nodes.forEach(node => {
+      const original = node.nodeValue;
+      const trimmed = original.trim();
+      if (!trimmed || !dictionary[trimmed]) return;
+      node.nodeValue = original.replace(trimmed, dictionary[trimmed]);
+    });
 
-body.light-mode .card,
-body.light-mode .note,
-body.light-mode .film,
-body.light-mode .project {
-  background: #ffffff !important;
-  border-color: #d9dfd0 !important;
-}
-
-body.light-mode p,
-body.light-mode .intro,
-body.light-mode .section-text,
-body.light-mode .content p {
-  color: #626b5c !important;
-}
-
-body.light-mode .nav-links a {
-  color: #626b5c !important;
-}
-
-html[dir="rtl"] body {
-  text-align: right;
-}
-
-html[dir="rtl"] nav {
-  direction: rtl;
-}
-
-.site-tools {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  margin-inline-start: 12px;
-  position: relative;
-  z-index: 100;
-}
-
-.site-tool-button {
-  width: 42px;
-  height: 42px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  border: 1px solid var(--line, #293126);
-  border-radius: 10px;
-  background: var(--surface, #111510);
-  color: var(--text, #f4f7ef);
-  cursor: pointer;
-  transition: border-color .25s ease, background .25s ease, transform .25s ease;
-}
-
-.site-tool-button:hover {
-  border-color: #c8ff4d;
-  transform: translateY(-2px);
-}
-
-.site-tool-button svg {
-  width: 19px;
-  height: 19px;
-  fill: none;
-  stroke: #c8ff4d;
-  stroke-width: 1.6;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.language-trigger {
-  width: auto;
-  min-width: 76px;
-  padding: 0 10px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: .5px;
-}
-
-.language-trigger svg {
-  width: 17px;
-  height: 17px;
-}
-
-.language-menu {
-  position: absolute;
-  top: calc(100% + 10px);
-  inset-inline-end: 0;
-  min-width: 145px;
-  padding: 6px;
-  display: none;
-  flex-direction: column;
-  gap: 3px;
-  background: #10140f;
-  border: 1px solid #30392b;
-  border-radius: 11px;
-  box-shadow: 0 12px 30px rgba(0,0,0,.25);
-}
-
-.language-menu.open {
-  display: flex;
-}
-
-.language-option {
-  width: 100%;
-  border: 0;
-  border-radius: 7px;
-  padding: 10px 12px;
-  text-align: start;
-  background: transparent;
-  color: #e9eee3;
-  font: inherit;
-  font-size: 13px;
-  cursor: pointer;
-  transition: background .2s ease, color .2s ease;
-}
-
-.language-option:hover,
-.language-option.active {
-  background: rgba(200,255,77,.10);
-  color: #c8ff4d;
-}
-
-body.light-mode .site-tool-button {
-  background: #fff;
-  color: #171b14;
-  border-color: #d9dfd0;
-}
-
-body.light-mode .language-menu {
-  background: #fff;
-  border-color: #d9dfd0;
-  box-shadow: 0 12px 30px rgba(0,0,0,.10);
-}
-
-body.light-mode .language-option {
-  color: #171b14;
-}
-
-body.light-mode .language-option:hover,
-body.light-mode .language-option.active {
-  background: #f0f5e7;
-  color: #506d16;
-}
-
-@media(max-width:700px) {
-  .site-tools {
-    margin: 8px 0;
-    gap: 7px;
+    root.querySelectorAll("*").forEach(element => {
+      ["placeholder", "title", "aria-label", "alt"].forEach(attribute => {
+        const value = element.getAttribute(attribute);
+        if (value && dictionary[value]) {
+          element.setAttribute(attribute, dictionary[value]);
+        }
+      });
+    });
   }
 
-  .site-tool-button {
-    width: 39px;
-    height: 39px;
-  }
+  function applyLanguage(language) {
+    const lang = translations[language] ? language : "ar";
+    const dictionary = translations[lang];
 
-  .language-trigger {
-    width: auto;
-    min-width: 70px;
-  }
-}
-`;
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
 
-document.head.appendChild(style);
-
-function getSavedValue(key, fallback) {
-  try {
-    return localStorage.getItem(key) || fallback;
-  } catch (error) {
-    return fallback;
-  }
-}
-
-function saveValue(key, value) {
-  try {
-    localStorage.setItem(key, value);
-  } catch (error) {
-    console.warn("SODO preference could not be saved.");
-  }
-}
-
-function applyLanguage(lang) {
-  const selected = translations[lang] ? lang : "ar";
-  const dictionary = translations[selected];
-
-  document.documentElement.lang = selected;
-  document.documentElement.dir = selected === "ar" ? "rtl" : "ltr";
-
-  document.querySelectorAll("[data-i18n]").forEach(element => {
-    const key = element.getAttribute("data-i18n");
-
-    if (dictionary[key] !== undefined) {
-      if (key === "aboutTitle") {
-        element.innerHTML = dictionary[key];
-      } else {
-        element.textContent = dictionary[key];
+    document.querySelectorAll("[data-i18n]").forEach(element => {
+      const key = element.dataset.i18n;
+      if (dictionary[key] !== undefined) {
+        if (key === "aboutTitle") element.innerHTML = dictionary[key];
+        else element.textContent = dictionary[key];
       }
+    });
+
+    translateText(document.body, dictionary);
+
+    const titles = {
+      ar: {
+        "index.html": "الرئيسية — SODO",
+        "about.html": "عن الموقع — SODO",
+        "thoughts.html": "أفكار — SODO",
+        "films.html": "سينما — SODO",
+        "projects.html": "مشاريع — SODO"
+      },
+      en: {
+        "index.html": "Home — SODO",
+        "about.html": "About — SODO",
+        "thoughts.html": "Thoughts — SODO",
+        "films.html": "Films — SODO",
+        "projects.html": "Projects — SODO"
+      },
+      ru: {
+        "index.html": "Главная — SODO",
+        "about.html": "О проекте — SODO",
+        "thoughts.html": "Мысли — SODO",
+        "films.html": "Кино — SODO",
+        "projects.html": "Проекты — SODO"
+      }
+    };
+
+    const page = location.pathname.split("/").pop() || "index.html";
+    if (titles[lang][page]) document.title = titles[lang][page];
+
+    const code = document.querySelector(".language-code");
+    if (code) code.textContent = lang.toUpperCase();
+
+    document.querySelectorAll(".language-option").forEach(button => {
+      button.classList.toggle("active", button.dataset.lang === lang);
+      button.setAttribute("aria-pressed", String(button.dataset.lang === lang));
+    });
+
+    const themeButton = document.querySelector(".theme-toggle");
+    if (themeButton) {
+      const light = document.body.classList.contains("light-mode");
+      themeButton.setAttribute("aria-label", light ? dictionary["Light mode"] || "Light mode" : dictionary["Dark mode"] || "Dark mode");
     }
-  });
 
-  const languageLabel = document.querySelector(".language-code");
-  if (languageLabel) {
-    languageLabel.textContent = selected.toUpperCase();
+    savePreference("sodo-language", lang);
   }
 
-  document.querySelectorAll(".language-option").forEach(button => {
-    button.classList.toggle("active", button.dataset.lang === selected);
-    button.setAttribute(
-      "aria-pressed",
-      button.dataset.lang === selected ? "true" : "false"
-    );
-  });
+  function applyTheme(theme) {
+    const light = theme === "light";
+    document.body.classList.toggle("light-mode", light);
 
-  const themeButton = document.querySelector(".theme-toggle");
-  if (themeButton) {
-    themeButton.title = document.body.classList.contains("light-mode")
-      ? dictionary.themeLight
-      : dictionary.themeDark;
+    const button = document.querySelector(".theme-toggle");
+    if (button) {
+      button.innerHTML = light ? icons.sun : icons.moon;
+      const lang = getPreference("sodo-language", "ar");
+      const dictionary = translations[lang] || translations.ar;
+      const label = light
+        ? (dictionary["Light mode"] || "Light mode")
+        : (dictionary["Dark mode"] || "Dark mode");
+      button.title = label;
+      button.setAttribute("aria-label", label);
+    }
+
+    savePreference("sodo-theme", light ? "light" : "dark");
   }
 
-  saveValue("sodo-language", selected);
-}
+  function createControls() {
+    const header = document.querySelector("header");
+    if (!header || document.querySelector(".site-tools")) return;
 
-function applyTheme(theme) {
-  const selected = theme === "light" ? "light" : "dark";
+    const nav = header.querySelector("nav");
+    const host = nav || header;
 
-  document.body.classList.toggle("light-mode", selected === "light");
-
-  const button = document.querySelector(".theme-toggle");
-
-  if (button) {
-    button.innerHTML = selected === "light" ? icons.sun : icons.moon;
-
-    const lang = document.documentElement.lang || "ar";
-    const dictionary = translations[lang] || translations.ar;
-
-    button.setAttribute(
-      "aria-label",
-      selected === "light" ? dictionary.themeLight : dictionary.themeDark
-    );
-
-    button.title = selected === "light"
-      ? dictionary.themeLight
-      : dictionary.themeDark;
-  }
-
-  saveValue("sodo-theme", selected);
-}
-
-function createTools() {
-  const header = document.querySelector("header");
-  if (!header || document.querySelector(".site-tools")) return;
-
-  const tools = document.createElement("div");
-  tools.className = "site-tools";
-
-  tools.innerHTML = `
-    <div class="language-control">
-      <button
-        class="site-tool-button language-trigger"
-        type="button"
-        aria-label="Choose language"
-        aria-expanded="false"
-        aria-haspopup="true"
-      >
-        ${icons.globe}
-        <span class="language-code">AR</span>
-      </button>
-
-      <div class="language-menu" role="menu">
-        <button class="language-option" type="button" data-lang="ar" role="menuitem">العربية</button>
-        <button class="language-option" type="button" data-lang="en" role="menuitem">English</button>
-        <button class="language-option" type="button" data-lang="ru" role="menuitem">Русский</button>
+    const tools = document.createElement("div");
+    tools.className = "site-tools";
+    tools.innerHTML = `
+      <div class="language-control">
+        <button class="site-tool-button language-trigger" type="button"
+          aria-label="Choose language" aria-expanded="false" aria-haspopup="true">
+          ${icons.globe}<span class="language-code">AR</span>
+        </button>
+        <div class="language-menu" role="menu">
+          <button class="language-option" type="button" data-lang="ar" role="menuitem">العربية</button>
+          <button class="language-option" type="button" data-lang="en" role="menuitem">English</button>
+          <button class="language-option" type="button" data-lang="ru" role="menuitem">Русский</button>
+        </div>
       </div>
-    </div>
+      <button class="site-tool-button theme-toggle" type="button" aria-label="Toggle theme"></button>
+    `;
 
-    <button
-      class="site-tool-button theme-toggle"
-      type="button"
-      aria-label="Toggle theme"
-      title="Toggle theme"
-    ></button>
-  `;
+    host.appendChild(tools);
 
-  const nav = header.querySelector("nav");
+    const trigger = tools.querySelector(".language-trigger");
+    const menu = tools.querySelector(".language-menu");
 
-  if (nav) {
-    nav.appendChild(tools);
+    trigger.addEventListener("click", () => {
+      const opened = menu.classList.toggle("open");
+      trigger.setAttribute("aria-expanded", String(opened));
+    });
+
+    tools.querySelectorAll(".language-option").forEach(button => {
+      button.addEventListener("click", () => {
+        applyLanguage(button.dataset.lang);
+        menu.classList.remove("open");
+        trigger.setAttribute("aria-expanded", "false");
+      });
+    });
+
+    document.addEventListener("click", event => {
+      if (!tools.contains(event.target)) {
+        menu.classList.remove("open");
+        trigger.setAttribute("aria-expanded", "false");
+      }
+    });
+
+    tools.querySelector(".theme-toggle").addEventListener("click", () => {
+      applyTheme(document.body.classList.contains("light-mode") ? "dark" : "light");
+    });
+  }
+
+  function installStyles() {
+    if (document.getElementById("sodo-i18n-style")) return;
+
+    const style = document.createElement("style");
+    style.id = "sodo-i18n-style";
+    style.textContent = `
+      .site-tools{display:flex;align-items:center;gap:10px;margin-inline-start:12px;position:relative;z-index:999}
+      .site-tool-button{width:42px;height:42px;min-width:42px;padding:0;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line,#293126);border-radius:50%;background:var(--surface,#111510);color:var(--text,#f4f7ef);cursor:pointer;transition:.25s ease}
+      .site-tool-button:hover{border-color:#c8ff4d;transform:translateY(-2px)}
+      .site-tool-button svg{width:19px;height:19px;fill:none;stroke:#c8ff4d;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+      .language-control{position:relative}
+      .language-trigger{width:auto;min-width:76px;padding:0 10px;gap:7px;border-radius:22px;font-size:12px;font-weight:600}
+      .language-trigger svg{width:17px;height:17px}
+      .language-menu{position:absolute;top:calc(100% + 9px);inset-inline-end:0;min-width:140px;padding:6px;display:none;flex-direction:column;gap:3px;background:#10140f;border:1px solid #30392b;border-radius:11px;box-shadow:0 12px 30px #0004}
+      .language-menu.open{display:flex}
+      .language-option{width:100%;border:0;border-radius:7px;padding:10px 12px;text-align:start;background:transparent;color:#e9eee3;font:inherit;font-size:13px;cursor:pointer}
+      .language-option:hover,.language-option.active{background:#c8ff4d1a;color:#c8ff4d}
+      body.light-mode{--bg:#f4f5ef!important;--surface:#fff!important;--panel:#fff!important;--line:#d9dfd0!important;--border:#d9dfd0!important;--text:#171b14!important;--muted:#626b5c!important;background:#f4f5ef!important;color:#171b14!important}
+      body.light-mode .site-tool-button{background:#fff;color:#171b14;border-color:#d9dfd0}
+      body.light-mode .language-menu{background:#fff;border-color:#d9dfd0}
+      body.light-mode .language-option{color:#171b14}
+      body.light-mode .language-option:hover,body.light-mode .language-option.active{background:#f0f5e7;color:#506d16}
+      html[dir="rtl"] nav,html[dir="rtl"] .nav-links{direction:rtl}
+      @media(max-width:700px){.site-tools{margin:8px 0;gap:7px}.site-tool-button{width:39px;height:39px;min-width:39px}.language-trigger{width:auto;min-width:70px}}
+    `;
+    document.head.appendChild(style);
+  }
+
+  function initialize() {
+    installStyles();
+    createControls();
+    applyLanguage(getPreference("sodo-language", "ar"));
+    applyTheme(getPreference("sodo-theme", "dark"));
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initialize);
   } else {
-    header.appendChild(tools);
+    initialize();
   }
-
-  const languageTrigger = tools.querySelector(".language-trigger");
-  const languageMenu = tools.querySelector(".language-menu");
-
-  languageTrigger.addEventListener("click", () => {
-    const isOpen = languageMenu.classList.toggle("open");
-    languageTrigger.setAttribute("aria-expanded", String(isOpen));
-  });
-
-  tools.querySelectorAll(".language-option").forEach(button => {
-    button.addEventListener("click", () => {
-      applyLanguage(button.dataset.lang);
-      languageMenu.classList.remove("open");
-      languageTrigger.setAttribute("aria-expanded", "false");
-    });
-  });
-
-  document.addEventListener("click", event => {
-    if (!tools.contains(event.target)) {
-      languageMenu.classList.remove("open");
-      languageTrigger.setAttribute("aria-expanded", "false");
-    }
-  });
-
-  tools.querySelector(".theme-toggle").addEventListener("click", () => {
-    const isLight = document.body.classList.contains("light-mode");
-    applyTheme(isLight ? "dark" : "light");
-  });
-}
-
-function initializeSODO() {
-  createTools();
-
-  const savedLanguage = getSavedValue("sodo-language", "ar");
-  const savedTheme = getSavedValue("sodo-theme", "dark");
-
-  applyLanguage(savedLanguage);
-  applyTheme(savedTheme);
-}
-
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initializeSODO);
-} else {
-  initializeSODO();
-}
-
-/* SODO — Circular Language & Theme Controls */
-
-const sodoControlsStyle = document.createElement("style");
-
-sodoControlsStyle.textContent = `
-.site-tools {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-inline-start: 12px;
-  position: relative;
-  z-index: 999;
-}
-
-.site-tool-button {
-  width: 42px;
-  height: 42px;
-  min-width: 42px;
-  padding: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--line, #293126);
-  border-radius: 50%;
-  background: var(--surface, #111510);
-  color: var(--text, #f4f7ef);
-  cursor: pointer;
-  transition: .25s ease;
-}
-
-.site-tool-button:hover {
-  border-color: #c8ff4d;
-  transform: translateY(-2px);
-}
-
-.site-tool-button svg {
-  width: 19px;
-  height: 19px;
-  fill: none;
-  stroke: #c8ff4d;
-  stroke-width: 1.7;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.language-menu {
-  position: absolute;
-  top: calc(100% + 10px);
-  inset-inline-end: 0;
-  min-width: 145px;
-  padding: 6px;
-  display: none;
-  flex-direction: column;
-  gap: 3px;
-  background: #10140f;
-  border: 1px solid #30392b;
-  border-radius: 12px;
-  box-shadow: 0 12px 30px #0004;
-}
-
-.language-menu.open {
-  display: flex;
-}
-
-.language-option {
-  width: 100%;
-  padding: 10px 12px;
-  border: 0;
-  border-radius: 7px;
-  text-align: start;
-  background: transparent;
-  color: #e9eee3;
-  font: inherit;
-  cursor: pointer;
-}
-
-.language-option:hover,
-.language-option.active {
-  background: #c8ff4d18;
-  color: #c8ff4d;
-}
-
-body.light-mode .site-tool-button {
-  background: #fff;
-  border-color: #d9dfd0;
-}
-
-body.light-mode .language-menu {
-  background: #fff;
-  border-color: #d9dfd0;
-}
-
-body.light-mode .language-option {
-  color: #171b14;
-}
-
-body.light-mode .language-option:hover,
-body.light-mode .language-option.active {
-  background: #f0f5e7;
-  color: #506d16;
-}
-
-@media(max-width:700px) {
-  .site-tools {
-    gap: 7px;
-    margin: 8px 0;
-  }
-
-  .site-tool-button {
-    width: 39px;
-    height: 39px;
-    min-width: 39px;
-  }
-}
-`;
-
-document.head.appendChild(sodoControlsStyle);
-
-function createTools() {
-  const header = document.querySelector("header");
-  if (!header) return;
-
-  document.querySelectorAll(".site-tools").forEach(el => el.remove());
-
-  const tools = document.createElement("div");
-  tools.className = "site-tools";
-
-  tools.innerHTML = `
-    <div class="language-control">
-      <button class="site-tool-button language-trigger"
-        type="button" aria-label="Choose language"
-        aria-expanded="false">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="12" cy="12" r="9"></circle>
-          <path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"></path>
-        </svg>
-      </button>
-
-      <div class="language-menu" role="menu">
-        <button class="language-option" data-lang="ar" type="button">العربية</button>
-        <button class="language-option" data-lang="en" type="button">English</button>
-        <button class="language-option" data-lang="ru" type="button">Русский</button>
-      </div>
-    </div>
-
-    <button class="site-tool-button theme-toggle"
-      type="button" aria-label="Toggle theme">
-    </button>
-  `;
-
-  const nav = header.querySelector("nav");
-  if (nav) nav.appendChild(tools);
-  else header.appendChild(tools);
-
-  const trigger = tools.querySelector(".language-trigger");
-  const menu = tools.querySelector(".language-menu");
-
-  trigger.addEventListener("click", () => {
-    const opened = menu.classList.toggle("open");
-    trigger.setAttribute("aria-expanded", String(opened));
-  });
-
-  tools.querySelectorAll(".language-option").forEach(button => {
-    button.addEventListener("click", () => {
-      applyLanguage(button.dataset.lang);
-      menu.classList.remove("open");
-      trigger.setAttribute("aria-expanded", "false");
-    });
-  });
-
-  document.addEventListener("click", event => {
-    if (!tools.contains(event.target)) {
-      menu.classList.remove("open");
-      trigger.setAttribute("aria-expanded", "false");
-    }
-  });
-
-  tools.querySelector(".theme-toggle").addEventListener("click", () => {
-    const light = document.body.classList.contains("light-mode");
-    applyTheme(light ? "dark" : "light");
-  });
-}
-
-function applyTheme(theme) {
-  const selected = theme === "light" ? "light" : "dark";
-  document.body.classList.toggle("light-mode", selected === "light");
-
-  const button = document.querySelector(".theme-toggle");
-
-  if (button) {
-    button.innerHTML = selected === "light"
-      ? `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path></svg>`
-      : `<svg viewBox="0 0 24 24"><path d="M20.5 15.5A8.5 8.5 0 0 1 8.5 3.5 8.5 8.5 0 1 0 20.5 15.5Z"></path></svg>`;
-  }
-
-  try {
-    localStorage.setItem("sodo-theme", selected);
-  } catch (error) {}
-}
-
-function initializeSODO() {
-  createTools();
-
-  let language = "ar";
-  let theme = "dark";
-
-  try {
-    language = localStorage.getItem("sodo-language") || "ar";
-    theme = localStorage.getItem("sodo-theme") || "dark";
-  } catch (error) {}
-
-  applyLanguage(language);
-  applyTheme(theme);
-}
-
+})();
