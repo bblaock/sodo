@@ -763,6 +763,105 @@
     style.id = "sodo-i18n-style";
 
     style.textContent = `
+      /* Shared, layout-stable header across every SODO section.
+         Preserve the existing visual/transition effects; normalize only geometry. */
+      body > header {
+        box-sizing: border-box;
+        width: 100%;
+        max-width: 1044px;
+        min-height: 138px;
+        margin-inline: auto;
+        padding: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+      }
+
+      body > header > .container {
+        width: 100%;
+        max-width: none;
+        margin: 0;
+      }
+
+      body > header nav {
+        box-sizing: border-box;
+        min-width: 0;
+        min-height: 82px;
+        display: flex;
+        flex: 1 1 auto;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: nowrap;
+        gap: 22px;
+      }
+
+      body > header nav > .logo {
+        flex: 0 0 auto;
+        line-height: 1;
+      }
+
+      body > header nav > .nav-links {
+        min-width: 0;
+        flex: 1 1 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: nowrap;
+        gap: clamp(12px, 2.2vw, 28px);
+        margin: 0;
+        padding: 0;
+      }
+
+      body > header nav > a:not(.logo) {
+        flex: 0 0 auto;
+        white-space: nowrap;
+      }
+
+      body > header .site-tools {
+        flex: 0 0 auto;
+        margin-inline-start: 0;
+      }
+
+      body > header .nav-links a,
+      body > header nav > a:not(.logo) {
+        line-height: 1.5;
+      }
+
+      @media (max-width: 700px) {
+        body > header {
+          min-height: 0;
+          padding: 18px 16px;
+          flex-direction: column;
+          align-items: stretch;
+          justify-content: center;
+          gap: 10px;
+        }
+
+        body > header nav {
+          width: 100%;
+          min-height: 0;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 12px 16px;
+        }
+
+        body > header nav > .nav-links {
+          flex: 1 1 100%;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 10px 16px;
+        }
+
+        body > header nav > .logo {
+          margin-inline: auto;
+        }
+
+        body > header .site-tools {
+          margin: 0;
+        }
+      }
+
       .site-tools {
         display: flex;
         align-items: center;
