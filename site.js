@@ -266,11 +266,18 @@
     document.documentElement.lang = lang;
     document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
 
+    const forcedTranslations = {
+      ar: { aboutIntro: "SODO مساحة شخصية مخصصة للأفكار والثقافة والسينما والعمل الإبداعي. مكان لجمع الأفكار واستكشاف وجهات النظر ومشاركة الأشياء ذات المعنى." },
+      en: { aboutIntro: "SODO is a personal space dedicated to ideas, culture, cinema, and creative work. A place to collect ideas, explore perspectives, and share meaningful things." },
+      ru: { aboutIntro: "SODO — личное пространство, посвящённое идеям, культуре, кино и творчеству. Место, где можно собирать идеи, изучать разные взгляды и делиться тем, что имеет значение." }
+    };
+
     document.querySelectorAll("[data-i18n]").forEach(element => {
       const key = element.dataset.i18n;
 
-      if (dictionary[key] !== undefined) {
-        element.textContent = dictionary[key];
+      const forced = forcedTranslations[lang] && forcedTranslations[lang][key];
+      if (forced !== undefined || dictionary[key] !== undefined) {
+        element.textContent = forced !== undefined ? forced : dictionary[key];
       }
     });
 
