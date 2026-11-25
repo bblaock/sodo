@@ -945,8 +945,6 @@
           min-width: 70px;
         }
       }
-    `;
-
       .sodo-welcome-overlay {
         position: fixed;
         inset: 0;
@@ -1024,6 +1022,7 @@
       body.light-mode .sodo-welcome-close { background: rgba(0,0,0,.025); }
       @keyframes sodo-welcome-in { from { opacity: 0; transform: translateY(9px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
       @media(max-width:480px) { .sodo-welcome-card { padding: 28px 22px 23px; } .sodo-welcome-card h2 { font-size: 21px; } .sodo-welcome-card p { font-size: 13px; } }
+    `;
 
     document.head.appendChild(style);
   }
