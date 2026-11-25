@@ -188,7 +188,7 @@
  
     .cinema-tabs {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 12px;
       margin: 0 0 65px;
     }
@@ -207,7 +207,8 @@
     }
     .cinema-tabs a:hover { border-color: var(--accent); transform: translateY(-3px); }
     .cinema-tabs span { color: var(--accent); font-size: 11px; letter-spacing: 2px; }
-    .cinema-section { scroll-margin-top: 30px; padding: 28px 0 38px; border-top: 1px solid var(--border); }
+    .cinema-section { display: none; scroll-margin-top: 30px; padding: 28px 0 38px; border-top: 1px solid var(--border); }
+    .cinema-section:target { display: block; }
     .section-heading { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
     .section-heading .eyebrow { width: 100%; }
     .section-heading h2 { margin: 0; font-size: clamp(22px, 4vw, 30px); }
@@ -216,8 +217,8 @@
     .status-planned { color: var(--muted); }
     .section-note { margin: 18px 0 0; color: var(--muted); font-size: 14px; }
     @media (max-width: 600px) {
-      .cinema-tabs { grid-template-columns: 1fr; gap: 9px; margin-bottom: 45px; }
-      .cinema-tabs a { min-height: 72px; flex-direction: row; align-items: center; justify-content: space-between; }
+      .cinema-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin-bottom: 45px; }
+      .cinema-tabs a { min-height: 88px; padding: 12px; gap: 8px; justify-content: space-between; }
       .section-heading { align-items: flex-start; }
     }
 
@@ -271,13 +272,12 @@
     <h1>Films<span>.</span></h1>
     <p class="intro">A personal record of films watched and stories discovered.</p>
 
-    <nav class="cinema-tabs" aria-label="Cinema sections">
-      <a href="#watched">Watched Films <span>01</span></a>
-      <a href="#watchlist">Watchlist <span>02</span></a>
-      <a href="#series">Series <span>03</span></a>
+    <nav class="cinema-tabs" aria-label="Cinema collections">
+      <a href="#watched">Films I have watched <span>01</span></a>
+      <a href="#series">Series I have watched <span>02</span></a>
     </nav>
 
-    <section class="cinema-section" id="watched">
+    <section class="cinema-section" id="watched" aria-label="Films I have watched">
 <div class="section-heading">
         <div class="eyebrow">01 / COLLECTION</div>
         <h2>Films I have watched</h2>
@@ -332,20 +332,12 @@
       </div>
     </section>
 
-    <section class="cinema-section" id="watchlist">
-      <div class="section-heading">
-        <div class="eyebrow">02 / NEXT TO WATCH</div>
-        <h2>Films I plan to watch</h2>
-        <span class="status status-planned">Planned</span>
-      </div>
-      <p class="section-note">Your watchlist is ready for the films you want to see next.</p>
-    </section>
 
-    <section class="cinema-section" id="series">
+    <section class="cinema-section" id="series" aria-label="Series I have watched">
       <div class="section-heading">
         <div class="eyebrow">03 / SERIES</div>
-        <h2>Series</h2>
-        <span class="status">TV Series</span>
+        <h2>Series I have watched</h2>
+        <span class="status status-watched">Watched</span>
       </div>
       <div class="movie-grid" aria-label="TV series collection">
       <article class="movie-card">
