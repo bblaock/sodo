@@ -1,6 +1,6 @@
 (() => {
   "use strict";
-  const $ = (id) => document.getElementById(id);
+  const $ = (id) => id.startsWith(".") ? document.querySelector(id) : document.getElementById(id);
   const copy = {
     ar:{eyebrow:"SODO EXPERIENCE / 01",title:"مشاهدة معًا",intro:"فيلم واحد، شاشتان، ولحظة مشتركة مهما كانت المسافة.",roomLabel:"غرفة مشاهدة خاصة",roomTitle:"ابدأ غرفة مشاهدة",yourName:"اسمك",youtubeLink:"رابط YouTube",createRoom:"إنشاء غرفة",joinRoom:"دخول الغرفة",copyInvite:"نسخ رابط الدعوة",roomHint:"أنشئ غرفة ثم شارك رابطها مع الشخص الذي تريد المشاهدة معه.",roomCode:"رمز الغرفة",playerHint:"أضف رابط YouTube لبدء المشاهدة",nowWatching:"نشاهد الآن",noVideo:"لم يتم اختيار فيديو بعد",viewers:"مشاهدون",chatTitle:"الدردشة",chatEmpty:"ابدأوا الحديث أثناء الفيلم…",legal:"استخدم روابط الفيديو التي تسمح بالمشاهدة المضمّنة، واحرص على امتلاك حق مشاركة المحتوى.",connected:"متصل — المزامنة جاهزة",offline:"المزامنة غير مفعّلة بعد",connecting:"جارٍ الاتصال…",badUrl:"أدخل رابط YouTube صحيحًا.",roomCreated:"تم إنشاء الغرفة. انسخ الرابط وشاركه مع صديقك.",joined:"دخلت الغرفة. أرسل الرابط للطرف الآخر.",needBackend:"الواجهة جاهزة، لكن يلزم ربط Supabase لتفعيل المزامنة بين الأجهزة.",noRoom:"أنشئ غرفة أولاً أو افتح رابط دعوة صحيحًا.",copied:"تم نسخ رابط الدعوة.",sendError:"تعذر إرسال الرسالة الآن.",chatPlaceholder:"اكتب رسالة…",watchTogether:"مشاهدة جماعية",guest:"ضيف SODO"},
     en:{eyebrow:"SODO EXPERIENCE / 01",title:"Watch Together",intro:"One film, two screens, one shared moment — no matter the distance.",roomLabel:"PRIVATE WATCH ROOM",roomTitle:"Start a watch room",yourName:"Your name",youtubeLink:"YouTube link",createRoom:"Create room",joinRoom:"Join room",copyInvite:"Copy invite link",roomHint:"Create a room, then share its link with the person you want to watch with.",roomCode:"ROOM CODE",playerHint:"Add a YouTube link to start watching",nowWatching:"NOW WATCHING",noVideo:"No video selected yet",viewers:"viewers",chatTitle:"Chat",chatEmpty:"Say hello while you watch…",legal:"Use videos that allow embedding and make sure you have the right to share the content.",connected:"Connected — sync is ready",offline:"Sync is not enabled yet",connecting:"Connecting…",badUrl:"Enter a valid YouTube link.",roomCreated:"Room created. Copy the invite link and share it.",joined:"You joined the room. Invite the other person.",needBackend:"The interface is ready. Connect Supabase to enable cross-device sync.",noRoom:"Create a room first or open a valid invite link.",copied:"Invite link copied.",sendError:"Message could not be sent.",chatPlaceholder:"Write a message…",watchTogether:"Watch Together",guest:"SODO guest"},
@@ -72,7 +72,11 @@
   function createPlayer(videoId) {
     player=new YT.Player("youtube-player",{videoId,playerVars:{playsinline:1,rel:0,origin:location.origin},events:{
       onReady:()=>{playerReady=true;lastVideoId=pendingVideoId;},
-      onStateChange:(event)=>{if(applyingRemote||!channel)return;const action=event.data===YT.PlayerState.PLAYING?"play":event.data===YT.PlayerState.PAUSED?"pause":null;if(action) broadcast({type:"playback",action,videoId:lastVideoId||pendingVideoId,time:player.getCurrentTime(),sentAt:Date.now()});}
+      onStateChange:(event)=>{if(applyingRemote||!channel)return;const action=event.data===YT.PlayerState.PLAYING?"play":event.data===YT.PlayerState.PAUSED?"pause":null;if(action){
+        const time=player.getCurrentTime(),videoId=lastVideoId||pendingVideoId;
+        broadcast({type:"playback",action,videoId,time,sentAt:Date.now()});
+        if(channel) channel.track({name:nameInput.value.trim()||t("guest"),videoId,action,time,joinedAt:new Date().toISOString()});
+      }}
     }});
   }
   window.onYouTubeIframeAPIReady=()=>{if(pendingVideoId)createPlayer(pendingVideoId);};
@@ -103,12 +107,25 @@
       if(payload?.type==="video"&&payload.videoId){pendingVideoId=payload.videoId;ensurePlayer(payload.videoId);}
     });
     channel.on("presence",{event:"sync"},()=>{
-      const state=channel.presenceState();viewerCount=Object.keys(state).length||1;$("viewer-count").textContent=String(viewerCount);
+      const state=channel.presenceState();
+      viewerCount=Object.keys(state).length||1;
+      $("viewer-count").textContent=String(viewerCount);
+      for(const peers of Object.values(state)){
+        for(const peer of peers){
+          if(peer.videoId && peer.videoId!==lastVideoId){
+            pendingVideoId=peer.videoId;
+            $("youtube-url").value="https://www.youtube.com/watch?v="+peer.videoId;
+            ensurePlayer(peer.videoId);
+            if(peer.action) applyPlayback({videoId:peer.videoId,action:peer.action,time:peer.time||0});
+            return;
+          }
+        }
+      }
     });
     channel.subscribe(async status=>{
       if(status==="SUBSCRIBED"){
         $("connection-status").textContent=t("connected");$("connection-status").classList.add("ready");$("connection-status").classList.remove("error");
-        await channel.track({name:nameInput.value.trim()||t("guest"),joinedAt:new Date().toISOString()});
+        await channel.track({name:nameInput.value.trim()||t("guest"),joinedAt:new Date().toISOString(),videoId:pendingVideoId||"",action:"pause",time:0});
       }
     });
   }
@@ -133,7 +150,10 @@
   function setVideo(id,notify){
     if(!id){setMessage(t("badUrl"));return;}
     pendingVideoId=id;ensurePlayer(id);
-    if(notify)broadcast({type:"video",videoId:id});
+    if(notify){
+      broadcast({type:"video",videoId:id});
+      if(channel) channel.track({name:nameInput.value.trim()||t("guest"),videoId:id,action:"pause",time:0,joinedAt:new Date().toISOString()});
+    }
   }
   $("youtube-url").addEventListener("change",()=>{
     const id=youtubeId($("youtube-url").value);
