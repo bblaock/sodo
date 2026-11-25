@@ -49,9 +49,9 @@ footer{max-width:1000px;margin:auto;padding:25px 22px;border-top:1px solid var(-
 @media(max-width:650px){header{align-items:flex-start;flex-direction:column;gap:18px}nav{gap:14px}main{padding-top:38px}.film-layout{grid-template-columns:1fr;gap:24px}.detail-poster{width:min(66%,230px);margin:auto;display:block}.details-list{grid-template-columns:95px minmax(0,1fr)}}
 
 .film-layout{display:flex;flex-direction:column;gap:22px}
-.film-hero{display:grid;grid-template-columns:minmax(150px,230px) minmax(0,1fr);gap:26px;align-items:start}
-.detail-poster{width:100%;max-width:230px}
-.story-block{min-width:0;padding-top:4px}
+.film-hero{display:grid;grid-template-columns:minmax(180px,270px) minmax(0,1fr);gap:24px;align-items:stretch}
+.detail-poster{width:100%;max-width:270px;height:auto;align-self:stretch}
+.story-block{min-width:0;padding:4px 2px 4px 0;height:100%;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
 .story-block h2{font-size:19px;line-height:1.35;margin:10px 0}
 .story{font-size:13px;line-height:1.75;margin:0;max-width:none}
 .work-heading{border-top:1px solid var(--border);padding-top:17px}
@@ -64,12 +64,12 @@ footer{max-width:1000px;margin:auto;padding:25px 22px;border-top:1px solid var(-
 .meta-item .imdb-icon img{width:30px}
 .details-panel{margin-top:0}
 @media(max-width:650px){
- .film-hero{grid-template-columns:minmax(105px,34%) minmax(0,1fr);gap:14px}
- .detail-poster{width:100%;max-width:none;margin:0;display:block}
- .story-block{padding-top:0}
+ .film-hero{grid-template-columns:minmax(125px,40%) minmax(0,1fr);gap:14px;align-items:stretch}
+ .detail-poster{width:100%;max-width:none;height:auto;margin:0;display:block;align-self:stretch}
+ .story-block{padding:0 2px 0 0;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
  .story-block .eyebrow{font-size:8px;letter-spacing:1px}
  .story-block h2{font-size:15px;margin:5px 0}
- .story{font-size:11.5px;line-height:1.65}
+ .story{font-size:12.2px;line-height:1.6}
  .work-heading h1{font-size:27px}
  .work-meta{gap:7px}
  .meta-item{gap:6px;padding:8px 9px;font-size:11px}
