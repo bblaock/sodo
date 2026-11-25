@@ -1,0 +1,3 @@
+# Keep the existing GitHub Pages /sodo/ URLs working on Netlify's domain.
+/sodo / 301
+/sodo/* /:splat 200
