@@ -242,6 +242,12 @@
     globe: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"></path></svg>'
   };
 
+  const flagIcons = {
+    ar: '<svg class="flag-icon" viewBox="0 0 24 24" aria-hidden="true"><defs><clipPath id="flag-iraq-clip"><circle cx="12" cy="12" r="10.5"/></clipPath></defs><g clip-path="url(#flag-iraq-clip)"><path fill="#ce1126" d="M0 0h24v8H0z"/><path fill="#fff" d="M0 8h24v8H0z"/><path fill="#000" d="M0 16h24v8H0z"/><path fill="#078930" d="M8 11.1h8v.75H8zm1 1.3h6v.65H9z"/></g><circle cx="12" cy="12" r="10.5" fill="none" stroke="currentColor" stroke-opacity=".2"/></svg>',
+    en: '<svg class="flag-icon" viewBox="0 0 24 24" aria-hidden="true"><defs><clipPath id="flag-usa-clip"><circle cx="12" cy="12" r="10.5"/></clipPath></defs><g clip-path="url(#flag-usa-clip)"><path fill="#fff" d="M0 0h24v24H0z"/><path fill="#b22234" d="M0 0h24v2H0zm0 4h24v2H0zm0 4h24v2H0zm0 4h24v2H0zm0 4h24v2H0zm0 4h24v2H0z"/><path fill="#3c3b6e" d="M0 0h11v11H0z"/><g fill="#fff"><circle cx="2" cy="2" r=".55"/><circle cx="5.5" cy="2" r=".55"/><circle cx="9" cy="2" r=".55"/><circle cx="3.7" cy="5" r=".55"/><circle cx="7.2" cy="5" r=".55"/><circle cx="2" cy="8" r=".55"/><circle cx="5.5" cy="8" r=".55"/><circle cx="9" cy="8" r=".55"/></g></g><circle cx="12" cy="12" r="10.5" fill="none" stroke="currentColor" stroke-opacity=".2"/></svg>',
+    ru: '<svg class="flag-icon" viewBox="0 0 24 24" aria-hidden="true"><defs><clipPath id="flag-russia-clip"><circle cx="12" cy="12" r="10.5"/></clipPath></defs><g clip-path="url(#flag-russia-clip)"><path fill="#fff" d="M0 0h24v8H0z"/><path fill="#0039a6" d="M0 8h24v8H0z"/><path fill="#d52b1e" d="M0 16h24v8H0z"/></g><circle cx="12" cy="12" r="10.5" fill="none" stroke="currentColor" stroke-opacity=".2"/></svg>'
+  };
+
   const getPreference = (key, fallback) => {
     try {
       return localStorage.getItem(key) || fallback;
@@ -450,9 +456,9 @@
           ${icons.globe}<span class="language-code">AR</span>
         </button>
         <div class="language-menu" id="site-language-menu" role="menu">
-          <button class="language-option" type="button" data-lang="ar" role="menuitem">العربية</button>
-          <button class="language-option" type="button" data-lang="en" role="menuitem">English</button>
-          <button class="language-option" type="button" data-lang="ru" role="menuitem">Русский</button>
+          <button class="language-option" type="button" data-lang="ar" role="menuitem">${flagIcons.ar}<span>العربية</span></button>
+          <button class="language-option" type="button" data-lang="en" role="menuitem">${flagIcons.en}<span>English</span></button>
+          <button class="language-option" type="button" data-lang="ru" role="menuitem">${flagIcons.ru}<span>Русский</span></button>
         </div>
       </div>
       <button class="site-tool-button theme-toggle" type="button" aria-label="Toggle theme"></button>
@@ -575,6 +581,9 @@
         border: 0;
         border-radius: 7px;
         padding: 10px 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
         text-align: start;
         background: transparent;
         color: #e9eee3;
@@ -582,6 +591,17 @@
         font-size: 13px;
         cursor: pointer;
       }
+
+      .flag-icon {
+        width: 23px;
+        height: 23px;
+        flex: 0 0 23px;
+        display: block;
+        border-radius: 50%;
+        overflow: hidden;
+      }
+
+      .language-option span { line-height: 1; }
 
       .language-option:hover,
       .language-option.active {
