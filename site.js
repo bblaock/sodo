@@ -402,6 +402,11 @@
 
     document.body.classList.toggle("light-mode", light);
 
+    const themeColor = document.querySelector('meta[name="theme-color"]');
+    if (themeColor) {
+      themeColor.setAttribute("content", light ? "#f4f5ef" : "#080a08");
+    }
+
     const button = document.querySelector(".theme-toggle");
 
     if (button) {
