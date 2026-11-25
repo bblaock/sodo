@@ -227,25 +227,20 @@
     .watched-film h3 { margin: 0; font-size: 19px; font-weight: 600; letter-spacing: .2px; }
 
     
-    .movie-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:26px}
-    .movie-card{display:grid;grid-template-columns:92px minmax(0,1fr);align-items:start;gap:15px;min-width:0;padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--panel)}
-    .poster-link{position:relative;display:block;width:92px;height:138px;overflow:hidden;border-radius:7px;background:#20251e;cursor:pointer}
-    .poster-link::after{content:"View film";position:absolute;inset:auto 0 0;padding:7px 4px;text-align:center;background:linear-gradient(transparent,#080a08e8);color:#c8ff4d;font-size:10px;font-weight:700;opacity:0;transition:opacity .2s}
-    .poster-link:hover::after,.poster-link:focus-visible::after{opacity:1}
+    .movie-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin-top:26px}
+    .movie-card{display:flex;flex-direction:column;min-width:0;gap:10px;padding:10px;border:1px solid var(--border);border-radius:12px;background:var(--panel)}
+    .poster-link{position:relative;display:block;width:100%;aspect-ratio:2/3;overflow:hidden;border-radius:8px;background:#20251e;cursor:pointer}
     .movie-poster{display:block;width:100%;height:100%;object-fit:cover;transition:transform .25s ease}
     .poster-link:hover .movie-poster{transform:scale(1.045)}
-    .movie-card-info{min-width:0}
-    .movie-card h3{margin:0 0 5px;font-size:17px;line-height:1.4}
+    .movie-card-info{min-width:0;text-align:center}
+    .movie-card h3{margin:0 0 4px;font-size:15px;line-height:1.35}
     .movie-title-link{color:var(--text);text-decoration:none}
     .movie-title-link:hover{color:var(--accent)}
-    .movie-meta{margin-bottom:8px;color:var(--accent);font-size:11px;line-height:1.5}
-    .imdb-icon{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;margin-top:6px;color:var(--accent);border:1px solid var(--border);border-radius:7px;text-decoration:none}
-    .imdb-icon:focus-visible,.poster-link:focus-visible,.movie-title-link:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
-    .imdb-icon svg{display:block;width:21px;height:21px}
-    .movie-pending{grid-template-columns:1fr;align-items:center}
-    .movie-pending p{margin:0;color:var(--muted);font-size:12px}
-    @media(max-width:680px){.movie-grid{grid-template-columns:1fr;gap:12px}.movie-card{grid-template-columns:82px minmax(0,1fr);gap:13px;padding:12px}.poster-link{width:82px;height:123px}.movie-card h3{font-size:16px}}
-    @media(min-width:681px) and (max-width:900px){.movie-grid{grid-template-columns:1fr}}
+    .movie-meta{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;color:var(--muted);font-size:11px;line-height:1.5}
+    .movie-rating{color:var(--accent);font-weight:700}
+    .poster-link:focus-visible,.movie-title-link:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+    @media(max-width:680px){.movie-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.movie-card{padding:8px;gap:8px}.movie-card h3{font-size:14px}.movie-meta{font-size:10px}}
+    @media(min-width:681px) and (max-width:900px){.movie-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 
 
   </style>
@@ -284,54 +279,50 @@
       </div>
       <div class="movie-grid">
       <article class="movie-card">
-        <a class="poster-link" href="./hope/?v=20261125-21" aria-label="Open Hope film details">
-          <img class="movie-poster" src="https://www.oslo-pictures.com/media/images/poster/xlarge/3d5bv93esi0q.jpg" alt="Hope (2019) poster" loading="lazy">
+        <a class="poster-link" href="./hope/" aria-label="Open Hope film details">
+          <img class="movie-poster" src="https://dx35vtwkllhj9.cloudfront.net/neonrated/hope-2026/images/regions/us/onesheet.jpg" alt="Hope (2026) poster" loading="lazy">
         </a>
         <div class="movie-card-info">
-          <h3><a class="movie-title-link" href="./hope/?v=20261125-21">Hope</a></h3>
-          <div class="movie-meta">2019 · 7.3/10</div>
-          <a class="imdb-icon" href="https://www.imdb.com/title/tt9812614/" target="_blank" rel="noopener noreferrer" aria-label="IMDb page for Hope" title="IMDb">
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 8h18M3 16h18M8 3v5m8-5v5M8 16v5m8-5v5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-          </a>
+          <h3><a class="movie-title-link" href="./hope/">Hope</a></h3>
+          <div class="movie-meta"><span>2026</span><span class="movie-rating">IMDb 6.5/10</span></div>
         </div>
       </article>
       <article class="movie-card">
-        <a class="poster-link" href="./blackbox/?v=20261125-21" aria-label="Open Black Box film details">
-          <img class="movie-poster" src="https://metadata-static.plex.tv/c/gracenote/c59ed964d20d8ba2e5e76c34d20b9b9b.jpg" alt="Black Box (2020) poster" loading="lazy">
+        <a class="poster-link" href="./heartofthebeast/" aria-label="Open Heart of the Beast film details">
+          <img class="movie-poster" src="https://s3proxygw.cineplexx.at/cms-live/asset/RKS/movies/Heart%20of%20the%20Beast/posterImage.jpg" alt="Heart of the Beast (2026) poster" loading="lazy">
         </a>
         <div class="movie-card-info">
-          <h3><a class="movie-title-link" href="./blackbox/?v=20261125-21">Black Box</a></h3>
-          <div class="movie-meta">2020 · 6.2/10</div>
-          <a class="imdb-icon" href="https://www.imdb.com/title/tt12298506/" target="_blank" rel="noopener noreferrer" aria-label="IMDb page for Black Box" title="IMDb">
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 8h18M3 16h18M8 3v5m8-5v5M8 16v5m8-5v5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-          </a>
+          <h3><a class="movie-title-link" href="./heartofthebeast/">Heart of the Beast</a></h3>
+          <div class="movie-meta"><span>2026</span><span class="movie-rating">IMDb 7.1/10</span></div>
         </div>
       </article>
       <article class="movie-card">
-        <a class="poster-link" href="./mebeforeyou/?v=20261125-21" aria-label="Open Me Before You film details">
-          <img class="movie-poster" src="https://assets.voxcinemas.com/posters/P_HO00003810.jpg" alt="Me Before You (2016) poster" loading="lazy">
+        <a class="poster-link" href="./blackbox/" aria-label="Open Black Box film details">
+          <img class="movie-poster" src="https://static.filmvandaag.nl/covers/original/150000/150254.jpg?v=1&width=800" alt="Black Box (2026) poster" loading="lazy">
         </a>
         <div class="movie-card-info">
-          <h3><a class="movie-title-link" href="./mebeforeyou/?v=20261125-21">Me Before You</a></h3>
-          <div class="movie-meta">2016 · 7.4/10</div>
-          <a class="imdb-icon" href="https://www.imdb.com/title/tt2674426/" target="_blank" rel="noopener noreferrer" aria-label="IMDb page for Me Before You" title="IMDb">
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 8h18M3 16h18M8 3v5m8-5v5M8 16v5m8-5v5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-          </a>
+          <h3><a class="movie-title-link" href="./blackbox/">Black Box</a></h3>
+          <div class="movie-meta"><span>2026</span><span class="movie-rating">IMDb 5.1/10</span></div>
         </div>
       </article>
       <article class="movie-card">
-        <a class="poster-link" href="./luckystrike/?v=20261125-21" aria-label="Open Lucky Strike film details">
+        <a class="poster-link" href="./mebeforeyou/" aria-label="Open Me Before You film details">
+          <img class="movie-poster" src="https://b1.filmpro.ru/c/371707.jpg" alt="Me Before You (2016) poster" loading="lazy">
+        </a>
+        <div class="movie-card-info">
+          <h3><a class="movie-title-link" href="./mebeforeyou/">Me Before You</a></h3>
+          <div class="movie-meta"><span>2016</span><span class="movie-rating">IMDb 7.4/10</span></div>
+        </div>
+      </article>
+      <article class="movie-card">
+        <a class="poster-link" href="./luckystrike/" aria-label="Open Lucky Strike film details">
           <img class="movie-poster" src="https://images.justwatch.com/poster/347233655/s718/lucky-strike.jpg" alt="Lucky Strike (2026) poster" loading="lazy">
         </a>
         <div class="movie-card-info">
-          <h3><a class="movie-title-link" href="./luckystrike/?v=20261125-21">Lucky Strike</a></h3>
-          <div class="movie-meta">2026 · 5.4/10</div>
-          <a class="imdb-icon" href="https://www.imdb.com/title/tt19035928/" target="_blank" rel="noopener noreferrer" aria-label="IMDb page for Lucky Strike" title="IMDb">
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 8h18M3 16h18M8 3v5m8-5v5M8 16v5m8-5v5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-          </a>
+          <h3><a class="movie-title-link" href="./luckystrike/">Lucky Strike</a></h3>
+          <div class="movie-meta"><span>2026</span><span class="movie-rating">IMDb 5.4/10</span></div>
         </div>
       </article>
-      <article class="movie-card movie-pending"><div><h3>HEART BRAS</h3><div class="movie-meta">Details to be confirmed</div><p>Title saved to your watched list.</p></div></article>
       </div>
     </section>
 
