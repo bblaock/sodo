@@ -1065,6 +1065,20 @@
       body.sodo-glass-preview header > .container {
         width: min(1160px, 92%) !important;
       }
+      @view-transition {
+        navigation: auto;
+      }
+      body.sodo-glass-preview header {
+        view-transition-name: sodo-site-header;
+      }
+      body.sodo-glass-preview .nav-links.sodo-liquid-nav::before {
+        view-transition-name: sodo-liquid-active;
+      }
+      ::view-transition-group(sodo-site-header),
+      ::view-transition-group(sodo-liquid-active) {
+        animation-duration: .48s;
+        animation-timing-function: cubic-bezier(.2,.85,.25,1);
+      }
       body.sodo-glass-preview header nav {
         min-height: 68px !important;
         padding: 11px 18px !important;
