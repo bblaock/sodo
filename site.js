@@ -503,3 +503,219 @@ if (document.readyState === "loading") {
 } else {
   initializeSODO();
 }
+
+/* SODO — Circular Language & Theme Controls */
+
+const sodoControlsStyle = document.createElement("style");
+
+sodoControlsStyle.textContent = `
+.site-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-inline-start: 12px;
+  position: relative;
+  z-index: 999;
+}
+
+.site-tool-button {
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line, #293126);
+  border-radius: 50%;
+  background: var(--surface, #111510);
+  color: var(--text, #f4f7ef);
+  cursor: pointer;
+  transition: .25s ease;
+}
+
+.site-tool-button:hover {
+  border-color: #c8ff4d;
+  transform: translateY(-2px);
+}
+
+.site-tool-button svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: #c8ff4d;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.language-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  inset-inline-end: 0;
+  min-width: 145px;
+  padding: 6px;
+  display: none;
+  flex-direction: column;
+  gap: 3px;
+  background: #10140f;
+  border: 1px solid #30392b;
+  border-radius: 12px;
+  box-shadow: 0 12px 30px #0004;
+}
+
+.language-menu.open {
+  display: flex;
+}
+
+.language-option {
+  width: 100%;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 7px;
+  text-align: start;
+  background: transparent;
+  color: #e9eee3;
+  font: inherit;
+  cursor: pointer;
+}
+
+.language-option:hover,
+.language-option.active {
+  background: #c8ff4d18;
+  color: #c8ff4d;
+}
+
+body.light-mode .site-tool-button {
+  background: #fff;
+  border-color: #d9dfd0;
+}
+
+body.light-mode .language-menu {
+  background: #fff;
+  border-color: #d9dfd0;
+}
+
+body.light-mode .language-option {
+  color: #171b14;
+}
+
+body.light-mode .language-option:hover,
+body.light-mode .language-option.active {
+  background: #f0f5e7;
+  color: #506d16;
+}
+
+@media(max-width:700px) {
+  .site-tools {
+    gap: 7px;
+    margin: 8px 0;
+  }
+
+  .site-tool-button {
+    width: 39px;
+    height: 39px;
+    min-width: 39px;
+  }
+}
+`;
+
+document.head.appendChild(sodoControlsStyle);
+
+function createTools() {
+  const header = document.querySelector("header");
+  if (!header) return;
+
+  document.querySelectorAll(".site-tools").forEach(el => el.remove());
+
+  const tools = document.createElement("div");
+  tools.className = "site-tools";
+
+  tools.innerHTML = `
+    <div class="language-control">
+      <button class="site-tool-button language-trigger"
+        type="button" aria-label="Choose language"
+        aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"></circle>
+          <path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"></path>
+        </svg>
+      </button>
+
+      <div class="language-menu" role="menu">
+        <button class="language-option" data-lang="ar" type="button">العربية</button>
+        <button class="language-option" data-lang="en" type="button">English</button>
+        <button class="language-option" data-lang="ru" type="button">Русский</button>
+      </div>
+    </div>
+
+    <button class="site-tool-button theme-toggle"
+      type="button" aria-label="Toggle theme">
+    </button>
+  `;
+
+  const nav = header.querySelector("nav");
+  if (nav) nav.appendChild(tools);
+  else header.appendChild(tools);
+
+  const trigger = tools.querySelector(".language-trigger");
+  const menu = tools.querySelector(".language-menu");
+
+  trigger.addEventListener("click", () => {
+    const opened = menu.classList.toggle("open");
+    trigger.setAttribute("aria-expanded", String(opened));
+  });
+
+  tools.querySelectorAll(".language-option").forEach(button => {
+    button.addEventListener("click", () => {
+      applyLanguage(button.dataset.lang);
+      menu.classList.remove("open");
+      trigger.setAttribute("aria-expanded", "false");
+    });
+  });
+
+  document.addEventListener("click", event => {
+    if (!tools.contains(event.target)) {
+      menu.classList.remove("open");
+      trigger.setAttribute("aria-expanded", "false");
+    }
+  });
+
+  tools.querySelector(".theme-toggle").addEventListener("click", () => {
+    const light = document.body.classList.contains("light-mode");
+    applyTheme(light ? "dark" : "light");
+  });
+}
+
+function applyTheme(theme) {
+  const selected = theme === "light" ? "light" : "dark";
+  document.body.classList.toggle("light-mode", selected === "light");
+
+  const button = document.querySelector(".theme-toggle");
+
+  if (button) {
+    button.innerHTML = selected === "light"
+      ? `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path></svg>`
+      : `<svg viewBox="0 0 24 24"><path d="M20.5 15.5A8.5 8.5 0 0 1 8.5 3.5 8.5 8.5 0 1 0 20.5 15.5Z"></path></svg>`;
+  }
+
+  try {
+    localStorage.setItem("sodo-theme", selected);
+  } catch (error) {}
+}
+
+function initializeSODO() {
+  createTools();
+
+  let language = "ar";
+  let theme = "dark";
+
+  try {
+    language = localStorage.getItem("sodo-language") || "ar";
+    theme = localStorage.getItem("sodo-theme") || "dark";
+  } catch (error) {}
+
+  applyLanguage(language);
+  applyTheme(theme);
+}
+
