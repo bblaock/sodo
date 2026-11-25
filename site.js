@@ -41,6 +41,7 @@
       "Director": "المخرج",
       "Cast": "طاقم التمثيل",
       "Runtime": "مدة الفيلم",
+      "Rating": "التقييم",
       "Drama": "دراما",
       "Science fiction · Thriller": "خيال علمي · إثارة",
       "Romance · Drama": "رومانسي · دراما",
@@ -181,6 +182,7 @@
       "Director": "Director",
       "Cast": "Cast",
       "Runtime": "Runtime",
+      "Rating": "Rating",
       "Drama": "Drama",
       "Science fiction · Thriller": "Science fiction · Thriller",
       "Romance · Drama": "Romance · Drama",
@@ -283,6 +285,7 @@
       "Director": "Режиссёр",
       "Cast": "В ролях",
       "Runtime": "Продолжительность",
+      "Rating": "Оценка",
       "Drama": "Драма",
       "Science fiction · Thriller": "Фантастика · Триллер",
       "Romance · Drama": "Мелодрама · Драма",
@@ -529,6 +532,8 @@
     if (titles[lang][page]) {
       document.title = titles[lang][page];
     }
+    const filmHeading = document.querySelector(".film-copy h1");
+    if (filmHeading) document.title = `${filmHeading.textContent.trim()} — SODO`;
 
     const descriptions = {
       ar: {
