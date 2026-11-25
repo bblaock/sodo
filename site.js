@@ -343,12 +343,17 @@
       }
     };
 
-    const page = location.pathname.split("/").pop() || "index.html";
+    const pathParts = location.pathname.split("/").filter(Boolean);
+    const currentSlug = pathParts[pathParts.length - 1] || "sodo";
+    const page = currentSlug === "sodo" ? "index.html" : (currentSlug.endsWith(".html") ? currentSlug : `${currentSlug}.html`);
 
     // Keep the current section visibly selected in every page navigation.
     document.querySelectorAll("nav a:not(.logo)[href]").forEach(link => {
-      const target = link.getAttribute("href").split("?")[0].split("#")[0];
-      const active = target === page || (page === "" && target === "index.html");
+      const targetPath = new URL(link.href, location.href).pathname;
+      const targetParts = targetPath.split("/").filter(Boolean);
+      const targetSlug = targetParts[targetParts.length - 1] || "sodo";
+      const targetPage = targetSlug === "sodo" ? "index.html" : (targetSlug.endsWith(".html") ? targetSlug : `${targetSlug}.html`);
+      const active = targetPage === page;
       link.classList.toggle("active", active);
       if (active) link.setAttribute("aria-current", "page");
       else link.removeAttribute("aria-current");
