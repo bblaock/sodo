@@ -1022,7 +1022,6 @@
       body.light-mode .sodo-welcome-close { background: rgba(0,0,0,.025); }
       @keyframes sodo-welcome-in { from { opacity: 0; transform: translateY(9px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
       @media(max-width:480px) { .sodo-welcome-card { padding: 28px 22px 23px; } .sodo-welcome-card h2 { font-size: 21px; } .sodo-welcome-card p { font-size: 13px; } }
-    `;
 
 
       /* SODO Glass Experiment — opt-in only via ?glass=1 */
@@ -1121,6 +1120,8 @@
         }
       }
 
+    `;
+
     document.head.appendChild(style);
   }
 
@@ -1170,7 +1171,10 @@
   function initialize() {
     try {
       const glassMode = new URLSearchParams(window.location.search).get("glass");
-      if (glassMode === "1") sessionStorage.setItem("sodo-glass-preview", "1");
+      if (glassMode === "1") {
+        sessionStorage.setItem("sodo-glass-preview", "1");
+        sessionStorage.removeItem("sodo-welcome-dismissed");
+      }
       if (glassMode === "off") sessionStorage.removeItem("sodo-glass-preview");
       if (sessionStorage.getItem("sodo-glass-preview") === "1") {
         document.body.classList.add("sodo-glass-preview");
