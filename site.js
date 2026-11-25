@@ -1024,6 +1024,103 @@
       @media(max-width:480px) { .sodo-welcome-card { padding: 28px 22px 23px; } .sodo-welcome-card h2 { font-size: 21px; } .sodo-welcome-card p { font-size: 13px; } }
     `;
 
+
+      /* SODO Glass Experiment — opt-in only via ?glass=1 */
+      body.sodo-glass-preview {
+        background:
+          radial-gradient(ellipse at 12% 8%, rgba(200,255,77,.10), transparent 34%),
+          radial-gradient(ellipse at 88% 30%, rgba(112,150,255,.09), transparent 38%),
+          var(--bg, #080a08) !important;
+        background-attachment: fixed !important;
+      }
+      body.sodo-glass-preview header {
+        background: rgba(13,17,13,.58) !important;
+        border: 1px solid rgba(255,255,255,.10) !important;
+        border-radius: 22px !important;
+        box-shadow: 0 14px 42px rgba(0,0,0,.18), inset 0 1px rgba(255,255,255,.08) !important;
+        -webkit-backdrop-filter: blur(24px) saturate(155%);
+        backdrop-filter: blur(24px) saturate(155%);
+      }
+      body.sodo-glass-preview footer {
+        background: rgba(13,17,13,.46) !important;
+        border: 1px solid rgba(255,255,255,.09) !important;
+        border-radius: 22px 22px 0 0 !important;
+        -webkit-backdrop-filter: blur(22px) saturate(145%);
+        backdrop-filter: blur(22px) saturate(145%);
+      }
+      body.sodo-glass-preview .site-tool-button,
+      body.sodo-glass-preview .language-menu,
+      body.sodo-glass-preview .sodo-welcome-card,
+      body.sodo-glass-preview .cinema-tabs a,
+      body.sodo-glass-preview .movie-card,
+      body.sodo-glass-preview .project-card,
+      body.sodo-glass-preview .thought-card,
+      body.sodo-glass-preview .content-card,
+      body.sodo-glass-preview .film,
+      body.sodo-glass-preview .status,
+      body.sodo-glass-preview .footer-socials a {
+        background: rgba(255,255,255,.055) !important;
+        border: 1px solid rgba(255,255,255,.13) !important;
+        box-shadow: 0 12px 34px rgba(0,0,0,.16), inset 0 1px rgba(255,255,255,.09) !important;
+        -webkit-backdrop-filter: blur(18px) saturate(145%);
+        backdrop-filter: blur(18px) saturate(145%);
+      }
+      body.sodo-glass-preview .cinema-tabs a,
+      body.sodo-glass-preview .movie-card,
+      body.sodo-glass-preview .project-card,
+      body.sodo-glass-preview .thought-card,
+      body.sodo-glass-preview .content-card { border-radius: 20px !important; }
+      body.sodo-glass-preview .site-tool-button {
+        border-radius: 50% !important;
+        background: rgba(255,255,255,.075) !important;
+      }
+      body.sodo-glass-preview .language-menu {
+        background: rgba(17,22,17,.78) !important;
+        border-radius: 16px !important;
+      }
+      body.sodo-glass-preview .poster-link,
+      body.sodo-glass-preview .movie-poster { border-radius: 13px !important; }
+      body.sodo-glass-preview .movie-card { padding: 12px !important; }
+      body.sodo-glass-preview a,
+      body.sodo-glass-preview button { -webkit-tap-highlight-color: transparent; }
+      body.sodo-glass-preview .site-tool-button:hover,
+      body.sodo-glass-preview .cinema-tabs a:hover,
+      body.sodo-glass-preview .movie-card:hover,
+      body.sodo-glass-preview .footer-socials a:hover {
+        border-color: rgba(200,255,77,.42) !important;
+        box-shadow: 0 16px 42px rgba(0,0,0,.22), 0 0 24px rgba(200,255,77,.055), inset 0 1px rgba(255,255,255,.12) !important;
+      }
+      body.light-mode.sodo-glass-preview {
+        background:
+          radial-gradient(ellipse at 12% 8%, rgba(133,170,64,.13), transparent 36%),
+          radial-gradient(ellipse at 88% 30%, rgba(130,160,220,.12), transparent 38%),
+          #f4f5ef !important;
+      }
+      body.light-mode.sodo-glass-preview .site-tool-button,
+      body.light-mode.sodo-glass-preview .language-menu,
+      body.light-mode.sodo-glass-preview .sodo-welcome-card,
+      body.light-mode.sodo-glass-preview .cinema-tabs a,
+      body.light-mode.sodo-glass-preview .movie-card,
+      body.light-mode.sodo-glass-preview .project-card,
+      body.light-mode.sodo-glass-preview .thought-card,
+      body.light-mode.sodo-glass-preview .content-card,
+      body.light-mode.sodo-glass-preview .film,
+      body.light-mode.sodo-glass-preview .status,
+      body.light-mode.sodo-glass-preview .footer-socials a {
+        background: rgba(255,255,255,.54) !important;
+        border-color: rgba(255,255,255,.72) !important;
+        box-shadow: 0 12px 34px rgba(35,45,25,.08), inset 0 1px rgba(255,255,255,.85) !important;
+      }
+      @media (max-width: 700px) {
+        body.sodo-glass-preview header { border-radius: 18px !important; }
+        body.sodo-glass-preview .movie-card { padding: 7px !important; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        body.sodo-glass-preview *, body.sodo-glass-preview *::before, body.sodo-glass-preview *::after {
+          transition-duration: .01ms !important; animation-duration: .01ms !important;
+        }
+      }
+
     document.head.appendChild(style);
   }
 
@@ -1071,6 +1168,14 @@
   }
 
   function initialize() {
+    try {
+      const glassMode = new URLSearchParams(window.location.search).get("glass");
+      if (glassMode === "1") sessionStorage.setItem("sodo-glass-preview", "1");
+      if (glassMode === "off") sessionStorage.removeItem("sodo-glass-preview");
+      if (sessionStorage.getItem("sodo-glass-preview") === "1") {
+        document.body.classList.add("sodo-glass-preview");
+      }
+    } catch (_) {}
     installStyles();
     createControls();
 
