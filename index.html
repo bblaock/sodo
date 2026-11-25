@@ -1,11 +1,14 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#080a08">
-  <meta name="description" content="SODO — A personal space for thoughts, culture, films and creative work.">
+  <meta name="description" content="SODO — أفكار وثقافة وسينما وإبداع.">
   <title>SODO — Think. Feel. Create.</title>
+
+  <script src="site.js" defer></script>
 
   <style>
     :root {
@@ -78,6 +81,28 @@
 
     .nav-links a:hover {
       color: var(--accent);
+    }
+
+    .site-tools {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .site-tools select,
+    .theme-toggle {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 9px 11px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .theme-toggle {
+      font-size: 18px;
+      min-width: 42px;
     }
 
     .hero {
@@ -210,6 +235,10 @@
       color: var(--accent);
     }
 
+    body.light-mode .hero-link:hover {
+      color: #080a08;
+    }
+
     @media (max-width: 700px) {
       nav {
         align-items: flex-start;
@@ -219,6 +248,10 @@
 
       .nav-links {
         gap: 16px;
+      }
+
+      .site-tools {
+        margin: 5px 0;
       }
 
       .hero {
@@ -248,11 +281,22 @@
         <a href="index.html" class="logo">SODO.</a>
 
         <ul class="nav-links">
-          <li><a href="index.html">Home</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="thoughts.html">Thoughts</a></li>
-          <li><a href="films.html">Films</a></li>
+          <li><a href="index.html" data-i18n="home">الرئيسية</a></li>
+          <li><a href="about.html" data-i18n="about">من نحن</a></li>
+          <li><a href="thoughts.html" data-i18n="thoughts">أفكار</a></li>
+          <li><a href="films.html" data-i18n="films">سينما</a></li>
+          <li><a href="projects.html" data-i18n="projects">مشاريع</a></li>
         </ul>
+
+        <div class="site-tools">
+          <select id="site-language" aria-label="Language">
+            <option value="ar">العربية</option>
+            <option value="en">English</option>
+            <option value="ru">Русский</option>
+          </select>
+
+          <button class="theme-toggle" type="button" aria-label="Toggle theme">🌙</button>
+        </div>
       </nav>
     </div>
   </header>
@@ -260,7 +304,7 @@
   <main>
     <div class="container">
       <div class="hero">
-        <p class="eyebrow">A Personal Space</p>
+        <p class="eyebrow" data-i18n="eyebrow">مساحة شخصية</p>
 
         <h1>
           Think.<br>
@@ -268,51 +312,57 @@
           <span>Create.</span>
         </h1>
 
-        <p class="hero-description">
-          A space for ideas, culture, cinema and creative exploration.
-          Somewhere between what we think and what we create.
+        <p class="hero-description" data-i18n="heroText">
+          مساحة للأفكار والثقافة والسينما والاستكشاف الإبداعي.
+          مكان ما بين ما نفكر فيه وما نصنعه.
         </p>
 
-        <a href="about.html" class="hero-link">Discover SODO ↗</a>
+        <a href="about.html" class="hero-link" data-i18n="discover">اكتشف SODO ↗</a>
       </div>
     </div>
 
     <section>
       <div class="container">
-        <p class="section-label">01 / About</p>
-        <h2>A space to explore.</h2>
+        <p class="section-label">01 / ABOUT</p>
+
+        <h2 data-i18n="space">مساحة للاستكشاف.</h2>
+
         <p class="section-text">
-          SODO is a personal space dedicated to thoughts, culture,
-          cinema and creative work. A place to collect ideas,
-          explore perspectives and share meaningful things.
+          SODO مساحة شخصية مخصصة للأفكار والثقافة والسينما
+          والعمل الإبداعي. مكان لجمع الأفكار واستكشاف
+          وجهات النظر ومشاركة الأشياء ذات المعنى.
         </p>
-        <a href="about.html" class="hero-link">More About SODO ↗</a>
+
+        <a href="about.html" class="hero-link" data-i18n="discover">اكتشف SODO ↗</a>
       </div>
     </section>
 
     <section>
       <div class="container">
-        <p class="section-label">02 / Explore</p>
-        <h2>Different perspectives.</h2>
+        <p class="section-label">02 / EXPLORE</p>
+
+        <h2 data-i18n="different">وجهات نظر مختلفة.</h2>
 
         <div class="cards">
+
           <a href="thoughts.html" class="card">
             <span class="card-number">01 — IDEAS</span>
-            <h3>Thoughts</h3>
-            <p>Notes, reflections and ideas worth sharing.</p>
+            <h3 data-i18n="thoughts">أفكار</h3>
+            <p data-i18n="notes">ملاحظات وتأملات وأفكار تستحق المشاركة.</p>
           </a>
 
           <a href="films.html" class="card">
             <span class="card-number">02 — CINEMA</span>
-            <h3>Films</h3>
-            <p>Stories, cinema and visual experiences.</p>
+            <h3 data-i18n="films">سينما</h3>
+            <p data-i18n="cinema">قصص وتجارب سينمائية وبصرية.</p>
           </a>
 
           <a href="projects.html" class="card">
             <span class="card-number">03 — WORK</span>
-            <h3>Projects</h3>
-            <p>Creative experiments and things in progress.</p>
+            <h3 data-i18n="projects">مشاريع</h3>
+            <p data-i18n="work">تجارب إبداعية وأعمال قيد التطوير.</p>
           </a>
+
         </div>
       </div>
     </section>
@@ -320,7 +370,7 @@
 
   <footer>
     <div class="container footer-content">
-      <p>© 2026 <span>SODO.</span> All rights reserved.</p>
+      <p>© 2026 <span>SODO.</span> <span data-i18n="footer">جميع الحقوق محفوظة</span></p>
       <p>Think. Feel. Create.</p>
     </div>
   </footer>
