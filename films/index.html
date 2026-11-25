@@ -227,7 +227,7 @@
     .watched-film h3 { margin: 0; font-size: 19px; font-weight: 600; letter-spacing: .2px; }
 
     
-    .movie-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin-top:26px}
+    .movie-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:26px}
     .movie-card{display:flex;flex-direction:column;min-width:0;gap:10px;padding:10px;border:1px solid var(--border);border-radius:12px;background:var(--panel)}
     .poster-link{position:relative;display:block;width:100%;aspect-ratio:2/3;overflow:hidden;border-radius:8px;background:#20251e;cursor:pointer}
     .movie-poster{display:block;width:100%;height:100%;object-fit:cover;transition:transform .25s ease}
@@ -239,12 +239,17 @@
     .movie-meta{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;color:var(--muted);font-size:11px;line-height:1.5}
     .movie-rating{display:inline-flex;align-items:center;justify-content:center;gap:5px;color:var(--accent);font-weight:700}.movie-rating img{display:block;width:30px;height:auto;object-fit:contain}
     .poster-link:focus-visible,.movie-title-link:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
-    @media(max-width:680px){.movie-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.movie-card{padding:8px;gap:8px}.movie-card h3{font-size:14px}.movie-meta{font-size:10px}}
+    .movie-pagination{display:flex;justify-content:center;align-items:center;gap:8px;margin:28px 0 4px;direction:ltr}
+    .movie-pagination button{min-width:38px;height:38px;padding:0 10px;border:1px solid var(--border);border-radius:9px;background:var(--panel);color:var(--muted);cursor:pointer;font:600 13px Manrope,sans-serif;transition:color .2s,border-color .2s,background .2s}
+    .movie-pagination button:hover,.movie-pagination button[aria-current=page]{color:var(--bg);background:var(--accent);border-color:var(--accent)}
+    .movie-pagination button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+    @media(max-width:680px){.movie-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.movie-card{padding:6px;gap:7px}.movie-card h3{font-size:12px;overflow-wrap:anywhere}.movie-meta{font-size:9px}.movie-rating img{width:24px}}
     @media(min-width:681px) and (max-width:900px){.movie-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 
 
   </style>
   <script src="/sodo/site.js?v=20261125-22" defer></script>
+  <script src="/sodo/films-pagination.js?v=20261125-23" defer></script>
 </head>
 
 <body>
@@ -284,7 +289,7 @@
         </a>
         <div class="movie-card-info">
           <h3><a class="movie-title-link" href="./hope/">Hope</a></h3>
-          <div class="movie-meta"><span>2026</span><span class="movie-rating"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/3840px-IMDB_Logo_2016.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="IMDb" loading="lazy"><span>6.5/10</span></span></div>
+          <div class="movie-meta"><span>2026</span><span class="movie-rating"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/3840px-IMDB_Logo_2016.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="IMDb" loading="lazy"><span>6.5</span></span></div>
         </div>
       </article>
       <article class="movie-card">
@@ -293,7 +298,7 @@
         </a>
         <div class="movie-card-info">
           <h3><a class="movie-title-link" href="./blackbox/">Black Box</a></h3>
-          <div class="movie-meta"><span>2026</span><span class="movie-rating"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/3840px-IMDB_Logo_2016.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="IMDb" loading="lazy"><span>5.1/10</span></span></div>
+          <div class="movie-meta"><span>2026</span><span class="movie-rating"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/3840px-IMDB_Logo_2016.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="IMDb" loading="lazy"><span>5.1</span></span></div>
         </div>
       </article>
       <article class="movie-card">
@@ -302,16 +307,16 @@
         </a>
         <div class="movie-card-info">
           <h3><a class="movie-title-link" href="./heartofthebeast/">Heart of the Beast</a></h3>
-          <div class="movie-meta"><span>2026</span><span class="movie-rating"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/3840px-IMDB_Logo_2016.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="IMDb" loading="lazy"><span>7.1/10</span></span></div>
+          <div class="movie-meta"><span>2026</span><span class="movie-rating"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/3840px-IMDB_Logo_2016.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="IMDb" loading="lazy"><span>7.1</span></span></div>
         </div>
       </article>
       <article class="movie-card">
         <a class="poster-link" href="./mebeforeyou/" aria-label="Open Me Before You film details">
-          <img class="movie-poster" src="https://assets.voxcinemas.com/posters/P_HO00003810.jpg" alt="Me Before You (2016) poster" loading="lazy">
+          <img class="movie-poster" src="https://resizing.flixster.com/2JDi6Ckf2g6lNLrSPA3GschBugI=/ems.cHJkLWVtcy1hc3NldHMvbW92aWVzLzc0YjY1NDliLWNhNTMtNDQwYS04OThmLWM5NmFiMzI4YjBmNy53ZWJw" alt="Me Before You (2016) poster" loading="lazy">
         </a>
         <div class="movie-card-info">
           <h3><a class="movie-title-link" href="./mebeforeyou/">Me Before You</a></h3>
-          <div class="movie-meta"><span>2016</span><span class="movie-rating"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/3840px-IMDB_Logo_2016.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="IMDb" loading="lazy"><span>7.4/10</span></span></div>
+          <div class="movie-meta"><span>2016</span><span class="movie-rating"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/3840px-IMDB_Logo_2016.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="IMDb" loading="lazy"><span>7.4</span></span></div>
         </div>
       </article>
       <article class="movie-card">
@@ -320,7 +325,7 @@
         </a>
         <div class="movie-card-info">
           <h3><a class="movie-title-link" href="./luckystrike/">Lucky Strike</a></h3>
-          <div class="movie-meta"><span>2026</span><span class="movie-rating"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/3840px-IMDB_Logo_2016.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="IMDb" loading="lazy"><span>5.4/10</span></span></div>
+          <div class="movie-meta"><span>2026</span><span class="movie-rating"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/3840px-IMDB_Logo_2016.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="IMDb" loading="lazy"><span>5.4</span></span></div>
         </div>
       </article>
       </div>
