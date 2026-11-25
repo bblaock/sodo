@@ -135,9 +135,25 @@ const translations = {
   }
 };
 
-// ألوان الوضع النهاري والليلي
-const themeStyle = document.createElement("style");
-themeStyle.textContent = `
+const icons = {
+  sun: `<svg viewBox="0 0 24 24" aria-hidden="true">
+    <circle cx="12" cy="12" r="4"></circle>
+    <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path>
+  </svg>`,
+
+  moon: `<svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M20.5 15.5A8.5 8.5 0 0 1 8.5 3.5 8.5 8.5 0 1 0 20.5 15.5Z"></path>
+  </svg>`,
+
+  globe: `<svg viewBox="0 0 24 24" aria-hidden="true">
+    <circle cx="12" cy="12" r="9"></circle>
+    <path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"></path>
+  </svg>`
+};
+
+const style = document.createElement("style");
+
+style.textContent = `
 body.light-mode {
   --bg: #f4f5ef !important;
   --surface: #ffffff !important;
@@ -149,10 +165,12 @@ body.light-mode {
   background: #f4f5ef !important;
   color: #171b14 !important;
 }
+
 body.light-mode header,
 body.light-mode footer {
   border-color: #d9dfd0 !important;
 }
+
 body.light-mode .card,
 body.light-mode .note,
 body.light-mode .film,
@@ -160,50 +178,176 @@ body.light-mode .project {
   background: #ffffff !important;
   border-color: #d9dfd0 !important;
 }
+
 body.light-mode p,
 body.light-mode .intro,
 body.light-mode .section-text,
 body.light-mode .content p {
   color: #626b5c !important;
 }
+
 body.light-mode .nav-links a {
   color: #626b5c !important;
 }
+
 html[dir="rtl"] body {
   text-align: right;
 }
+
 html[dir="rtl"] nav {
   direction: rtl;
 }
+
 .site-tools {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 9px;
+  margin-inline-start: 12px;
+  position: relative;
+  z-index: 100;
 }
-.site-tools select,
-.theme-toggle {
+
+.site-tool-button {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid var(--line, #293126);
+  border-radius: 10px;
   background: var(--surface, #111510);
   color: var(--text, #f4f7ef);
-  border: 1px solid var(--line, #293126);
-  border-radius: 8px;
-  padding: 9px 11px;
-  font-size: 14px;
   cursor: pointer;
+  transition: border-color .25s ease, background .25s ease, transform .25s ease;
 }
-.theme-toggle {
-  font-size: 18px;
-  min-width: 42px;
+
+.site-tool-button:hover {
+  border-color: #c8ff4d;
+  transform: translateY(-2px);
 }
+
+.site-tool-button svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: #c8ff4d;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.language-trigger {
+  width: auto;
+  min-width: 76px;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .5px;
+}
+
+.language-trigger svg {
+  width: 17px;
+  height: 17px;
+}
+
+.language-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  inset-inline-end: 0;
+  min-width: 145px;
+  padding: 6px;
+  display: none;
+  flex-direction: column;
+  gap: 3px;
+  background: #10140f;
+  border: 1px solid #30392b;
+  border-radius: 11px;
+  box-shadow: 0 12px 30px rgba(0,0,0,.25);
+}
+
+.language-menu.open {
+  display: flex;
+}
+
+.language-option {
+  width: 100%;
+  border: 0;
+  border-radius: 7px;
+  padding: 10px 12px;
+  text-align: start;
+  background: transparent;
+  color: #e9eee3;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background .2s ease, color .2s ease;
+}
+
+.language-option:hover,
+.language-option.active {
+  background: rgba(200,255,77,.10);
+  color: #c8ff4d;
+}
+
+body.light-mode .site-tool-button {
+  background: #fff;
+  color: #171b14;
+  border-color: #d9dfd0;
+}
+
+body.light-mode .language-menu {
+  background: #fff;
+  border-color: #d9dfd0;
+  box-shadow: 0 12px 30px rgba(0,0,0,.10);
+}
+
+body.light-mode .language-option {
+  color: #171b14;
+}
+
+body.light-mode .language-option:hover,
+body.light-mode .language-option.active {
+  background: #f0f5e7;
+  color: #506d16;
+}
+
 @media(max-width:700px) {
   .site-tools {
     margin: 8px 0;
-    flex-wrap: wrap;
+    gap: 7px;
+  }
+
+  .site-tool-button {
+    width: 39px;
+    height: 39px;
+  }
+
+  .language-trigger {
+    width: auto;
+    min-width: 70px;
   }
 }
 `;
-document.head.appendChild(themeStyle);
 
-// تغيير اللغة
+document.head.appendChild(style);
+
+function getSavedValue(key, fallback) {
+  try {
+    return localStorage.getItem(key) || fallback;
+  } catch (error) {
+    return fallback;
+  }
+}
+
+function saveValue(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch (error) {
+    console.warn("SODO preference could not be saved.");
+  }
+}
+
 function applyLanguage(lang) {
   const selected = translations[lang] ? lang : "ar";
   const dictionary = translations[selected];
@@ -223,17 +367,29 @@ function applyLanguage(lang) {
     }
   });
 
-  const picker = document.querySelector("#site-language");
-  if (picker) picker.value = selected;
-
-  try {
-    localStorage.setItem("sodo-language", selected);
-  } catch (error) {
-    console.warn("Language preference could not be saved.");
+  const languageLabel = document.querySelector(".language-code");
+  if (languageLabel) {
+    languageLabel.textContent = selected.toUpperCase();
   }
+
+  document.querySelectorAll(".language-option").forEach(button => {
+    button.classList.toggle("active", button.dataset.lang === selected);
+    button.setAttribute(
+      "aria-pressed",
+      button.dataset.lang === selected ? "true" : "false"
+    );
+  });
+
+  const themeButton = document.querySelector(".theme-toggle");
+  if (themeButton) {
+    themeButton.title = document.body.classList.contains("light-mode")
+      ? dictionary.themeLight
+      : dictionary.themeDark;
+  }
+
+  saveValue("sodo-language", selected);
 }
 
-// تغيير المظهر
 function applyTheme(theme) {
   const selected = theme === "light" ? "light" : "dark";
 
@@ -242,69 +398,101 @@ function applyTheme(theme) {
   const button = document.querySelector(".theme-toggle");
 
   if (button) {
-    button.textContent = selected === "light" ? "☀️" : "🌙";
+    button.innerHTML = selected === "light" ? icons.sun : icons.moon;
+
+    const lang = document.documentElement.lang || "ar";
+    const dictionary = translations[lang] || translations.ar;
+
     button.setAttribute(
       "aria-label",
-      selected === "light" ? "Light mode" : "Dark mode"
+      selected === "light" ? dictionary.themeLight : dictionary.themeDark
     );
+
     button.title = selected === "light"
-      ? translations[document.documentElement.lang]?.themeLight || "Light mode"
-      : translations[document.documentElement.lang]?.themeDark || "Dark mode";
+      ? dictionary.themeLight
+      : dictionary.themeDark;
   }
 
-  try {
-    localStorage.setItem("sodo-theme", selected);
-  } catch (error) {
-    console.warn("Theme preference could not be saved.");
-  }
+  saveValue("sodo-theme", selected);
 }
 
-// تشغيل النظام وربط الأزرار
-function initializeSODO() {
+function createTools() {
   const header = document.querySelector("header");
+  if (!header || document.querySelector(".site-tools")) return;
 
-  if (header && !document.querySelector(".site-tools")) {
-    const tools = document.createElement("div");
-    tools.className = "site-tools";
-    tools.innerHTML = `
-      <select id="site-language" aria-label="Language">
-        <option value="ar">العربية</option>
-        <option value="en">English</option>
-        <option value="ru">Русский</option>
-      </select>
-      <button class="theme-toggle" type="button">🌙</button>
-    `;
+  const tools = document.createElement("div");
+  tools.className = "site-tools";
 
-    const nav = header.querySelector("nav");
-    if (nav) nav.appendChild(tools);
+  tools.innerHTML = `
+    <div class="language-control">
+      <button
+        class="site-tool-button language-trigger"
+        type="button"
+        aria-label="Choose language"
+        aria-expanded="false"
+        aria-haspopup="true"
+      >
+        ${icons.globe}
+        <span class="language-code">AR</span>
+      </button>
+
+      <div class="language-menu" role="menu">
+        <button class="language-option" type="button" data-lang="ar" role="menuitem">العربية</button>
+        <button class="language-option" type="button" data-lang="en" role="menuitem">English</button>
+        <button class="language-option" type="button" data-lang="ru" role="menuitem">Русский</button>
+      </div>
+    </div>
+
+    <button
+      class="site-tool-button theme-toggle"
+      type="button"
+      aria-label="Toggle theme"
+      title="Toggle theme"
+    ></button>
+  `;
+
+  const nav = header.querySelector("nav");
+
+  if (nav) {
+    nav.appendChild(tools);
+  } else {
+    header.appendChild(tools);
   }
 
-  const languagePicker = document.querySelector("#site-language");
-  const themeButton = document.querySelector(".theme-toggle");
+  const languageTrigger = tools.querySelector(".language-trigger");
+  const languageMenu = tools.querySelector(".language-menu");
 
-  if (languagePicker) {
-    languagePicker.addEventListener("change", event => {
-      applyLanguage(event.target.value);
-      applyTheme(localStorage.getItem("sodo-theme") || "dark");
+  languageTrigger.addEventListener("click", () => {
+    const isOpen = languageMenu.classList.toggle("open");
+    languageTrigger.setAttribute("aria-expanded", String(isOpen));
+  });
+
+  tools.querySelectorAll(".language-option").forEach(button => {
+    button.addEventListener("click", () => {
+      applyLanguage(button.dataset.lang);
+      languageMenu.classList.remove("open");
+      languageTrigger.setAttribute("aria-expanded", "false");
     });
-  }
+  });
 
-  if (themeButton) {
-    themeButton.addEventListener("click", () => {
-      const isLight = document.body.classList.contains("light-mode");
-      applyTheme(isLight ? "dark" : "light");
-    });
-  }
+  document.addEventListener("click", event => {
+    if (!tools.contains(event.target)) {
+      languageMenu.classList.remove("open");
+      languageTrigger.setAttribute("aria-expanded", "false");
+    }
+  });
 
-  let savedLanguage = "ar";
-  let savedTheme = "dark";
+  tools.querySelector(".theme-toggle").addEventListener("click", () => {
+    const isLight = document.body.classList.contains("light-mode");
+    applyTheme(isLight ? "dark" : "light");
+  });
+}
 
-  try {
-    savedLanguage = localStorage.getItem("sodo-language") || "ar";
-    savedTheme = localStorage.getItem("sodo-theme") || "dark";
-  } catch (error) {
-    console.warn("Saved preferences unavailable.");
-  }
+function initializeSODO() {
+  createTools();
+
+  const savedLanguage = getSavedValue("sodo-language", "ar");
+  const savedTheme = getSavedValue("sodo-theme", "dark");
 
   applyLanguage(savedLanguage);
   applyTheme(savedTheme);
