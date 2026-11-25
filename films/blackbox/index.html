@@ -38,6 +38,12 @@ h1{font-size:clamp(34px,6vw,56px);line-height:1.12;margin:12px 0}
 .imdb-icon{display:inline-flex;align-items:center;justify-content:center;margin-top:8px;padding:5px 8px;border:1px solid var(--border);border-radius:7px;text-decoration:none;transition:border-color .2s ease,transform .2s ease}
 .imdb-icon:hover{border-color:var(--accent);transform:translateY(-1px)}
 .imdb-icon img{display:block;width:42px;height:auto;object-fit:contain}
+.streaming-links{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-top:14px}
+.streaming-icon{width:42px;height:42px;display:inline-flex;align-items:center;justify-content:center;padding:9px;border:1px solid var(--border);border-radius:10px;background:var(--panel);text-decoration:none;transition:border-color .2s ease,transform .2s ease}
+.streaming-icon:hover{border-color:var(--accent);transform:translateY(-2px)}
+.streaming-icon img{display:block;width:22px;height:22px;object-fit:contain}
+.streaming-icon:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
 footer{max-width:1000px;margin:auto;padding:25px 22px;border-top:1px solid var(--border);color:var(--muted);font-size:12px}
 @media(max-width:650px){header{align-items:flex-start;flex-direction:column;gap:18px}nav{gap:14px}main{padding-top:38px}.film-layout{grid-template-columns:1fr;gap:24px}.detail-poster{width:min(66%,230px);margin:auto;display:block}.details-list{grid-template-columns:95px minmax(0,1fr)}}
 </style>
@@ -56,6 +62,10 @@ footer{max-width:1000px;margin:auto;padding:25px 22px;border-top:1px solid var(-
 <h2>Story</h2>
 <p class="story">Vero Airlines Flight 298 travels from New Orleans to Seattle when a series of terrifying, unexplained events turns the journey into a supernatural nightmare.</p>
 <a class="imdb-icon" href="https://www.imdb.com/title/tt32315584/" target="_blank" rel="noopener noreferrer" aria-label="Open IMDb page" title="IMDb"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/3840px-IMDB_Logo_2016.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="IMDb" loading="lazy"></a>
+<div class="streaming-links" aria-label="Official film pages on streaming platforms">
+<a class="streaming-icon" href="https://tv.apple.com/us/movie/black-box/umc.cmc.6gwqhbie6ap5koq5jyrix957k" target="_blank" rel="noopener noreferrer" aria-label="Open Apple TV page for this film" title="Apple TV"><img src="https://cdn.simpleicons.org/appletv/FFFFFF" alt="" loading="lazy"></a>
+<a class="streaming-icon" href="https://www.primevideo.com/detail/0RVKFEUJL09DZWL8DGONJSGS3N" target="_blank" rel="noopener noreferrer" aria-label="Open Prime Video page for this film" title="Prime Video"><img src="https://cdn.simpleicons.org/primevideo/FFFFFF" alt="" loading="lazy"></a>
+</div>
 <div class="details-panel">
 <h2>Film details</h2>
 <dl class="details-list">
