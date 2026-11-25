@@ -185,8 +185,44 @@
     body.light-mode .footer-socials a { color: var(--muted); }
     body.light-mode .footer-socials a:hover { color: #506d16; border-color: #7e9d36; }
 
+ 
+    .cinema-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin: 0 0 65px;
+    }
+    .cinema-tabs a {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      padding: 18px;
+      min-height: 100px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 14px;
+      transition: border-color .2s ease, transform .2s ease;
+    }
+    .cinema-tabs a:hover { border-color: var(--accent); transform: translateY(-3px); }
+    .cinema-tabs span { color: var(--accent); font-size: 11px; letter-spacing: 2px; }
+    .cinema-section { scroll-margin-top: 30px; padding: 28px 0 38px; border-top: 1px solid var(--border); }
+    .section-heading { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+    .section-heading .eyebrow { width: 100%; }
+    .section-heading h2 { margin: 0; font-size: clamp(22px, 4vw, 30px); }
+    .status { border: 1px solid var(--border); border-radius: 999px; padding: 4px 11px; color: var(--muted); font-size: 11px; }
+    .status-watched { color: var(--accent); border-color: var(--accent); }
+    .status-planned { color: var(--muted); }
+    .section-note { margin: 18px 0 0; color: var(--muted); font-size: 14px; }
+    @media (max-width: 600px) {
+      .cinema-tabs { grid-template-columns: 1fr; gap: 9px; margin-bottom: 45px; }
+      .cinema-tabs a { min-height: 72px; flex-direction: row; align-items: center; justify-content: space-between; }
+      .section-heading { align-items: flex-start; }
+    }
+
   </style>
-  <script src="/sodo/site.js?v=20261125-11" defer></script>
+  <script src="/sodo/site.js?v=20261125-12" defer></script>
 </head>
 
 <body>
@@ -204,38 +240,41 @@
 
   <main>
     <div class="eyebrow">Stories on screen</div>
-
     <h1>Films<span>.</span></h1>
+    <p class="intro">A personal record of films watched and stories discovered.</p>
 
-    <p class="intro">
-      Cinema is more than moving images.
-      It is emotion, perspective, storytelling,
-      and worlds waiting to be discovered.
-    </p>
+    <nav class="cinema-tabs" aria-label="Cinema sections">
+      <a href="#watched">Watched Films <span>01</span></a>
+      <a href="#watchlist">Watchlist <span>02</span></a>
+      <a href="#series">Series <span>03</span></a>
+    </nav>
 
-    <article class="film">
-      <div>
-        <h2>Beyond the Frame</h2>
-        <p>Stories that stay with us.</p>
+    <section class="cinema-section" id="watched">
+      <div class="section-heading">
+        <div class="eyebrow">01 / COLLECTION</div>
+        <h2>Films I’ve watched</h2>
+        <span class="status status-watched">Watched</span>
       </div>
-      <span class="number">01</span>
-    </article>
+      <p class="section-note">Your watched films will appear here.</p>
+    </section>
 
-    <article class="film">
-      <div>
-        <h2>Visual Poetry</h2>
-        <p>When images speak louder than words.</p>
+    <section class="cinema-section" id="watchlist">
+      <div class="section-heading">
+        <div class="eyebrow">02 / NEXT TO WATCH</div>
+        <h2>Films I plan to watch</h2>
+        <span class="status status-planned">Planned</span>
       </div>
-      <span class="number">02</span>
-    </article>
+      <p class="section-note">Your watchlist is ready for the films you want to see next.</p>
+    </section>
 
-    <article class="film">
-      <div>
-        <h2>The Art of Cinema</h2>
-        <p>A journey through light, sound, and feeling.</p>
+    <section class="cinema-section" id="series">
+      <div class="section-heading">
+        <div class="eyebrow">03 / SERIES</div>
+        <h2>Series</h2>
+        <span class="status">TV Series</span>
       </div>
-      <span class="number">03</span>
-    </article>
+      <p class="section-note">Your series collection will appear here.</p>
+    </section>
   </main>
 
   <footer>
