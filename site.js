@@ -1,10 +1,25 @@
-/* SODO — Complete multilingual system: Arabic, English, Russian */
+/* SODO — Multilingual system: Arabic, English, Russian */
 
 (() => {
   "use strict";
 
   const translations = {
     ar: {
+      home: "الرئيسية",
+      about: "من نحن",
+      thoughts: "أفكار",
+      films: "سينما",
+      projects: "مشاريع",
+      eyebrow: "مساحة شخصية",
+      heroText: "مساحة للأفكار والثقافة والسينما والاستكشاف الإبداعي. مكان ما بين ما نفكر فيه وما نصنعه.",
+      discover: "اكتشف SODO ↗",
+      space: "مساحة للاستكشاف.",
+      aboutIntro: "SODO مساحة شخصية مخصصة للأفكار والثقافة والسينما والعمل الإبداعي. مكان لجمع الأفكار واستكشاف وجهات النظر ومشاركة الأشياء ذات المعنى.",
+      different: "وجهات نظر مختلفة.",
+      notes: "ملاحظات وتأملات وأفكار تستحق المشاركة.",
+      cinema: "قصص وتجارب سينمائية وبصرية.",
+      work: "تجارب إبداعية وأعمال قيد التطوير.",
+      footer: "جميع الحقوق محفوظة",
       "Home": "الرئيسية",
       "About": "عن الموقع",
       "Thoughts": "أفكار",
@@ -66,6 +81,21 @@
     },
 
     en: {
+      home: "Home",
+      about: "About",
+      thoughts: "Thoughts",
+      films: "Films",
+      projects: "Projects",
+      eyebrow: "A Personal Space",
+      heroText: "A space for ideas, culture, cinema, and creative exploration. Somewhere between what we think and what we create.",
+      discover: "Discover SODO ↗",
+      space: "A space to explore.",
+      aboutIntro: "SODO is a personal space dedicated to ideas, culture, cinema, and creative work. A place to collect ideas, explore perspectives, and share meaningful things.",
+      different: "Different perspectives.",
+      notes: "Notes, reflections and ideas worth sharing.",
+      cinema: "Stories, cinema and visual experiences.",
+      work: "Creative experiments and things in progress.",
+      footer: "All rights reserved",
       "الرئيسية": "Home",
       "من نحن": "About",
       "عن الموقع": "About",
@@ -100,6 +130,21 @@
     },
 
     ru: {
+      home: "Главная",
+      about: "О проекте",
+      thoughts: "Мысли",
+      films: "Кино",
+      projects: "Проекты",
+      eyebrow: "Личное пространство",
+      heroText: "Пространство для идей, культуры, кино и творчества. Место между тем, что мы думаем, и тем, что создаём.",
+      discover: "Открыть SODO ↗",
+      space: "Пространство для открытий.",
+      aboutIntro: "SODO — личное пространство, посвящённое идеям, культуре, кино и творчеству. Место, где можно собирать идеи, изучать разные взгляды и делиться тем, что имеет значение.",
+      different: "Разные взгляды.",
+      notes: "Заметки, размышления и идеи, которыми стоит делиться.",
+      cinema: "Истории, кино и визуальные впечатления.",
+      work: "Творческие эксперименты и проекты в процессе.",
+      footer: "Все права защищены",
       "Home": "Главная",
       "About": "О проекте",
       "Thoughts": "Мысли",
@@ -168,30 +213,41 @@
   };
 
   const getPreference = (key, fallback) => {
-    try { return localStorage.getItem(key) || fallback; }
-    catch (_) { return fallback; }
+    try {
+      return localStorage.getItem(key) || fallback;
+    } catch (_) {
+      return fallback;
+    }
   };
 
   const savePreference = (key, value) => {
-    try { localStorage.setItem(key, value); } catch (_) {}
+    try {
+      localStorage.setItem(key, value);
+    } catch (_) {}
   };
 
   function translateText(root, dictionary) {
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
     const nodes = [];
-    while (walker.nextNode()) nodes.push(walker.currentNode);
+
+    while (walker.nextNode()) {
+      nodes.push(walker.currentNode);
+    }
 
     nodes.forEach(node => {
       const original = node.nodeValue;
       const trimmed = original.trim();
-      if (!trimmed || !dictionary[trimmed]) return;
+
+      if (!trimmed || dictionary[trimmed] === undefined) return;
+
       node.nodeValue = original.replace(trimmed, dictionary[trimmed]);
     });
 
     root.querySelectorAll("*").forEach(element => {
       ["placeholder", "title", "aria-label", "alt"].forEach(attribute => {
         const value = element.getAttribute(attribute);
-        if (value && dictionary[value]) {
+
+        if (value && dictionary[value] !== undefined) {
           element.setAttribute(attribute, dictionary[value]);
         }
       });
@@ -207,9 +263,9 @@
 
     document.querySelectorAll("[data-i18n]").forEach(element => {
       const key = element.dataset.i18n;
+
       if (dictionary[key] !== undefined) {
-        if (key === "aboutTitle") element.innerHTML = dictionary[key];
-        else element.textContent = dictionary[key];
+        element.textContent = dictionary[key];
       }
     });
 
@@ -240,10 +296,16 @@
     };
 
     const page = location.pathname.split("/").pop() || "index.html";
-    if (titles[lang][page]) document.title = titles[lang][page];
+
+    if (titles[lang][page]) {
+      document.title = titles[lang][page];
+    }
 
     const code = document.querySelector(".language-code");
-    if (code) code.textContent = lang.toUpperCase();
+
+    if (code) {
+      code.textContent = lang.toUpperCase();
+    }
 
     document.querySelectorAll(".language-option").forEach(button => {
       button.classList.toggle("active", button.dataset.lang === lang);
@@ -251,9 +313,15 @@
     });
 
     const themeButton = document.querySelector(".theme-toggle");
+
     if (themeButton) {
       const light = document.body.classList.contains("light-mode");
-      themeButton.setAttribute("aria-label", light ? dictionary["Light mode"] || "Light mode" : dictionary["Dark mode"] || "Dark mode");
+      const label = light
+        ? dictionary["Light mode"] || "Light mode"
+        : dictionary["Dark mode"] || "Dark mode";
+
+      themeButton.setAttribute("aria-label", label);
+      themeButton.setAttribute("title", label);
     }
 
     savePreference("sodo-language", lang);
@@ -261,16 +329,21 @@
 
   function applyTheme(theme) {
     const light = theme === "light";
+
     document.body.classList.toggle("light-mode", light);
 
     const button = document.querySelector(".theme-toggle");
+
     if (button) {
       button.innerHTML = light ? icons.sun : icons.moon;
+
       const lang = getPreference("sodo-language", "ar");
       const dictionary = translations[lang] || translations.ar;
+
       const label = light
         ? (dictionary["Light mode"] || "Light mode")
         : (dictionary["Dark mode"] || "Dark mode");
+
       button.title = label;
       button.setAttribute("aria-label", label);
     }
@@ -280,6 +353,7 @@
 
   function createControls() {
     const header = document.querySelector("header");
+
     if (!header || document.querySelector(".site-tools")) return;
 
     const nav = header.querySelector("nav");
@@ -287,18 +361,21 @@
 
     const tools = document.createElement("div");
     tools.className = "site-tools";
+
     tools.innerHTML = `
       <div class="language-control">
         <button class="site-tool-button language-trigger" type="button"
           aria-label="Choose language" aria-expanded="false" aria-haspopup="true">
           ${icons.globe}<span class="language-code">AR</span>
         </button>
+
         <div class="language-menu" role="menu">
           <button class="language-option" type="button" data-lang="ar" role="menuitem">العربية</button>
           <button class="language-option" type="button" data-lang="en" role="menuitem">English</button>
           <button class="language-option" type="button" data-lang="ru" role="menuitem">Русский</button>
         </div>
       </div>
+
       <button class="site-tool-button theme-toggle" type="button" aria-label="Toggle theme"></button>
     `;
 
@@ -328,7 +405,9 @@
     });
 
     tools.querySelector(".theme-toggle").addEventListener("click", () => {
-      applyTheme(document.body.classList.contains("light-mode") ? "dark" : "light");
+      applyTheme(
+        document.body.classList.contains("light-mode") ? "dark" : "light"
+      );
     });
   }
 
@@ -337,32 +416,163 @@
 
     const style = document.createElement("style");
     style.id = "sodo-i18n-style";
+
     style.textContent = `
-      .site-tools{display:flex;align-items:center;gap:10px;margin-inline-start:12px;position:relative;z-index:999}
-      .site-tool-button{width:42px;height:42px;min-width:42px;padding:0;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line,#293126);border-radius:50%;background:var(--surface,#111510);color:var(--text,#f4f7ef);cursor:pointer;transition:.25s ease}
-      .site-tool-button:hover{border-color:#c8ff4d;transform:translateY(-2px)}
-      .site-tool-button svg{width:19px;height:19px;fill:none;stroke:#c8ff4d;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-      .language-control{position:relative}
-      .language-trigger{width:auto;min-width:76px;padding:0 10px;gap:7px;border-radius:22px;font-size:12px;font-weight:600}
-      .language-trigger svg{width:17px;height:17px}
-      .language-menu{position:absolute;top:calc(100% + 9px);inset-inline-end:0;min-width:140px;padding:6px;display:none;flex-direction:column;gap:3px;background:#10140f;border:1px solid #30392b;border-radius:11px;box-shadow:0 12px 30px #0004}
-      .language-menu.open{display:flex}
-      .language-option{width:100%;border:0;border-radius:7px;padding:10px 12px;text-align:start;background:transparent;color:#e9eee3;font:inherit;font-size:13px;cursor:pointer}
-      .language-option:hover,.language-option.active{background:#c8ff4d1a;color:#c8ff4d}
-      body.light-mode{--bg:#f4f5ef!important;--surface:#fff!important;--panel:#fff!important;--line:#d9dfd0!important;--border:#d9dfd0!important;--text:#171b14!important;--muted:#626b5c!important;background:#f4f5ef!important;color:#171b14!important}
-      body.light-mode .site-tool-button{background:#fff;color:#171b14;border-color:#d9dfd0}
-      body.light-mode .language-menu{background:#fff;border-color:#d9dfd0}
-      body.light-mode .language-option{color:#171b14}
-      body.light-mode .language-option:hover,body.light-mode .language-option.active{background:#f0f5e7;color:#506d16}
-      html[dir="rtl"] nav,html[dir="rtl"] .nav-links{direction:rtl}
-      @media(max-width:700px){.site-tools{margin:8px 0;gap:7px}.site-tool-button{width:39px;height:39px;min-width:39px}.language-trigger{width:auto;min-width:70px}}
+      .site-tools {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-inline-start: 12px;
+        position: relative;
+        z-index: 999;
+      }
+
+      .site-tool-button {
+        width: 42px;
+        height: 42px;
+        min-width: 42px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--line,#293126);
+        border-radius: 50%;
+        background: var(--surface,#111510);
+        color: var(--text,#f4f7ef);
+        cursor: pointer;
+        transition: .25s ease;
+      }
+
+      .site-tool-button:hover {
+        border-color: #c8ff4d;
+        transform: translateY(-2px);
+      }
+
+      .site-tool-button svg {
+        width: 19px;
+        height: 19px;
+        fill: none;
+        stroke: #c8ff4d;
+        stroke-width: 1.6;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .language-control { position: relative; }
+
+      .language-trigger {
+        width: auto;
+        min-width: 76px;
+        padding: 0 10px;
+        gap: 7px;
+        border-radius: 22px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .language-trigger svg {
+        width: 17px;
+        height: 17px;
+      }
+
+      .language-menu {
+        position: absolute;
+        top: calc(100% + 9px);
+        inset-inline-end: 0;
+        min-width: 140px;
+        padding: 6px;
+        display: none;
+        flex-direction: column;
+        gap: 3px;
+        background: #10140f;
+        border: 1px solid #30392b;
+        border-radius: 11px;
+        box-shadow: 0 12px 30px #0004;
+      }
+
+      .language-menu.open { display: flex; }
+
+      .language-option {
+        width: 100%;
+        border: 0;
+        border-radius: 7px;
+        padding: 10px 12px;
+        text-align: start;
+        background: transparent;
+        color: #e9eee3;
+        font: inherit;
+        font-size: 13px;
+        cursor: pointer;
+      }
+
+      .language-option:hover,
+      .language-option.active {
+        background: #c8ff4d1a;
+        color: #c8ff4d;
+      }
+
+      body.light-mode {
+        --bg: #f4f5ef !important;
+        --surface: #fff !important;
+        --panel: #fff !important;
+        --line: #d9dfd0 !important;
+        --border: #d9dfd0 !important;
+        --text: #171b14 !important;
+        --muted: #626b5c !important;
+        background: #f4f5ef !important;
+        color: #171b14 !important;
+      }
+
+      body.light-mode .site-tool-button {
+        background: #fff;
+        color: #171b14;
+        border-color: #d9dfd0;
+      }
+
+      body.light-mode .language-menu {
+        background: #fff;
+        border-color: #d9dfd0;
+      }
+
+      body.light-mode .language-option { color: #171b14; }
+
+      body.light-mode .language-option:hover,
+      body.light-mode .language-option.active {
+        background: #f0f5e7;
+        color: #506d16;
+      }
+
+      html[dir="rtl"] nav,
+      html[dir="rtl"] .nav-links {
+        direction: rtl;
+      }
+
+      @media(max-width:700px) {
+        .site-tools {
+          margin: 8px 0;
+          gap: 7px;
+        }
+
+        .site-tool-button {
+          width: 39px;
+          height: 39px;
+          min-width: 39px;
+        }
+
+        .language-trigger {
+          width: auto;
+          min-width: 70px;
+        }
+      }
     `;
+
     document.head.appendChild(style);
   }
 
   function initialize() {
     installStyles();
     createControls();
+
     applyLanguage(getPreference("sodo-language", "ar"));
     applyTheme(getPreference("sodo-theme", "dark"));
   }
