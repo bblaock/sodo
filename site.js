@@ -294,9 +294,22 @@
       const original = originalTextNodes.get(node);
       const trimmed = original.trim();
       if (!trimmed) return;
-      const translated = dictionary[trimmed];
+      const normalized = trimmed.replace(/\\s+/g, " ");
+      const translated = dictionary[normalized] ?? dictionary[trimmed];
       if (translated !== undefined) node.nodeValue = original.replace(trimmed, translated);
       else node.nodeValue = original;
+    });
+
+    // Translate complete text-only elements as a unit. This catches paragraphs
+    // whose source text is split across several HTML text nodes by line breaks.
+    root.querySelectorAll("*").forEach(element => {
+      if (element.matches("[data-i18n],script,style,code,pre")) return;
+      if (element.children.length !== 0) return;
+      const original = element.textContent || "";
+      const normalized = original.trim().replace(/\\s+/g, " ");
+      if (!normalized) return;
+      const translated = dictionary[normalized];
+      if (translated !== undefined) element.textContent = translated;
     });
 
     root.querySelectorAll("*").forEach(element => {
