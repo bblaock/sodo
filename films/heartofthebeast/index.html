@@ -39,38 +39,71 @@ h1{font-size:clamp(34px,6vw,56px);line-height:1.12;margin:12px 0}
 .imdb-icon{display:inline-flex;align-items:center;justify-content:center;margin-top:8px;padding:5px 8px;border:1px solid var(--border);border-radius:7px;text-decoration:none;transition:border-color .2s ease,transform .2s ease}
 .imdb-icon:hover{border-color:var(--accent);transform:translateY(-1px)}
 .imdb-icon img{display:block;width:42px;height:auto;object-fit:contain}
-.streaming-links{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-top:14px}
-.streaming-icon{color:var(--text);width:42px;height:42px;display:inline-flex;align-items:center;justify-content:center;padding:9px;border:1px solid var(--border);border-radius:10px;background:var(--panel);text-decoration:none;transition:border-color .2s ease,transform .2s ease}
-.streaming-icon:hover{border-color:var(--accent);transform:translateY(-2px)}
-.streaming-icon img,.streaming-icon svg{display:block;width:22px;height:22px;object-fit:contain}
-.streaming-icon:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+
+
+
+
 
 footer{max-width:1000px;margin:auto;padding:25px 22px;border-top:1px solid var(--border);color:var(--muted);font-size:12px}
 @media(max-width:650px){header{align-items:flex-start;flex-direction:column;gap:18px}nav{gap:14px}main{padding-top:38px}.film-layout{grid-template-columns:1fr;gap:24px}.detail-poster{width:min(66%,230px);margin:auto;display:block}.details-list{grid-template-columns:95px minmax(0,1fr)}}
+
+.film-layout{display:flex;flex-direction:column;gap:22px}
+.film-hero{display:grid;grid-template-columns:minmax(150px,230px) minmax(0,1fr);gap:26px;align-items:start}
+.detail-poster{width:100%;max-width:230px}
+.story-block{min-width:0;padding-top:4px}
+.story-block h2{font-size:19px;line-height:1.35;margin:10px 0}
+.story{font-size:13px;line-height:1.75;margin:0;max-width:none}
+.work-heading{border-top:1px solid var(--border);padding-top:17px}
+.work-heading h1{font-size:clamp(28px,4vw,40px);line-height:1.2;margin:0 0 14px}
+.work-meta{display:flex;flex-wrap:wrap;gap:10px}
+.meta-item{display:flex;align-items:center;gap:9px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--border);border-radius:9px;padding:9px 12px;font-size:12px}
+.meta-label{color:var(--muted)}
+.meta-item strong{color:var(--accent);font-size:13px}
+.meta-item .imdb-icon{margin:0;padding:2px 5px}
+.meta-item .imdb-icon img{width:30px}
+.details-panel{margin-top:0}
+@media(max-width:650px){
+ .film-hero{grid-template-columns:minmax(105px,34%) minmax(0,1fr);gap:14px}
+ .detail-poster{width:100%;max-width:none;margin:0;display:block}
+ .story-block{padding-top:0}
+ .story-block .eyebrow{font-size:8px;letter-spacing:1px}
+ .story-block h2{font-size:15px;margin:5px 0}
+ .story{font-size:11.5px;line-height:1.65}
+ .work-heading h1{font-size:27px}
+ .work-meta{gap:7px}
+ .meta-item{gap:6px;padding:8px 9px;font-size:11px}
+ .meta-item strong{font-size:12px}
+ .meta-item .imdb-icon img{width:26px}
+ .details-panel{padding:16px}
+}
+
 </style>
-<script src="/sodo/site.js?v=20261125-25" defer></script>
+<script src="/sodo/site.js?v=20261125-26" defer></script>
 </head>
 <body>
 <header><a class="logo" href="/sodo/">SODO.</a><nav><a href="/sodo/">Home</a><a href="/sodo/about/">About</a><a href="/sodo/thoughts/">Thoughts</a><a class="active" href="../?v=20261125-20">Films</a><a href="/sodo/projects/">Projects</a></nav></header>
 <main>
 <a class="back-link" href="/sodo/films/">← Back to cinema</a>
 <section class="film-layout">
-<img class="detail-poster" src="https://s3proxygw.cineplexx.at/cms-live/asset/RKS/movies/Heart%20of%20the%20Beast/posterImage.jpg" alt="Heart of the Beast (2026) poster" decoding="async" fetchpriority="high" decoding="async">
-<div class="film-copy">
-<div class="eyebrow">Cinema / Film notes</div>
-<h1>Heart of the Beast</h1>
-<div class="meta-line">2026 · 7.1</div>
-<h2>Story</h2>
-<p class="story">After a harrowing plane crash, Special Forces veteran James Belmont and his combat dog, Odin, find themselves stranded deep in the Alaskan wilderness. Together, they must fight for survival against the elements.</p>
-<a class="imdb-icon" href="https://www.imdb.com/title/tt7526136/" target="_blank" rel="noopener noreferrer" aria-label="Open IMDb page" title="IMDb"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/3840px-IMDB_Logo_2016.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="IMDb" loading="lazy" decoding="async"></a>
-
-<div class="details-panel">
-<h2>Film details</h2>
+  <div class="film-hero">
+    <img class="detail-poster" src="https://s3proxygw.cineplexx.at/cms-live/asset/RKS/movies/Heart%20of%20the%20Beast/posterImage.jpg" alt="Heart of the Beast (2026) poster" decoding="async" fetchpriority="high" decoding="async">
+    <div class="story-block">
+      <div class="eyebrow" data-i18n="Cinema / Film notes">Cinema / Film notes</div>
+      <h2 data-i18n="Story">Story</h2>
+      <p class="story">After a harrowing plane crash, Special Forces veteran James Belmont and his combat dog, Odin, find themselves stranded deep in the Alaskan wilderness. Together, they must fight for survival against the elements.</p>
+    </div>
+  </div>
+  <div class="work-heading">
+    <h1>Heart of the Beast</h1>
+    <div class="work-meta">
+      <div class="meta-item"><span class="meta-label" data-i18n="IMDb rating">IMDb rating</span><strong>7.1/10</strong><a class="imdb-icon" href="https://www.imdb.com/title/tt7526136/" target="_blank" rel="noopener noreferrer" aria-label="Open IMDb page" title="IMDb"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/3840px-IMDB_Logo_2016.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="IMDb" loading="lazy" decoding="async"></a></div>
+      <div class="meta-item"><span class="meta-label" data-i18n="Year">Year</span><strong>2026</strong></div>
+      <div class="meta-item"><span class="meta-label" data-i18n="Original language">Original language</span><strong data-i18n="English">English</strong></div>
+    </div>
+  </div>
+  <div class="details-panel"><h2>Film details</h2>
 <dl class="details-list">
-<dt>Year</dt><dd>2026</dd><dt>IMDb rating</dt><dd>7.1</dd><dt>Genre</dt><dd>Survival · Adventure · Thriller</dd><dt>Director</dt><dd>David Ayer</dd><dt>Cast</dt><dd>Brad Pitt, J.K. Simmons, Anna Lambe</dd><dt>Runtime</dt><dd>101 min</dd>
-</dl>
-<div class="streaming-links" aria-label="Official film pages on streaming platforms">
-<a class="streaming-icon" href="https://tv.apple.com/us/movie/heart-of-the-beast/umc.cmc.nzfrrcork0mq1tn5c0kevdvl" target="_blank" rel="noopener noreferrer" aria-label="Open Apple TV page for this film" title="Apple TV"><img src="https://cdn.simpleicons.org/appletv/FFFFFF" alt="" loading="lazy" decoding="async"></a>
-<a class="streaming-icon" href="https://www.primevideo.com/detail/0RXNTUQZVA9XN6Z9NC4F67G2P3" target="_blank" rel="noopener noreferrer" aria-label="Open Prime Video page for this film" title="Prime Video"><img src="https://cdn.simpleicons.org/primevideo/FFFFFF" alt="" loading="lazy" decoding="async"></a>
-</div>
-</div></div></section></main><footer>© 2026 SODO. — Think. Feel. Create.</footer></body></html>
+<dt>Genre</dt><dd>Survival · Adventure · Thriller</dd><dt>Director</dt><dd>David Ayer</dd><dt>Cast</dt><dd>Brad Pitt, J.K. Simmons, Anna Lambe</dd><dt>Runtime</dt><dd>101 min</dd>
+</dl></div>
+</section></main><footer>© 2026 SODO. — Think. Feel. Create.</footer></body></html>
