@@ -226,30 +226,35 @@
     } catch (_) {}
   };
 
+  const originalTextNodes = new WeakMap();
+  const originalAttributes = new WeakMap();
+
   function translateText(root, dictionary) {
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
     const nodes = [];
-
-    while (walker.nextNode()) {
-      nodes.push(walker.currentNode);
-    }
+    while (walker.nextNode()) nodes.push(walker.currentNode);
 
     nodes.forEach(node => {
-      const original = node.nodeValue;
+      if (node.parentElement && node.parentElement.closest("[data-i18n],script,style,code,pre")) return;
+      if (!originalTextNodes.has(node)) originalTextNodes.set(node, node.nodeValue);
+      const original = originalTextNodes.get(node);
       const trimmed = original.trim();
-
-      if (!trimmed || dictionary[trimmed] === undefined) return;
-
-      node.nodeValue = original.replace(trimmed, dictionary[trimmed]);
+      if (!trimmed) return;
+      const translated = dictionary[trimmed];
+      if (translated !== undefined) node.nodeValue = original.replace(trimmed, translated);
+      else node.nodeValue = original;
     });
 
     root.querySelectorAll("*").forEach(element => {
+      if (element.matches("[data-i18n]")) return;
       ["placeholder", "title", "aria-label", "alt"].forEach(attribute => {
         const value = element.getAttribute(attribute);
-
-        if (value && dictionary[value] !== undefined) {
-          element.setAttribute(attribute, dictionary[value]);
-        }
+        if (!originalAttributes.has(element)) originalAttributes.set(element, {});
+        const saved = originalAttributes.get(element);
+        if (!(attribute in saved)) saved[attribute] = value;
+        const original = saved[attribute];
+        if (original && dictionary[original] !== undefined) element.setAttribute(attribute, dictionary[original]);
+        else if (original !== null) element.setAttribute(attribute, original);
       });
     });
   }
@@ -353,14 +358,16 @@
 
   function createControls() {
     const header = document.querySelector("header");
+    if (!header) return;
 
-    if (!header || document.querySelector(".site-tools")) return;
-
-    const nav = header.querySelector("nav");
-    const host = nav || header;
-
-    const tools = document.createElement("div");
-    tools.className = "site-tools";
+    let tools = document.querySelector(".site-tools");
+    if (!tools) {
+      const nav = header.querySelector("nav");
+      if (!nav) return;
+      tools = document.createElement("div");
+      tools.className = "site-tools";
+      nav.appendChild(tools);
+    }
 
     tools.innerHTML = `
       <div class="language-control">
@@ -368,27 +375,21 @@
           aria-label="Choose language" aria-expanded="false" aria-haspopup="true">
           ${icons.globe}<span class="language-code">AR</span>
         </button>
-
         <div class="language-menu" role="menu">
           <button class="language-option" type="button" data-lang="ar" role="menuitem">العربية</button>
           <button class="language-option" type="button" data-lang="en" role="menuitem">English</button>
           <button class="language-option" type="button" data-lang="ru" role="menuitem">Русский</button>
         </div>
       </div>
-
       <button class="site-tool-button theme-toggle" type="button" aria-label="Toggle theme"></button>
     `;
 
-    host.appendChild(tools);
-
     const trigger = tools.querySelector(".language-trigger");
     const menu = tools.querySelector(".language-menu");
-
     trigger.addEventListener("click", () => {
       const opened = menu.classList.toggle("open");
       trigger.setAttribute("aria-expanded", String(opened));
     });
-
     tools.querySelectorAll(".language-option").forEach(button => {
       button.addEventListener("click", () => {
         applyLanguage(button.dataset.lang);
@@ -396,18 +397,14 @@
         trigger.setAttribute("aria-expanded", "false");
       });
     });
-
     document.addEventListener("click", event => {
       if (!tools.contains(event.target)) {
         menu.classList.remove("open");
         trigger.setAttribute("aria-expanded", "false");
       }
     });
-
     tools.querySelector(".theme-toggle").addEventListener("click", () => {
-      applyTheme(
-        document.body.classList.contains("light-mode") ? "dark" : "light"
-      );
+      applyTheme(document.body.classList.contains("light-mode") ? "dark" : "light");
     });
   }
 
