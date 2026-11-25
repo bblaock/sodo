@@ -470,7 +470,7 @@
       const willOpen = !menu.classList.contains("open");
       if (willOpen) {
         const rect = trigger.getBoundingClientRect();
-        const menuWidth = Math.min(140, window.innerWidth - 16);
+        const menuWidth = Math.min(50, window.innerWidth - 16);
         const left = Math.max(8, Math.min(rect.right - menuWidth, window.innerWidth - menuWidth - 8));
         menu.style.position = "fixed";
         menu.style.top = `${rect.bottom + 9}px`;
@@ -574,10 +574,11 @@
         position: absolute;
         top: calc(100% + 9px);
         inset-inline-end: 0;
-        min-width: 140px;
+        width: 50px;
+        min-width: 0;
         max-width: calc(100vw - 16px);
         box-sizing: border-box;
-        padding: 6px;
+        padding: 5px;
         display: none;
         flex-direction: column;
         gap: 3px;
@@ -593,11 +594,12 @@
         width: 100%;
         border: 0;
         border-radius: 7px;
-        padding: 10px 12px;
+        padding: 7px 0;
+        justify-content: center;
         display: flex;
         align-items: center;
-        gap: 10px;
-        text-align: start;
+        gap: 0;
+        text-align: center;
         background: transparent;
         color: #e9eee3;
         font: inherit;
