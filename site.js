@@ -21,7 +21,7 @@
       work: "تجارب إبداعية وأعمال قيد التطوير.",
       footer: "جميع الحقوق محفوظة",
       "Home": "الرئيسية",
-      "About": "عن الموقع",
+      "About": "من نحن",
       "Thoughts": "أفكار",
       "Films": "سينما",
       "Projects": "مشاريع",
@@ -345,6 +345,15 @@
 
     const page = location.pathname.split("/").pop() || "index.html";
 
+    // Keep the current section visibly selected in every page navigation.
+    document.querySelectorAll("nav a:not(.logo)[href]").forEach(link => {
+      const target = link.getAttribute("href").split("?")[0].split("#")[0];
+      const active = target === page || (page === "" && target === "index.html");
+      link.classList.toggle("active", active);
+      if (active) link.setAttribute("aria-current", "page");
+      else link.removeAttribute("aria-current");
+    });
+
     if (titles[lang][page]) {
       document.title = titles[lang][page];
     }
@@ -617,6 +626,15 @@
       }
 
       .language-option span { line-height: 1; }
+
+      nav a.active,
+      .nav-links a.active {
+        color: var(--accent, #c8ff4d) !important;
+        text-decoration-line: underline;
+        text-decoration-color: var(--accent, #c8ff4d);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 7px;
+      }
 
       .language-option:hover,
       .language-option.active {
