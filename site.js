@@ -421,6 +421,7 @@
 
       button.title = label;
       button.setAttribute("aria-label", label);
+      button.setAttribute("aria-pressed", String(light));
     }
 
     savePreference("sodo-theme", light ? "light" : "dark");
@@ -442,10 +443,10 @@
     tools.innerHTML = `
       <div class="language-control">
         <button class="site-tool-button language-trigger" type="button"
-          aria-label="Choose language" aria-expanded="false" aria-haspopup="true">
+          aria-label="Choose language" aria-expanded="false" aria-haspopup="true" aria-controls="site-language-menu">
           ${icons.globe}<span class="language-code">AR</span>
         </button>
-        <div class="language-menu" role="menu">
+        <div class="language-menu" id="site-language-menu" role="menu">
           <button class="language-option" type="button" data-lang="ar" role="menuitem">العربية</button>
           <button class="language-option" type="button" data-lang="en" role="menuitem">English</button>
           <button class="language-option" type="button" data-lang="ru" role="menuitem">Русский</button>
