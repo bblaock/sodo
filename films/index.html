@@ -226,8 +226,76 @@
     .watched-film { padding: 18px 0; }
     .watched-film h3 { margin: 0; font-size: 19px; font-weight: 600; letter-spacing: .2px; }
 
+    /* Cinema collection: compact editorial cards */
+    .movie-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 26px;
+    }
+    .movie-card {
+      display: grid;
+      grid-template-columns: 92px minmax(0, 1fr);
+      align-items: start;
+      gap: 15px;
+      min-width: 0;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--panel);
+    }
+    .movie-poster {
+      display: block;
+      width: 92px;
+      height: 138px;
+      object-fit: cover;
+      object-position: center;
+      border-radius: 7px;
+      background: #20251e;
+    }
+    .movie-card h3 {
+      margin: 0 0 5px;
+      font-size: 17px;
+      line-height: 1.4;
+      overflow-wrap: anywhere;
+    }
+    .movie-meta {
+      margin-bottom: 7px;
+      color: var(--accent);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+    .movie-card p {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+      overflow: hidden;
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.65;
+    }
+    .imdb-link {
+      display: inline-block;
+      margin-top: 8px;
+      color: var(--accent);
+      font-size: 11px;
+      text-decoration: none;
+    }
+    .imdb-link:hover { text-decoration: underline; }
+    @media (max-width: 680px) {
+      .movie-grid { grid-template-columns: 1fr; gap: 12px; }
+      .movie-card { grid-template-columns: 82px minmax(0, 1fr); gap: 13px; padding: 12px; }
+      .movie-poster { width: 82px; height: 123px; }
+      .movie-card h3 { font-size: 16px; }
+      .movie-card p { -webkit-line-clamp: 3; }
+    }
+    @media (min-width: 681px) and (max-width: 900px) {
+      .movie-grid { grid-template-columns: 1fr; }
+    }
+
   </style>
-  <script src="/sodo/site.js?v=20261125-14" defer></script>
+  <script src="/sodo/site.js?v=20261125-15" defer></script>
 </head>
 
 <body>
@@ -257,36 +325,39 @@
     <section class="cinema-section" id="watched">
 <div class="section-heading">
         <div class="eyebrow">01 / COLLECTION</div>
-<div class="movie-grid">
+        <h2>Films I have watched</h2>
+        <span class="status status-watched">Watched</span>
+      </div>
+      <div class="movie-grid">
       <article class="movie-card">
         <img class="movie-poster" src="https://static.mfah.com/images/hope-movie-poster.9280437906503834776.jpg?width=1080" alt="Hope (2019) official film poster" loading="lazy">
         <div><h3>Hope</h3><div class="movie-meta">2019 · IMDb 7.3/10</div>
-        <p>When Anja receives a life-threatening diagnosis just before Christmas, she and her partner Tomas are forced to confront the distance that has grown between them and rediscover love, trust, and family.</p>
+        <p>A woman facing a serious diagnosis and her partner confront the truth about their relationship, family, and the meaning of love.</p>
         <a class="imdb-link" href="https://www.imdb.com/title/tt9812614/" target="_blank" rel="noopener noreferrer">IMDb ↗</a></div>
       </article>
       <article class="movie-card">
         <img class="movie-poster" src="https://www.findelahistoria.com/web/wp-content/uploads/2020/12/black-box-2020-poster-scaled.jpg" alt="Black Box (2020) film poster" loading="lazy">
         <div><h3>Black Box</h3><div class="movie-meta">2020 · IMDb 6.2/10</div>
-        <p>After a car accident leaves him without his memories, a widowed father undergoes an experimental treatment to recover his past—only to discover memories that make him question his own identity.</p>
+        <p>After an accident, a man undergoes an experimental treatment to recover his memory—and begins to question his identity.</p>
         <a class="imdb-link" href="https://www.imdb.com/title/tt12298506/" target="_blank" rel="noopener noreferrer">IMDb ↗</a></div>
       </article>
       <article class="movie-card">
         <img class="movie-poster" src="https://b1.filmpro.ru/c/371707.jpg" alt="Me Before You (2016) official film poster" loading="lazy">
         <div><h3>Me Before You</h3><div class="movie-meta">2016 · IMDb 7.4/10</div>
-        <p>Louisa Clark becomes the companion of Will Traynor, a wealthy man whose life changed after an accident. As their bond deepens, both are challenged to reconsider what gives life meaning.</p>
+        <p>An unlikely bond between a young caregiver and a man changed by an accident transforms both their lives.</p>
         <a class="imdb-link" href="https://www.imdb.com/title/tt2674426/" target="_blank" rel="noopener noreferrer">IMDb ↗</a></div>
       </article>
       <article class="movie-card">
         <img class="movie-poster" src="https://media.the-numbers.com/images/movie-posters/Lucky-Strike-%282026%29.jpg" alt="Lucky Strike (2026) official theatrical poster" loading="lazy">
         <div><h3>Lucky Strike</h3><div class="movie-meta">2026 · IMDb 5.4/10</div>
-        <p>During the Battle of the Bulge, a wounded American soldier is trapped behind German lines. With only his radio and survival skills, he must evade enemy forces and find a way back to his unit.</p>
+        <p>A wounded American soldier must survive behind enemy lines during the Battle of the Bulge.</p>
         <a class="imdb-link" href="https://www.imdb.com/title/tt19035928/" target="_blank" rel="noopener noreferrer">IMDb ↗</a></div>
       </article>
       <article class="movie-card">
-        <div><h3>HEART BRAS</h3><div class="movie-meta">IMDb details pending</div>
-        <p>We could not reliably identify a film with this exact title. The title is kept in your watched list without inventing a year, rating, synopsis, or poster.</p></div>
+        <div><h3>HEART BRAS</h3><div class="movie-meta">Details to be confirmed</div>
+        <p>Title saved to your watched list.</p></div>
       </article>
-    </div>
+      </div>
     </section>
 
     <section class="cinema-section" id="watchlist">
