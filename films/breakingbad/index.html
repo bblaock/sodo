@@ -41,7 +41,7 @@ h1{font-size:clamp(34px,6vw,56px);line-height:1.12;margin:12px 0}
 .imdb-icon img{display:block;width:42px;height:auto;object-fit:contain}
 footer{max-width:1000px;margin:auto;padding:25px 22px;border-top:1px solid var(--border);color:var(--muted);font-size:12px}
 @media(max-width:650px){header{align-items:flex-start;flex-direction:column;gap:18px}nav{gap:14px}main{padding-top:38px}.film-layout{grid-template-columns:1fr;gap:24px}.detail-poster{width:min(66%,230px);margin:auto;display:block}.details-list{grid-template-columns:95px minmax(0,1fr)}}
-</style>
+.production-panel{border:1px solid var(--border);border-radius:13px;background:var(--panel);padding:18px 20px;margin-top:16px}.production-panel h2{font-size:16px;margin:0 0 14px}.production-companies{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.company-item{display:flex;align-items:center;gap:10px;min-width:0;padding:9px;border:1px solid var(--border);border-radius:10px;color:var(--text);text-decoration:none;background:#0c100c;transition:border-color .2s ease,transform .2s ease}.company-item:hover{border-color:var(--accent);transform:translateY(-2px)}.company-mark{width:38px;height:38px;flex:0 0 38px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:#20271d;border:1px solid #34402b;padding:7px}.company-mark img{width:100%;height:100%;object-fit:contain}.company-mark-text{font-size:11px;font-weight:800;letter-spacing:-.4px;color:var(--accent)}.company-name{font-size:11px;line-height:1.35;overflow-wrap:anywhere}@media(max-width:650px){.production-companies{grid-template-columns:repeat(2,minmax(0,1fr))}.company-item{gap:7px;padding:7px}.company-mark{width:32px;height:32px;flex-basis:32px}.company-name{font-size:10px}}</style>
 <script src="/sodo/site.js?v=20261125-24" defer></script>
 </head>
 <body>
@@ -49,7 +49,7 @@ footer{max-width:1000px;margin:auto;padding:25px 22px;border-top:1px solid var(-
 <main>
 <a class="back-link" href="/sodo/films/#series">← Back to cinema</a>
 <section class="film-layout">
-<img class="detail-poster" src="https://m.media-amazon.com/images/M/MV5BNDYxYzkzZDctYzJiMS00NzNiLThlMGMtMjYxMmI4MGFhNzZkXkEyXkFqcGc%40._V1_.jpg" alt="Breaking Bad (2008–2013) poster">
+<img class="detail-poster" src="https://m.media-amazon.com/images/M/MV5BNDYxYzkzZDctYzJiMS00NzNiLThlMGMtMjYxMmI4MGFhNzZkXkEyXkFqcGc%40._V1_.jpg" alt="Breaking Bad (2008–2013) poster" fetchpriority="high" decoding="async">
 <div class="film-copy">
 <div class="eyebrow">Cinema / Series notes</div>
 <h1>Breaking Bad</h1>
@@ -61,5 +61,8 @@ footer{max-width:1000px;margin:auto;padding:25px 22px;border-top:1px solid var(-
 <h2>Series details</h2>
 <dl class="details-list">
 <dt>Year</dt><dd>2008–2013</dd><dt>IMDb rating</dt><dd>9.5/10</dd><dt>Genre</dt><dd>Crime · Drama · Thriller</dd><dt>Creator</dt><dd>Vince Gilligan</dd><dt>Cast</dt><dd>Bryan Cranston, Aaron Paul, Anna Gunn</dd><dt>Seasons</dt><dd>5</dd><dt>Episodes</dt><dd>62</dd><dt>Network</dt><dd>AMC</dd>
-</dl></div>
+</dl></div><div class="production-panel"><h2>Production companies</h2><div class="production-companies"><span class="company-item" title="High Bridge Productions"><span class="company-mark"><span class="company-mark-text" aria-hidden="true">HB</span></span><span class="company-name">High Bridge Productions</span></span>
+<span class="company-item" title="Gran Via Productions"><span class="company-mark"><span class="company-mark-text" aria-hidden="true">GV</span></span><span class="company-name">Gran Via Productions</span></span>
+<a class="company-item" href="https://www.sonypictures.com/tv" target="_blank" rel="noopener noreferrer" title="Sony Pictures Television"><span class="company-mark"><img src="https://cdn.simpleicons.org/sony/FFFFFF" alt="" loading="lazy" decoding="async"></span><span class="company-name">Sony Pictures Television</span></a>
+<a class="company-item" href="https://www.amcnetworks.com/" target="_blank" rel="noopener noreferrer" title="AMC"><span class="company-mark"><span class="company-mark-text" aria-hidden="true">amc</span></span><span class="company-name">AMC</span></a></div></div>
 </div></section></main><footer>© 2026 SODO. — Think. Feel. Create.</footer></body></html>
