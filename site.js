@@ -402,6 +402,9 @@
 
     document.body.classList.toggle("light-mode", light);
 
+    // Set the accent on the root element so every page component inherits it reliably.
+    document.documentElement.style.setProperty("--accent", light ? "#36570a" : "#c8ff4d");
+
     const themeColor = document.querySelector('meta[name="theme-color"]');
     if (themeColor) {
       themeColor.setAttribute("content", light ? "#f4f5ef" : "#080a08");
@@ -594,7 +597,7 @@
         --border: #d9dfd0 !important;
         --text: #171b14 !important;
         --muted: #626b5c !important;
-        --accent: #506d16 !important;
+        --accent: #36570a !important;
         background: #f4f5ef !important;
         color: #171b14 !important;
       }
@@ -606,11 +609,11 @@
       }
 
       body.light-mode .site-tool-button svg {
-        stroke: #506d16;
+        stroke: #36570a;
       }
 
       body.light-mode .site-tool-button:hover {
-        border-color: #506d16;
+        border-color: #36570a;
       }
 
       body.light-mode .language-menu {
@@ -623,7 +626,7 @@
       body.light-mode .language-option:hover,
       body.light-mode .language-option.active {
         background: #f0f5e7;
-        color: #506d16;
+        color: #36570a;
       }
 
       html[dir="rtl"] nav,
