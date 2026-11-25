@@ -593,6 +593,26 @@
       else link.removeAttribute("aria-current");
     });
 
+    // Position the Liquid Glass navigation capsule beneath the current section.
+    const activeNavLink = document.querySelector(".nav-links a.active");
+    const navLinks = activeNavLink?.closest(".nav-links");
+    if (navLinks && document.body.classList.contains("sodo-glass-preview")) {
+      const placeIndicator = () => {
+        const active = navLinks.querySelector("a.active");
+        if (!active) return;
+        const navRect = navLinks.getBoundingClientRect();
+        const linkRect = active.getBoundingClientRect();
+        navLinks.style.setProperty("--sodo-indicator-x", `${linkRect.left - navRect.left - 7}px`);
+        navLinks.style.setProperty("--sodo-indicator-y", `${linkRect.top - navRect.top - 5}px`);
+        navLinks.style.setProperty("--sodo-indicator-w", `${linkRect.width + 14}px`);
+        navLinks.style.setProperty("--sodo-indicator-h", `${linkRect.height + 10}px`);
+        navLinks.classList.add("sodo-liquid-nav");
+      };
+      placeIndicator();
+      window.addEventListener("resize", placeIndicator, { passive: true });
+      if (document.fonts?.ready) document.fonts.ready.then(placeIndicator);
+    }
+
     if (titles[lang][page]) {
       document.title = titles[lang][page];
     }
@@ -1069,6 +1089,41 @@
         font-size: 13px !important;
         white-space: nowrap !important;
       }
+      body.sodo-glass-preview .nav-links.sodo-liquid-nav {
+        position: relative !important;
+        isolation: isolate !important;
+      }
+      body.sodo-glass-preview .nav-links.sodo-liquid-nav::before {
+        content: "";
+        position: absolute;
+        z-index: 0;
+        left: 0;
+        top: 0;
+        width: var(--sodo-indicator-w, 0px);
+        height: var(--sodo-indicator-h, 0px);
+        transform: translate3d(var(--sodo-indicator-x, 0px), var(--sodo-indicator-y, 0px), 0);
+        border: 1px solid rgba(255,255,255,.18);
+        border-radius: 999px;
+        background: linear-gradient(145deg, rgba(255,255,255,.15), rgba(255,255,255,.055));
+        box-shadow: inset 0 1px rgba(255,255,255,.18), 0 5px 16px rgba(0,0,0,.12);
+        -webkit-backdrop-filter: blur(14px) saturate(140%);
+        backdrop-filter: blur(14px) saturate(140%);
+        pointer-events: none;
+        transition: transform .48s cubic-bezier(.2,.85,.25,1), width .48s cubic-bezier(.2,.85,.25,1), height .48s ease;
+      }
+      body.sodo-glass-preview .nav-links.sodo-liquid-nav li {
+        position: relative;
+        z-index: 1;
+      }
+      body.sodo-glass-preview .nav-links.sodo-liquid-nav a.active {
+        color: var(--accent, #c8ff4d) !important;
+        text-decoration: none !important;
+      }
+      body.light-mode.sodo-glass-preview .nav-links.sodo-liquid-nav::before {
+        border-color: rgba(45,58,31,.13);
+        background: linear-gradient(145deg, rgba(255,255,255,.92), rgba(255,255,255,.58));
+        box-shadow: inset 0 1px rgba(255,255,255,.95), 0 5px 16px rgba(35,45,25,.08);
+      }
       body.sodo-glass-preview .site-tools {
         margin: 0 !important;
         gap: 8px !important;
@@ -1196,6 +1251,9 @@
         }
         body.sodo-glass-preview .nav-links::-webkit-scrollbar { display: none !important; }
         body.sodo-glass-preview .nav-links a { font-size: 12px !important; }
+        body.sodo-glass-preview .nav-links.sodo-liquid-nav::before {
+          transition-duration: .42s;
+        }
         body.sodo-glass-preview .site-tool-button {
           width: 36px !important;
           height: 36px !important;
