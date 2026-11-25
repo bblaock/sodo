@@ -1024,31 +1024,84 @@
       @media(max-width:480px) { .sodo-welcome-card { padding: 28px 22px 23px; } .sodo-welcome-card h2 { font-size: 21px; } .sodo-welcome-card p { font-size: 13px; } }
 
 
-      /* SODO Glass Experiment — opt-in only via ?glass=1 */
+      /* SODO Glass Experiment v2 — calm, balanced glass surfaces */
       body.sodo-glass-preview {
         background:
-          radial-gradient(ellipse at 12% 8%, rgba(200,255,77,.10), transparent 34%),
-          radial-gradient(ellipse at 88% 30%, rgba(112,150,255,.09), transparent 38%),
-          var(--bg, #080a08) !important;
+          radial-gradient(ellipse at 18% 0%, rgba(200,255,77,.065), transparent 42%),
+          #080a08 !important;
         background-attachment: fixed !important;
       }
+
+      /* A compact glass navigation panel, not a glass slab across the page. */
       body.sodo-glass-preview header {
-        background: rgba(13,17,13,.58) !important;
-        border: 1px solid rgba(255,255,255,.10) !important;
-        border-radius: 22px !important;
-        box-shadow: 0 14px 42px rgba(0,0,0,.18), inset 0 1px rgba(255,255,255,.08) !important;
-        -webkit-backdrop-filter: blur(24px) saturate(155%);
-        backdrop-filter: blur(24px) saturate(155%);
+        padding: 14px 0 0 !important;
+        background: transparent !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
       }
+      body.sodo-glass-preview header > .container {
+        width: min(1160px, 92%) !important;
+      }
+      body.sodo-glass-preview header nav {
+        min-height: 68px !important;
+        padding: 11px 18px !important;
+        gap: 18px !important;
+        border: 1px solid rgba(255,255,255,.105) !important;
+        border-radius: 18px !important;
+        background: rgba(20,25,19,.72) !important;
+        box-shadow: 0 8px 26px rgba(0,0,0,.14), inset 0 1px rgba(255,255,255,.07) !important;
+        -webkit-backdrop-filter: blur(16px) saturate(125%) !important;
+        backdrop-filter: blur(16px) saturate(125%) !important;
+      }
+      body.sodo-glass-preview .logo {
+        font-size: 27px !important;
+        letter-spacing: 4px !important;
+        flex: 0 0 auto !important;
+      }
+      body.sodo-glass-preview .nav-links {
+        align-items: center !important;
+        gap: clamp(12px, 2vw, 23px) !important;
+      }
+      body.sodo-glass-preview .nav-links a {
+        font-size: 13px !important;
+        white-space: nowrap !important;
+      }
+      body.sodo-glass-preview .site-tools {
+        margin: 0 !important;
+        gap: 8px !important;
+        flex: 0 0 auto !important;
+      }
+      body.sodo-glass-preview .site-tool-button {
+        width: 38px !important;
+        height: 38px !important;
+        min-width: 38px !important;
+        border: 1px solid rgba(255,255,255,.13) !important;
+        background: rgba(255,255,255,.055) !important;
+        box-shadow: none !important;
+      }
+      body.sodo-glass-preview .language-trigger {
+        width: auto !important;
+        min-width: 68px !important;
+        border-radius: 12px !important;
+      }
+      body.sodo-glass-preview .language-menu {
+        background: rgba(20,25,19,.94) !important;
+        border: 1px solid rgba(255,255,255,.13) !important;
+        border-radius: 14px !important;
+        -webkit-backdrop-filter: blur(18px) !important;
+        backdrop-filter: blur(18px) !important;
+      }
+
       body.sodo-glass-preview footer {
-        background: rgba(13,17,13,.46) !important;
-        border: 1px solid rgba(255,255,255,.09) !important;
-        border-radius: 22px 22px 0 0 !important;
-        -webkit-backdrop-filter: blur(22px) saturate(145%);
-        backdrop-filter: blur(22px) saturate(145%);
+        background: rgba(18,22,17,.35) !important;
+        border-top: 1px solid rgba(255,255,255,.08) !important;
+        -webkit-backdrop-filter: blur(12px) !important;
+        backdrop-filter: blur(12px) !important;
       }
       body.sodo-glass-preview .site-tool-button,
-      body.sodo-glass-preview .language-menu,
       body.sodo-glass-preview .sodo-welcome-card,
       body.sodo-glass-preview .cinema-tabs a,
       body.sodo-glass-preview .movie-card,
@@ -1058,45 +1111,46 @@
       body.sodo-glass-preview .film,
       body.sodo-glass-preview .status,
       body.sodo-glass-preview .footer-socials a {
-        background: rgba(255,255,255,.055) !important;
-        border: 1px solid rgba(255,255,255,.13) !important;
-        box-shadow: 0 12px 34px rgba(0,0,0,.16), inset 0 1px rgba(255,255,255,.09) !important;
-        -webkit-backdrop-filter: blur(18px) saturate(145%);
-        backdrop-filter: blur(18px) saturate(145%);
+        border-color: rgba(255,255,255,.09) !important;
+        background: rgba(255,255,255,.035) !important;
+        box-shadow: 0 8px 24px rgba(0,0,0,.10), inset 0 1px rgba(255,255,255,.045) !important;
+        -webkit-backdrop-filter: blur(12px) saturate(118%) !important;
+        backdrop-filter: blur(12px) saturate(118%) !important;
       }
       body.sodo-glass-preview .cinema-tabs a,
       body.sodo-glass-preview .movie-card,
       body.sodo-glass-preview .project-card,
       body.sodo-glass-preview .thought-card,
-      body.sodo-glass-preview .content-card { border-radius: 20px !important; }
-      body.sodo-glass-preview .site-tool-button {
-        border-radius: 50% !important;
-        background: rgba(255,255,255,.075) !important;
-      }
-      body.sodo-glass-preview .language-menu {
-        background: rgba(17,22,17,.78) !important;
+      body.sodo-glass-preview .content-card {
         border-radius: 16px !important;
       }
       body.sodo-glass-preview .poster-link,
-      body.sodo-glass-preview .movie-poster { border-radius: 13px !important; }
-      body.sodo-glass-preview .movie-card { padding: 12px !important; }
+      body.sodo-glass-preview .movie-poster { border-radius: 12px !important; }
+      body.sodo-glass-preview .movie-card { padding: 11px !important; }
       body.sodo-glass-preview a,
       body.sodo-glass-preview button { -webkit-tap-highlight-color: transparent; }
       body.sodo-glass-preview .site-tool-button:hover,
       body.sodo-glass-preview .cinema-tabs a:hover,
       body.sodo-glass-preview .movie-card:hover,
       body.sodo-glass-preview .footer-socials a:hover {
-        border-color: rgba(200,255,77,.42) !important;
-        box-shadow: 0 16px 42px rgba(0,0,0,.22), 0 0 24px rgba(200,255,77,.055), inset 0 1px rgba(255,255,255,.12) !important;
+        border-color: rgba(200,255,77,.30) !important;
+        box-shadow: 0 10px 28px rgba(0,0,0,.14), inset 0 1px rgba(255,255,255,.07) !important;
       }
       body.light-mode.sodo-glass-preview {
         background:
-          radial-gradient(ellipse at 12% 8%, rgba(133,170,64,.13), transparent 36%),
-          radial-gradient(ellipse at 88% 30%, rgba(130,160,220,.12), transparent 38%),
+          radial-gradient(ellipse at 18% 0%, rgba(133,170,64,.09), transparent 42%),
           #f4f5ef !important;
       }
+      body.light-mode.sodo-glass-preview header nav {
+        background: rgba(255,255,255,.76) !important;
+        border-color: rgba(45,58,31,.11) !important;
+        box-shadow: 0 8px 24px rgba(35,45,25,.07), inset 0 1px rgba(255,255,255,.85) !important;
+      }
+      body.light-mode.sodo-glass-preview .language-menu {
+        background: rgba(255,255,255,.96) !important;
+        border-color: rgba(45,58,31,.12) !important;
+      }
       body.light-mode.sodo-glass-preview .site-tool-button,
-      body.light-mode.sodo-glass-preview .language-menu,
       body.light-mode.sodo-glass-preview .sodo-welcome-card,
       body.light-mode.sodo-glass-preview .cinema-tabs a,
       body.light-mode.sodo-glass-preview .movie-card,
@@ -1106,17 +1160,54 @@
       body.light-mode.sodo-glass-preview .film,
       body.light-mode.sodo-glass-preview .status,
       body.light-mode.sodo-glass-preview .footer-socials a {
-        background: rgba(255,255,255,.54) !important;
-        border-color: rgba(255,255,255,.72) !important;
-        box-shadow: 0 12px 34px rgba(35,45,25,.08), inset 0 1px rgba(255,255,255,.85) !important;
+        background: rgba(255,255,255,.52) !important;
+        border-color: rgba(45,58,31,.10) !important;
+        box-shadow: 0 8px 24px rgba(35,45,25,.055), inset 0 1px rgba(255,255,255,.85) !important;
       }
       @media (max-width: 700px) {
-        body.sodo-glass-preview header { border-radius: 18px !important; }
+        body.sodo-glass-preview header { padding-top: 10px !important; }
+        body.sodo-glass-preview header nav {
+          min-height: 0 !important;
+          padding: 11px 13px 9px !important;
+          gap: 10px 12px !important;
+          flex-direction: row !important;
+          flex-wrap: wrap !important;
+          align-items: center !important;
+          border-radius: 16px !important;
+        }
+        body.sodo-glass-preview .logo { order: 1 !important; font-size: 25px !important; }
+        body.sodo-glass-preview .site-tools {
+          order: 2 !important;
+          margin-inline-start: auto !important;
+          gap: 7px !important;
+        }
+        body.sodo-glass-preview .nav-links {
+          order: 3 !important;
+          flex: 1 0 100% !important;
+          width: 100% !important;
+          display: flex !important;
+          flex-wrap: nowrap !important;
+          justify-content: space-between !important;
+          gap: 10px !important;
+          overflow-x: auto !important;
+          padding: 7px 1px 3px !important;
+          border-top: 1px solid rgba(255,255,255,.075) !important;
+          scrollbar-width: none !important;
+        }
+        body.sodo-glass-preview .nav-links::-webkit-scrollbar { display: none !important; }
+        body.sodo-glass-preview .nav-links a { font-size: 12px !important; }
+        body.sodo-glass-preview .site-tool-button {
+          width: 36px !important;
+          height: 36px !important;
+          min-width: 36px !important;
+        }
+        body.sodo-glass-preview .language-trigger { min-width: 64px !important; }
         body.sodo-glass-preview .movie-card { padding: 7px !important; }
       }
       @media (prefers-reduced-motion: reduce) {
         body.sodo-glass-preview *, body.sodo-glass-preview *::before, body.sodo-glass-preview *::after {
-          transition-duration: .01ms !important; animation-duration: .01ms !important;
+          transition-duration: .01ms !important;
+          animation-duration: .01ms !important;
         }
       }
 
