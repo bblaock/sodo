@@ -467,8 +467,19 @@
     const trigger = tools.querySelector(".language-trigger");
     const menu = tools.querySelector(".language-menu");
     trigger.addEventListener("click", () => {
-      const opened = menu.classList.toggle("open");
-      trigger.setAttribute("aria-expanded", String(opened));
+      const willOpen = !menu.classList.contains("open");
+      if (willOpen) {
+        const rect = trigger.getBoundingClientRect();
+        const menuWidth = Math.min(140, window.innerWidth - 16);
+        const left = Math.max(8, Math.min(rect.right - menuWidth, window.innerWidth - menuWidth - 8));
+        menu.style.position = "fixed";
+        menu.style.top = `${rect.bottom + 9}px`;
+        menu.style.left = `${left}px`;
+        menu.style.right = "auto";
+        menu.style.width = `${menuWidth}px`;
+      }
+      menu.classList.toggle("open", willOpen);
+      trigger.setAttribute("aria-expanded", String(willOpen));
     });
     tools.querySelectorAll(".language-option").forEach(button => {
       button.addEventListener("click", () => {
@@ -564,6 +575,8 @@
         top: calc(100% + 9px);
         inset-inline-end: 0;
         min-width: 140px;
+        max-width: calc(100vw - 16px);
+        box-sizing: border-box;
         padding: 6px;
         display: none;
         flex-direction: column;
