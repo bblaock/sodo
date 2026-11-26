@@ -113,7 +113,7 @@ test("localized primary navigation stays inside the active locale", async ({ pag
 
 
 test("public Trakt history merges into the existing SODO film and series grids and opens details in a new tab", async ({ page }) => {
-  await page.route("https://wbuyglftsgldasawsllt.supabase.co/functions/v1/trakt-sync", async route => {
+  await page.context().route("https://wbuyglftsgldasawsllt.supabase.co/functions/v1/trakt-sync", async route => {
     const origin = route.request().headers().origin || "*";
     if (route.request().method() === "OPTIONS") {
       await route.fulfill({ status: 204, headers: { "Access-Control-Allow-Origin": origin, "Access-Control-Allow-Headers": "authorization, apikey, content-type", "Access-Control-Allow-Methods": "POST, OPTIONS" } });
@@ -237,7 +237,7 @@ test("signed-in SODO owner syncs Trakt before public history is rendered", async
   await expect(page.locator("#watched .trakt-imported-card .trakt-imported-details")).toHaveCount(0);
   await expect(page.locator("#series .trakt-imported-card .trakt-imported-details")).toHaveCount(0);
   await expect(page.locator(".trakt-watch-badge")).toHaveCount(0);
-  await expect(detailPage.locator(".trakt-sync-summary")).toHaveCount(0);
+  await expect(page.locator(".trakt-sync-summary")).toHaveCount(0);
 });
 
 
