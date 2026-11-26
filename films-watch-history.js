@@ -274,8 +274,7 @@ async function loadPrivateHistory() {
     try {
       const status = await callFunction('status', session.access_token);
       if (status.connected) {
-        const syncResult = await callFunction('sync', session.access_token);
-        renderSyncSummary(syncResult);
+        await callFunction('sync', session.access_token);
       }
     } catch (error) { console.warn('SODO Trakt sync:', error); }
   }
