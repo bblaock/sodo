@@ -35,7 +35,7 @@
       "Back to cinema": "العودة إلى السينما",
       "Cinema / Film notes": "السينما / تفاصيل الفيلم",
       "Film details": "معلومات الفيلم",
-      "Story": "الحكاية",
+      "Story": "القصة",
       "Year": "سنة الإنتاج",
       "IMDb rating": "تقييم IMDb",
       "Original language": "اللغة الأصلية",
