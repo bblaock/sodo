@@ -42,7 +42,8 @@ function addStyles() {
   const style = document.createElement("style");
   style.id = "trakt-private-styles";
   style.textContent = `
-    .trakt-watch-badge{margin:8px 0 0;color:var(--accent);font-size:10px;text-align:center}\n    .trakt-poster-placeholder{display:flex;align-items:center;justify-content:center;padding:14px;background:radial-gradient(ellipse at 50% 35%,#303d26 0%,#171e14 48%,#0b0e0a 100%);color:var(--accent);font-weight:800;text-align:center;overflow-wrap:anywhere}
+    .trakt-watch-badge{margin:8px 0 0;color:var(--accent);font-size:10px;text-align:center}
+    .trakt-poster-placeholder{display:flex;align-items:center;justify-content:center;padding:14px;background:radial-gradient(ellipse at 50% 35%,#303d26 0%,#171e14 48%,#0b0e0a 100%);color:var(--accent);font-weight:800;text-align:center;overflow-wrap:anywhere}
     .trakt-private-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
     .trakt-private-heading h3{margin:0;color:var(--text);font-size:16px;font-weight:650}
     .trakt-private-label{display:inline-flex;align-items:center;border:1px solid var(--accent);border-radius:999px;padding:3px 8px;color:var(--accent);font-size:9px;letter-spacing:1px}
