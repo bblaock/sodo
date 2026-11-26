@@ -716,9 +716,11 @@
       code.textContent = lang.toUpperCase();
     }
 
-    document.querySelectorAll(".language-option").forEach(button => {
-      button.classList.toggle("active", button.dataset.lang === lang);
-      button.setAttribute("aria-pressed", String(button.dataset.lang === lang));
+    document.querySelectorAll(".language-option").forEach(link => {
+      const active = link.dataset.lang === lang;
+      link.classList.toggle("active", active);
+      if (active) link.setAttribute("aria-current", "page");
+      else link.removeAttribute("aria-current");
     });
 
     const themeButton = document.querySelector(".theme-toggle");
@@ -789,9 +791,9 @@
           ${icons.globe}<span class="language-code">AR</span>
         </button>
         <div class="language-menu" id="site-language-menu" role="menu">
-          <button class="language-option" type="button" data-lang="ar" role="menuitem" aria-label="العربية">${flagIcons.ar}</button>
-          <button class="language-option" type="button" data-lang="en" role="menuitem" aria-label="English">${flagIcons.en}</button>
-          <button class="language-option" type="button" data-lang="ru" role="menuitem" aria-label="Русский">${flagIcons.ru}</button>
+          <a class="language-option" href="/sodo/ar/" data-lang="ar" role="menuitem" aria-label="العربية">${flagIcons.ar}</a>
+          <a class="language-option" href="/sodo/en/" data-lang="en" role="menuitem" aria-label="English">${flagIcons.en}</a>
+          <a class="language-option" href="/sodo/ru/" data-lang="ru" role="menuitem" aria-label="Русский">${flagIcons.ru}</a>
         </div>
       </div>
       <button class="site-tool-button theme-toggle" type="button" aria-label="Toggle theme"></button>
@@ -814,44 +816,15 @@
       menu.classList.toggle("open", willOpen);
       trigger.setAttribute("aria-expanded", String(willOpen));
     });
-    // Bind directly to each language button. Pointer events handle iPad/iPhone
-    // taps without relying on SVG event-target delegation; click remains for keyboard.
-    let lastPointerLanguage = "";
-    let lastPointerSelectionAt = 0;
-
-    const selectLanguage = (language, event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      if (!translations[language]) return;
-
-      // Locale URLs are the source of truth. Navigate to the equivalent page
-      // in the selected language instead of relying on in-place state/storage.
-      const basePath = "/sodo/";
-      const segments = window.location.pathname.slice(basePath.length).split("/");
-      if (["ar", "en", "ru"].includes(segments[0])) segments.shift();
-      const destination = basePath + language + "/" + segments.join("/") +
-        window.location.search + window.location.hash;
-      window.location.assign(destination);
-    };
-
+    // Use real links for language navigation. This works consistently with
+    // touch, mouse, keyboard, and browser navigation without competing events.
+    const localeBase = "/sodo/";
+    const routeParts = window.location.pathname.slice(localeBase.length).split("/").filter(Boolean);
+    if (["ar", "en", "ru"].includes(routeParts[0])) routeParts.shift();
+    const routeSuffix = routeParts.length ? routeParts.join("/") + "/" : "";
     menu.querySelectorAll(".language-option[data-lang]").forEach(option => {
-      option.addEventListener("pointerup", event => {
-        if (event.pointerType === "mouse" && event.button !== 0) return;
-        lastPointerLanguage = option.dataset.lang;
-        lastPointerSelectionAt = Date.now();
-        selectLanguage(lastPointerLanguage, event);
-      });
-
-      option.addEventListener("click", event => {
-        const language = option.dataset.lang;
-        // A pointerup already handled this physical tap; avoid applying twice.
-        if (lastPointerLanguage === language && Date.now() - lastPointerSelectionAt < 900) {
-          event.preventDefault();
-          event.stopPropagation();
-          return;
-        }
-        selectLanguage(language, event);
-      });
+      option.href = localeBase + option.dataset.lang + "/" + routeSuffix +
+        window.location.search + window.location.hash;
     });
 
     document.addEventListener("click", event => {
@@ -1070,6 +1043,7 @@
         font: inherit;
         font-size: 13px;
         cursor: pointer;
+        text-decoration: none;
       }
 
       .flag-icon {
@@ -1409,11 +1383,6 @@
         document.removeEventListener("keydown", onEscape);
       }
     });
-    // Always prefer the locale encoded in the URL. localStorage is only a
-    // fallback for legacy routes and must never override /sodo/{lang}/.
-    const pathParts = window.location.pathname.split("/").filter(Boolean);
-    const pathLanguage = ["ar", "en", "ru"].includes(pathParts[1]) ? pathParts[1] : null;
-    applyLanguage(pathLanguage || getPreference("sodo-language", "ar"));
   }
 
   function installMotionSystem() {
@@ -1578,7 +1547,13 @@
     installMotionSystem();
     createControls();
 
-    applyLanguage(getPreference("sodo-language", "ar"));
+    // The locale in the current URL is authoritative on every localized page.
+    // Stored preferences are only a fallback for legacy routes.
+    const routeParts = window.location.pathname.split("/").filter(Boolean);
+    const routeLanguage = routeParts[0] === "sodo" && ["ar", "en", "ru"].includes(routeParts[1])
+      ? routeParts[1]
+      : null;
+    applyLanguage(routeLanguage || getPreference("sodo-language", "ar"));
     observeDynamicTranslations();
     applyTheme(getPreference("sodo-theme", "dark"));
     createWelcomeNotice();
