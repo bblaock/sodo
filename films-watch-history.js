@@ -225,7 +225,7 @@ async function refresh() {
     await loadPrivateHistory();
   } while (refreshPending);
   isLoading = false;
+  document.documentElement.dataset.traktHistoryReady = "true";
 }
 supabase.auth.onAuthStateChange(() => { queueMicrotask(refresh); });
 refresh();
-document.documentElement.dataset.traktHistoryReady = "true";
