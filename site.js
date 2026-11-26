@@ -761,33 +761,51 @@
       menu.classList.toggle("open", willOpen);
       trigger.setAttribute("aria-expanded", String(willOpen));
     });
-    // Use one delegated capture handler so language selection remains reliable
-    // even when the flag SVG is the actual tap target on mobile browsers.
-    document.addEventListener("click", event => {
-      const target = event.target instanceof Element ? event.target : null;
-      const option = target && target.closest(".language-option[data-lang]");
-      if (!option || !tools.contains(option)) return;
+    // Bind directly to each language button. Pointer events handle iPad/iPhone
+    // taps without relying on SVG event-target delegation; click remains for keyboard.
+    let lastPointerLanguage = "";
+    let lastPointerSelectionAt = 0;
 
+    const selectLanguage = (language, event) => {
       event.preventDefault();
-      event.stopImmediatePropagation();
-
-      const selectedLanguage = option.dataset.lang;
-      if (!translations[selectedLanguage]) return;
+      event.stopPropagation();
+      if (!translations[language]) return;
 
       try {
-        applyLanguage(selectedLanguage);
+        applyLanguage(language);
       } catch (error) {
         console.error("SODO language switch failed:", error);
-        document.documentElement.lang = selectedLanguage;
-        document.documentElement.dir = selectedLanguage === "ar" ? "rtl" : "ltr";
+        document.documentElement.lang = language;
+        document.documentElement.dir = language === "ar" ? "rtl" : "ltr";
         const code = tools.querySelector(".language-code");
-        if (code) code.textContent = selectedLanguage.toUpperCase();
-        savePreference("sodo-language", selectedLanguage);
+        if (code) code.textContent = language.toUpperCase();
+        savePreference("sodo-language", language);
       }
 
       menu.classList.remove("open");
       trigger.setAttribute("aria-expanded", "false");
-    }, true);
+    };
+
+    menu.querySelectorAll(".language-option[data-lang]").forEach(option => {
+      option.addEventListener("pointerup", event => {
+        if (event.pointerType === "mouse" && event.button !== 0) return;
+        lastPointerLanguage = option.dataset.lang;
+        lastPointerSelectionAt = Date.now();
+        selectLanguage(lastPointerLanguage, event);
+      });
+
+      option.addEventListener("click", event => {
+        const language = option.dataset.lang;
+        // A pointerup already handled this physical tap; avoid applying twice.
+        if (lastPointerLanguage === language && Date.now() - lastPointerSelectionAt < 900) {
+          event.preventDefault();
+          event.stopPropagation();
+          return;
+        }
+        selectLanguage(language, event);
+      });
+    });
+
     document.addEventListener("click", event => {
       if (!tools.contains(event.target)) {
         menu.classList.remove("open");
