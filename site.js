@@ -824,19 +824,14 @@
       event.stopPropagation();
       if (!translations[language]) return;
 
-      try {
-        applyLanguage(language);
-      } catch (error) {
-        console.error("SODO language switch failed:", error);
-        document.documentElement.lang = language;
-        document.documentElement.dir = language === "ar" ? "rtl" : "ltr";
-        const code = tools.querySelector(".language-code");
-        if (code) code.textContent = language.toUpperCase();
-        savePreference("sodo-language", language);
-      }
-
-      menu.classList.remove("open");
-      trigger.setAttribute("aria-expanded", "false");
+      // Locale URLs are the source of truth. Navigate to the equivalent page
+      // in the selected language instead of relying on in-place state/storage.
+      const basePath = "/sodo/";
+      const segments = window.location.pathname.slice(basePath.length).split("/");
+      if (["ar", "en", "ru"].includes(segments[0])) segments.shift();
+      const destination = basePath + language + "/" + segments.join("/") +
+        window.location.search + window.location.hash;
+      window.location.assign(destination);
     };
 
     menu.querySelectorAll(".language-option[data-lang]").forEach(option => {
@@ -1414,7 +1409,11 @@
         document.removeEventListener("keydown", onEscape);
       }
     });
-    applyLanguage(getPreference("sodo-language", "ar"));
+    // Always prefer the locale encoded in the URL. localStorage is only a
+    // fallback for legacy routes and must never override /sodo/{lang}/.
+    const pathParts = window.location.pathname.split("/").filter(Boolean);
+    const pathLanguage = ["ar", "en", "ru"].includes(pathParts[1]) ? pathParts[1] : null;
+    applyLanguage(pathLanguage || getPreference("sodo-language", "ar"));
   }
 
   function installMotionSystem() {
