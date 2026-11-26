@@ -52,7 +52,8 @@ async function refreshStatus() {
     $("connect").classList.toggle("hidden", status.connected);
     $("sync").classList.toggle("hidden", !status.connected);
     $("disconnect").classList.toggle("hidden", !status.connected);
-  } catch (error) { say(error.message, true); }
+    return status;
+  } catch (error) { say(error.message, true); return null; }
 }
 async function render() {
   const current = await session();
@@ -60,13 +61,15 @@ async function render() {
   accountPanel.classList.toggle("hidden", !current);
   if (current) {
     $("identity").textContent = "مسجّل الدخول: " + (current.user.email || "حساب SODO");
-    await refreshStatus();
-    try {
-      const result = await api("sync");
-      say(syncMessage(result));
-      await refreshStatus();
-    } catch (error) {
-      say(error.message, true);
+    const status = await refreshStatus();
+    if (status?.connected) {
+      try {
+        const result = await api("sync");
+        say(syncMessage(result));
+        await refreshStatus();
+      } catch (error) {
+        say(error.message, true);
+      }
     }
   }
 }
