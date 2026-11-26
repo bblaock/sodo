@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   function activateVisibleCollection() {
-    const target = document.querySelector(window.location.hash);
+    const target = window.location.hash ? document.getElementById(window.location.hash.slice(1)) : null;
     if (!target || !target.matches("#watched, #series")) return;
     if (target.dataset.posterGridReady === "true") {
       const grid = target.querySelector(":scope > .movie-grid");
