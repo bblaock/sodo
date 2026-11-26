@@ -572,6 +572,46 @@
       });
     });
   }
+  // Translate content that is rendered after the initial page load (film cards,
+  // saved lists, and other client-generated sections).
+  let dynamicTranslationObserver = null;
+
+  function translateDynamicSubtree(root, dictionary) {
+    if (!root || root.nodeType !== 1) return;
+
+    if (root.matches("[data-i18n]")) {
+      const key = root.dataset.i18n;
+      if (dictionary[key] !== undefined) root.textContent = dictionary[key];
+    }
+
+    root.querySelectorAll("[data-i18n]").forEach(element => {
+      const key = element.dataset.i18n;
+      if (dictionary[key] !== undefined) element.textContent = dictionary[key];
+    });
+
+    translateText(root, dictionary);
+  }
+
+  function observeDynamicTranslations() {
+    if (dynamicTranslationObserver || !document.body || !("MutationObserver" in window)) return;
+
+    dynamicTranslationObserver = new MutationObserver(records => {
+      const language = document.documentElement.lang || getPreference("sodo-language", "ar");
+      if (language === "ar") return;
+
+      const dictionary = translations[language] || translations.en;
+      records.forEach(record => {
+        record.addedNodes.forEach(node => {
+          // Ignore text nodes created by our own textContent updates. Newly
+          // rendered interface fragments arrive as elements and are translated.
+          if (node.nodeType === 1) translateDynamicSubtree(node, dictionary);
+        });
+      });
+    });
+
+    dynamicTranslationObserver.observe(document.body, { childList: true, subtree: true });
+  }
+
   function applyLanguage(language) {
     const lang = translations[language] ? language : "ar";
     const dictionary = translations[lang];
@@ -1540,6 +1580,7 @@
     createControls();
 
     applyLanguage(getPreference("sodo-language", "ar"));
+    observeDynamicTranslations();
     applyTheme(getPreference("sodo-theme", "dark"));
     createWelcomeNotice();
     document.documentElement.classList.add("site-ready");
