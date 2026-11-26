@@ -2,6 +2,34 @@
 
 (() => {
   "use strict";
+  // Arabic typography: use a shaping-safe Arabic typeface only on Arabic routes.
+  if (document.documentElement.lang === "ar") {
+    const arabicFont = document.createElement("link");
+    arabicFont.rel = "stylesheet";
+    arabicFont.href = "https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700;800;900&display=swap";
+    document.head.appendChild(arabicFont);
+
+    const arabicTypography = document.createElement("style");
+    arabicTypography.textContent = `
+      html[lang="ar"] body,
+      html[lang="ar"] body *:not(svg):not(path) {
+        font-family: "Noto Sans Arabic", "Manrope", sans-serif !important;
+        font-feature-settings: normal;
+        font-kerning: normal;
+      }
+      html[lang="ar"] body *:not(svg):not(path) {
+        letter-spacing: normal !important;
+      }
+      html[lang="ar"] .logo { letter-spacing: 5px !important; }
+      html[lang="ar"] .eyebrow { letter-spacing: 2px !important; }
+      html[lang="ar"] .number,
+      html[lang="ar"] .status,
+      html[lang="ar"] .movie-meta,
+      html[lang="ar"] .imdb-icon { letter-spacing: 1px !important; }
+    `;
+    document.head.appendChild(arabicTypography);
+  }
+
 
   const translations = {
     ar: {
