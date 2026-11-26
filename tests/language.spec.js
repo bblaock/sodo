@@ -151,7 +151,10 @@ test("signed-in SODO account receives private Trakt history in Cinema", async ({
       : action === "sync"
         ? { synced: true, imported: 0 }
         : {
-            movies: [],
+            movies: [
+              { title: "The Batman", year: 2022, last_watched_at: "2026-11-20T18:00:00Z" },
+              { title: "Hope", year: 2026, last_watched_at: "2026-11-21T18:00:00Z" }
+            ],
             series: [{
               title: "MobLand",
               year: 2025,
@@ -172,4 +175,8 @@ test("signed-in SODO account receives private Trakt history in Cinema", async ({
   await page.waitForFunction(() => document.documentElement.dataset.traktHistoryReady === "true");
   await expect(page.locator("#series .trakt-private-card h3")).toHaveText("MobLand");
   await expect(page.locator("#series .trakt-private-card")).toContainText("20 episodes");
+  await expect(page.locator("#watched .trakt-private-card h3")).toHaveText("The Batman");
+  await expect(page.locator("#watched .trakt-private-card")).toContainText("Watched");
+  await expect(page.locator("#watched .movie-card h3").filter({ hasText: /^Hope$/ })).toHaveCount(1);
+  await expect(page.locator("#watched .movie-card").filter({ has: page.locator(".trakt-private-note") })).toContainText("PRIVATE · TRAKT");
 });
