@@ -184,19 +184,24 @@
     body.light-mode .footer-socials a:hover { color: #506d16; border-color: #7e9d36; }
 
   </style>
-  <script src="/sodo/site.js?v=20261126-stability-1" defer></script>
+  <script src="/sodo/site.js?v=20261126-header-2" defer></script>
 </head>
 
 <body>
   <header>
-    <a class="logo" href="/sodo/">SODO.</a>
-    <nav>
-      <a href="/sodo/">Home</a>
-      <a href="/sodo/about/">About</a>
-      <a class="active" href="/sodo/thoughts/">Thoughts</a>
-      <a href="/sodo/films/">Films</a>
-      <a href="/sodo/projects/">Projects</a>
-    </nav>
+    <div class="container">
+      <nav>
+        <a href="/sodo/" class="logo">SODO.</a>
+        <ul class="nav-links">
+          <li><a href="/sodo/" data-i18n="home">Home</a></li>
+          <li><a href="/sodo/about/" data-i18n="about">About</a></li>
+          <li><a href="/sodo/thoughts/" data-i18n="thoughts">Thoughts</a></li>
+          <li><a href="/sodo/films/" data-i18n="films">Films</a></li>
+          <li><a href="/sodo/projects/" data-i18n="projects">Projects</a></li>
+        </ul>
+        <div class="site-tools"></div>
+      </nav>
+    </div>
   </header>
 
   <main>
