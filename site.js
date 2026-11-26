@@ -745,37 +745,19 @@
     savePreference("sodo-language", lang);
   }
 
-  function applyTheme(theme) {
-    const light = theme === "light";
-
-    document.body.classList.toggle("light-mode", light);
-
-    // Set the accent on the root element so every page component inherits it reliably.
-    document.documentElement.style.setProperty("--accent", light ? "#36570a" : "#c8ff4d");
+  // SODO now has one canonical appearance: cinematic dark mode.
+  // Clear any legacy light-mode class/preference so old browser settings cannot
+  // turn individual pages, including Cinema and film/series details, white.
+  function applyTheme() {
+    document.body.classList.remove("light-mode");
+    document.documentElement.style.colorScheme = "dark";
+    document.documentElement.style.setProperty("--accent", "#c8ff4d");
 
     const themeColor = document.querySelector('meta[name="theme-color"]');
-    if (themeColor) {
-      themeColor.setAttribute("content", light ? "#f4f5ef" : "#080a08");
-    }
+    if (themeColor) themeColor.setAttribute("content", "#080a08");
 
-    const button = document.querySelector(".theme-toggle");
-
-    if (button) {
-      button.innerHTML = light ? icons.sun : icons.moon;
-
-      const lang = getPreference("sodo-language", "ar");
-      const dictionary = translations[lang] || translations.ar;
-
-      const label = light
-        ? (dictionary["Switch to dark mode"] || "Switch to dark mode")
-        : (dictionary["Switch to light mode"] || "Switch to light mode");
-
-      button.title = label;
-      button.setAttribute("aria-label", label);
-      button.setAttribute("aria-pressed", String(light));
-    }
-
-    savePreference("sodo-theme", light ? "light" : "dark");
+    document.querySelectorAll(".theme-toggle").forEach(button => button.remove());
+    savePreference("sodo-theme", "dark");
   }
 
   function createControls() {
@@ -803,7 +785,6 @@
           <a class="language-option" data-no-page-transition href="/sodo/ru/" data-lang="ru" role="menuitem" aria-label="Русский">${flagIcons.ru}</a>
         </div>
       </div>
-      <button class="site-tool-button theme-toggle" type="button" aria-label="Toggle theme"></button>
     `;
 
     const trigger = tools.querySelector(".language-trigger");
@@ -846,9 +827,6 @@
         trigger.setAttribute("aria-expanded", "false");
         trigger.focus();
       }
-    });
-    tools.querySelector(".theme-toggle").addEventListener("click", () => {
-      applyTheme(document.body.classList.contains("light-mode") ? "dark" : "light");
     });
   }
 
@@ -1543,7 +1521,6 @@
 
   function initialize() {
     installStyles();
-    installCinemaLightTheme();
     installMotionSystem();
     createControls();
     installSocialIconOnlyFooter();
@@ -1556,7 +1533,7 @@
       : null;
     applyLanguage(routeLanguage || getPreference("sodo-language", "ar"));
     observeDynamicTranslations();
-    applyTheme(getPreference("sodo-theme", "dark"));
+    applyTheme();
     document.documentElement.classList.add("site-ready");
   }
 
