@@ -42,7 +42,7 @@ function addStyles() {
   const style = document.createElement("style");
   style.id = "trakt-private-styles";
   style.textContent = `
-    .trakt-private-panel{margin-top:30px;padding-top:22px;border-top:1px solid var(--border)}
+    .trakt-watch-badge{margin:8px 0 0;color:var(--accent);font-size:10px;text-align:center}\n    .trakt-poster-placeholder{display:flex;align-items:center;justify-content:center;padding:14px;background:radial-gradient(ellipse at 50% 35%,#303d26 0%,#171e14 48%,#0b0e0a 100%);color:var(--accent);font-weight:800;text-align:center;overflow-wrap:anywhere}
     .trakt-private-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
     .trakt-private-heading h3{margin:0;color:var(--text);font-size:16px;font-weight:650}
     .trakt-private-label{display:inline-flex;align-items:center;border:1px solid var(--accent);border-radius:999px;padding:3px 8px;color:var(--accent);font-size:9px;letter-spacing:1px}
@@ -108,61 +108,71 @@ function normalize(value) {
   return String(value || "").normalize("NFKC").trim().toLocaleLowerCase();
 }
 
-function renderItems(panel, items, kind) {
-  const grid = document.createElement("div");
-  grid.className = "movie-grid trakt-private-grid";
-  const existingCards = Array.from(panel.closest(".cinema-section").querySelectorAll(":scope > .movie-grid:not(.trakt-private-grid) .movie-card"));
-  for (const item of items) {
-    const title = item.title || (kind === "movie" ? "Untitled movie" : "Untitled series");
-    const existing = existingCards.find(card => normalize(card.querySelector("h3")?.textContent) === normalize(title));
-    const count = kind === "movie" ? null : item.episode_count;
-    const countText = kind === "movie" ? t.watched : count + " " + t.episodes;
-    const metaText = [item.year, countText].filter(Boolean);
-
-    if (existing) {
-      const info = existing.querySelector(".movie-card-info");
-      if (info && !info.querySelector(".trakt-private-note")) {
-        const note = document.createElement("p");
-        note.className = "trakt-private-note";
-        note.textContent = t.watchedLabel + " · " + countText;
-        info.append(note);
-      }
-      continue;
-    }
-
-    const card = document.createElement("article");
-    card.className = "movie-card trakt-private-card";
-    const poster = document.createElement("div");
-    poster.className = "trakt-private-poster";
-    const posterTitle = document.createElement("span");
-    posterTitle.textContent = title;
-    poster.append(posterTitle);
-    const info = document.createElement("div");
-    info.className = "movie-card-info";
-    const heading = document.createElement("h3");
-    heading.textContent = title;
-    const meta = document.createElement("div");
-    meta.className = "trakt-private-meta";
-    metaText.forEach(value => addMeta(meta, value));
-    if (kind === "series" && item.last_season !== null && item.last_episode !== null) {
-      addMeta(meta, t.season + " " + item.last_season + " · " + t.episode + " " + item.last_episode);
-    }
-    const badge = document.createElement("div");
-    badge.className = "trakt-private-note";
-    badge.textContent = t.watchedLabel;
-    info.append(heading, meta, badge);
-    card.append(poster, info);
-    grid.append(card);
+function cardYear(card) {
+  const value = card.querySelector('.movie-meta span')?.textContent || '';
+  const match = value.match(/\d{4}/);
+  return match ? Number(match[0]) : null;
+}
+function findManualCard(cards, item) {
+  const title = normalize(item.title);
+  return cards.find(card => {
+    if (!title || normalize(card.querySelector('h3')?.textContent) !== title) return false;
+    const year = cardYear(card);
+    return !item.year || !year || Number(item.year) === year;
+  });
+}
+function addWatchedBadge(card, item, kind) {
+  const info = card.querySelector('.movie-card-info');
+  if (!info || info.querySelector('.trakt-watch-badge')) return;
+  const badge = document.createElement('p');
+  badge.className = 'trakt-watch-badge';
+  badge.textContent = kind === 'series' ? t.watchedLabel + ' · ' + (item.episode_count || 0) + ' ' + t.episodes : t.watchedLabel;
+  info.append(badge);
+}
+function createImportedCard(item, kind) {
+  const title = item.title || (kind === 'movie' ? 'Untitled movie' : 'Untitled series');
+  const card = document.createElement('article');
+  card.className = 'movie-card trakt-imported-card';
+  card.dataset.traktImported = 'true';
+  const target = 'https://trakt.tv/' + (kind === 'movie' ? 'movies/' : 'shows/') + encodeURIComponent(item.trakt_id || title);
+  const posterLink = document.createElement('a');
+  posterLink.className = 'poster-link';
+  posterLink.href = target; posterLink.target = '_blank'; posterLink.rel = 'noopener noreferrer';
+  if (item.poster_url) {
+    const image = document.createElement('img');
+    image.className = 'movie-poster'; image.src = item.poster_url; image.alt = title + ' poster';
+    image.loading = 'lazy'; image.decoding = 'async'; posterLink.append(image);
+  } else {
+    const placeholder = document.createElement('div');
+    placeholder.className = 'movie-poster trakt-poster-placeholder'; placeholder.textContent = title; posterLink.append(placeholder);
   }
-  if (grid.children.length) panel.append(grid);
-  else panel.append(messageNode(t.empty));
+  const info = document.createElement('div'); info.className = 'movie-card-info';
+  const heading = document.createElement('h3');
+  const titleLink = document.createElement('a');
+  titleLink.className = 'movie-title-link'; titleLink.href = target; titleLink.target = '_blank';
+  titleLink.rel = 'noopener noreferrer'; titleLink.textContent = title; heading.append(titleLink);
+  const meta = document.createElement('div'); meta.className = 'movie-meta';
+  addMeta(meta, item.year);
+  if (kind === 'series' && item.episode_count) addMeta(meta, item.episode_count + ' ' + t.episodes);
+  if (item.rating) addMeta(meta, Number(item.rating).toFixed(1) + '/10');
+  info.append(heading, meta); card.append(posterLink, info); addWatchedBadge(card, item, kind);
+  return card;
 }
-
+function renderItems(section, items, kind) {
+  const grid = section?.querySelector('.movie-grid');
+  if (!grid) return;
+  const manualCards = Array.from(grid.querySelectorAll('.movie-card:not([data-trakt-imported])'));
+  for (const item of items) {
+    const manual = findManualCard(manualCards, item);
+    if (manual) { addWatchedBadge(manual, item, kind); continue; }
+    if (findManualCard(Array.from(grid.querySelectorAll('[data-trakt-imported]')), item)) continue;
+    grid.append(createImportedCard(item, kind));
+  }
+}
 function clearPanels() {
-  document.querySelectorAll(".trakt-private-panel").forEach(node => node.remove());
-  document.querySelectorAll(".trakt-private-note").forEach(node => node.remove());
+  document.querySelectorAll('[data-trakt-imported]').forEach(node => node.remove());
+  document.querySelectorAll('.trakt-watch-badge').forEach(node => node.remove());
 }
-
 async function callFunction(action, accessToken = null) {
   const requestHeaders = { "Content-Type": "application/json", "apikey": SUPABASE_KEY };
   if (accessToken) requestHeaders.Authorization = "Bearer " + accessToken;
@@ -183,43 +193,25 @@ async function loadPrivateHistory() {
     const result = await supabase.auth.getSession();
     session = result.data.session;
     if (session && session.expires_at && session.expires_at < Math.floor(Date.now() / 1000) + 60) {
-      const refreshed = await supabase.auth.refreshSession();
-      session = refreshed.data.session;
+      const refreshed = await supabase.auth.refreshSession(); session = refreshed.data.session;
     }
   } catch { session = null; }
-
   addStyles();
-  const sections = { movie: document.getElementById("watched"), series: document.getElementById("series") };
-  const panels = {};
-  for (const kind of ["movie", "series"]) {
-    if (sections[kind]) panels[kind] = makePanel(sections[kind], kind);
-  }
-  for (const panel of Object.values(panels)) panel.append(messageNode(t.loading));
-
   if (session?.access_token) {
     try {
-      const status = await callFunction("status", session.access_token);
-      if (status.connected) await callFunction("sync", session.access_token);
-    } catch (error) { console.warn("SODO Trakt sync:", error); }
+      const status = await callFunction('status', session.access_token);
+      if (status.connected) await callFunction('sync', session.access_token);
+    } catch (error) { console.warn('SODO Trakt sync:', error); }
   }
-
   try {
-    const history = await callFunction("public-history");
-    for (const kind of ["movie", "series"]) {
-      const panel = panels[kind];
-      if (!panel) continue;
-      panel.querySelector(".trakt-private-message")?.remove();
-      renderItems(panel, kind === "movie" ? (history.movies || []) : (history.series || []), kind);
-    }
+    const history = await callFunction('public-history');
+    renderItems(document.getElementById('watched'), history.movies || [], 'movie');
+    renderItems(document.getElementById('series'), history.series || [], 'series');
   } catch (error) {
-    for (const panel of Object.values(panels)) {
-      panel.querySelector(".trakt-private-message")?.remove();
-      panel.append(messageNode(t.failed));
-    }
-    console.error("SODO public watch library:", error);
+    console.error('SODO public watch library:', error);
+    document.documentElement.dataset.traktHistoryError = 'true';
   }
 }
-
 let isLoading = false;
 let refreshPending = false;
 async function refresh() {
