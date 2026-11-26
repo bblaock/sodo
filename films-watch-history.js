@@ -229,32 +229,48 @@ async function callFunction(action, accessToken = null) {
   return result;
 }
 
+async function loadPublicHistory() {
+  try {
+    const history = await callFunction('public-history');
+    renderItems(document.getElementById('watched'), history.movies || [], 'movie');
+    renderItems(document.getElementById('series'), history.series || [], 'series');
+    delete document.documentElement.dataset.traktHistoryError;
+    return true;
+  } catch (error) {
+    console.error('SODO public watch library:', error);
+    document.documentElement.dataset.traktHistoryError = 'true';
+    return false;
+  }
+}
+
 async function loadPrivateHistory() {
   clearPanels();
+  addStyles();
+
+  // Render the public library immediately; never make visitors wait for a private Trakt sync.
+  const publicHistoryReady = loadPublicHistory();
+
   let session = null;
   try {
     const result = await supabase.auth.getSession();
     session = result.data.session;
     if (session && session.expires_at && session.expires_at < Math.floor(Date.now() / 1000) + 60) {
-      const refreshed = await supabase.auth.refreshSession(); session = refreshed.data.session;
+      const refreshed = await supabase.auth.refreshSession();
+      session = refreshed.data.session;
     }
   } catch { session = null; }
-  addStyles();
+
+  await publicHistoryReady;
+
+  // Sync in the background after the public collection is already visible.
   if (session?.access_token) {
     try {
       const status = await callFunction('status', session.access_token);
       if (status.connected) {
-        await callFunction('sync', session.access_token);
+        const syncResult = await callFunction('sync', session.access_token);
+        if (syncResult.synced) await loadPublicHistory();
       }
     } catch (error) { console.warn('SODO Trakt sync:', error); }
-  }
-  try {
-    const history = await callFunction('public-history');
-    renderItems(document.getElementById('watched'), history.movies || [], 'movie');
-    renderItems(document.getElementById('series'), history.series || [], 'series');
-  } catch (error) {
-    console.error('SODO public watch library:', error);
-    document.documentElement.dataset.traktHistoryError = 'true';
   }
 }
 let isLoading = false;
