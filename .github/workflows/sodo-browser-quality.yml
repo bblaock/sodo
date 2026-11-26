@@ -40,7 +40,7 @@ jobs:
 
       - name: Validate core HTML pages with Nu HTML Checker
         run: |
-          docker run --rm -v "$PWD:/src" validator/validator:latest vnu --errors-only \
+          docker run --rm -v "$PWD:/src" ghcr.io/validator/validator:latest vnu --errors-only \
             /src/index.html \
             /src/thoughts/index.html \
             /src/films/index.html \
