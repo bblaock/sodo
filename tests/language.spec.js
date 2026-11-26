@@ -122,7 +122,7 @@ test("public Trakt history merges into the existing SODO film and series grids",
     const payload = {
       movies: [
         { title: "Hope", year: 2026, trakt_id: 101 },
-        { title: "The Batman", year: 2022, trakt_id: 102, poster_url: "https://wbuyglftsgldasawsllt.supabase.co/storage/v1/object/public/sodo-posters/movie/102.webp", overview: "A masked vigilante investigates corruption in Gotham.", genres: ["Crime", "Drama"], rating: 7.8, cast: [{ name: "Robert Pattinson", character: "Bruce Wayne" }] }
+        { title: "The Batman", year: 2022, trakt_id: 102, imdb_id: "tt1877830", runtime: 176, certification: "PG-13", status: "Released", poster_url: "https://wbuyglftsgldasawsllt.supabase.co/storage/v1/object/public/sodo-posters/movie/102.webp", overview: "A masked vigilante investigates corruption in Gotham.", genres: ["Crime", "Drama"], rating: 7.8, cast: [{ name: "Robert Pattinson", character: "Bruce Wayne" }] }
       ],
       series: [{ title: "MobLand", year: 2025, trakt_id: 103, episode_count: 20, overview: "A crime family story.", poster_url: "https://wbuyglftsgldasawsllt.supabase.co/storage/v1/object/public/sodo-posters/show/103.webp" }]
     };
@@ -155,7 +155,13 @@ test("public Trakt history merges into the existing SODO film and series grids",
   });
   await expect(page.locator("#trakt-title")).toHaveText("The Batman");
   await expect(page.locator("#trakt-overview")).toContainText("A masked vigilante");
+  await expect(page.locator("#trakt-meta .meta-label")).toContainText(["Trakt rating", "Year", "Work status"]);
+  await expect(page.locator("#trakt-meta .meta-item")).toHaveCount(3);
+  await expect(page.locator("#trakt-meta .imdb-icon")).toHaveAttribute("href", "https://www.imdb.com/title/tt1877830/");
+  await expect(page.locator(".details-panel h2")).toHaveText("Film details");
   await expect(page.locator("#trakt-details")).toContainText("Crime · Drama");
+  await expect(page.locator("#trakt-details")).toContainText("176 min");
+  await expect(page.locator("#trakt-details")).toContainText("PG-13");
   await expect(page.locator("#trakt-watch-badge")).toHaveCount(0);
   await expect(page.locator(".trakt-private-panel")).toHaveCount(0);
   await expect(page.locator(".trakt-sync-summary")).toHaveCount(0);
