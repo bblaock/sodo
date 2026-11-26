@@ -112,8 +112,8 @@ test("localized primary navigation stays inside the active locale", async ({ pag
 });
 
 
-test("public Trakt history merges into the existing SODO film and series grids", async ({ page }) => {
-  await page.route("https://wbuyglftsgldasawsllt.supabase.co/functions/v1/trakt-sync", async route => {
+test("public Trakt history merges into the existing SODO film and series grids and opens details in a new tab", async ({ page }) => {
+  await page.context().route("https://wbuyglftsgldasawsllt.supabase.co/functions/v1/trakt-sync", async route => {
     const origin = route.request().headers().origin || "*";
     if (route.request().method() === "OPTIONS") {
       await route.fulfill({ status: 204, headers: { "Access-Control-Allow-Origin": origin, "Access-Control-Allow-Headers": "authorization, apikey, content-type", "Access-Control-Allow-Methods": "POST, OPTIONS" } });
@@ -140,31 +140,37 @@ test("public Trakt history merges into the existing SODO film and series grids",
   await expect(batman.locator(".movie-card-info .movie-meta")).toContainText("2022");
   await expect(batman.locator(".movie-poster")).toHaveAttribute("alt", "The Batman poster");
   await expect(batman.locator(".poster-link")).toHaveAttribute("href", "/sodo/en/films/trakt/?kind=movie&id=102");
+  await expect(batman.locator(".poster-link")).toHaveAttribute("target", "_blank");
   await expect(batman.locator(".movie-title-link")).toHaveAttribute("href", "/sodo/en/films/trakt/?kind=movie&id=102");
+  await expect(batman.locator(".movie-title-link")).toHaveAttribute("target", "_blank");
   await expect(page.locator("#series .trakt-imported-card h3")).toContainText("MobLand");
   await expect(page.locator("#series .trakt-imported-card")).toContainText("20 episodes");
   await expect(page.locator("#series .trakt-imported-card .trakt-imported-details")).toHaveCount(0);
   await expect(page.locator("#series .trakt-imported-card .trakt-watch-badge")).toHaveCount(0);
   await page.locator("#sodo-welcome-overlay").evaluate(el => el.remove()).catch(() => {});
-  await batman.locator(".poster-link").click();
-  await expect(page).toHaveURL(url => {
+  const [detailPage] = await Promise.all([
+    page.context().waitForEvent("page"),
+    batman.locator(".poster-link").click()
+  ]);
+  await detailPage.waitForLoadState();
+  await expect(detailPage).toHaveURL(url => {
     const parsed = new URL(url);
     return parsed.pathname === "/sodo/en/films/trakt/" &&
       parsed.searchParams.get("kind") === "movie" &&
       parsed.searchParams.get("id") === "102";
   });
-  await expect(page.locator("#trakt-title")).toHaveText("The Batman");
-  await expect(page.locator("#trakt-overview")).toContainText("A masked vigilante");
-  await expect(page.locator("#trakt-meta .meta-label")).toContainText(["Trakt rating", "Year", "Work status"]);
-  await expect(page.locator("#trakt-meta .meta-item")).toHaveCount(3);
-  await expect(page.locator("#trakt-meta .imdb-icon")).toHaveAttribute("href", "https://www.imdb.com/title/tt1877830/");
-  await expect(page.locator(".details-panel h2")).toHaveText("Film details");
-  await expect(page.locator("#trakt-details")).toContainText("Crime · Drama");
-  await expect(page.locator("#trakt-details")).toContainText("176 min");
-  await expect(page.locator("#trakt-details")).toContainText("PG-13");
-  await expect(page.locator("#trakt-watch-badge")).toHaveCount(0);
-  await expect(page.locator(".trakt-private-panel")).toHaveCount(0);
-  await expect(page.locator(".trakt-sync-summary")).toHaveCount(0);
+  await expect(detailPage.locator("#trakt-title")).toHaveText("The Batman");
+  await expect(detailPage.locator("#trakt-overview")).toContainText("A masked vigilante");
+  await expect(detailPage.locator("#trakt-meta .meta-label")).toContainText(["Trakt rating", "Year", "Work status"]);
+  await expect(detailPage.locator("#trakt-meta .meta-item")).toHaveCount(3);
+  await expect(detailPage.locator("#trakt-meta .imdb-icon")).toHaveAttribute("href", "https://www.imdb.com/title/tt1877830/");
+  await expect(detailPage.locator(".details-panel h2")).toHaveText("Film details");
+  await expect(detailPage.locator("#trakt-details")).toContainText("Crime · Drama");
+  await expect(detailPage.locator("#trakt-details")).toContainText("176 min");
+  await expect(detailPage.locator("#trakt-details")).toContainText("PG-13");
+  await expect(detailPage.locator("#trakt-watch-badge")).toHaveCount(0);
+  await expect(detailPage.locator(".trakt-private-panel")).toHaveCount(0);
+  await expect(detailPage.locator(".trakt-sync-summary")).toHaveCount(0);
 });
 
 test("signed-in SODO owner syncs Trakt before public history is rendered", async ({ page }) => {
@@ -311,4 +317,30 @@ test("private SODO account does not attempt Trakt sync while disconnected", asyn
   await expect(page.locator("#sync")).toBeHidden();
   await expect(page.locator("#message")).toBeHidden();
   expect(syncCalls).toBe(0);
+});
+
+
+test("cinema story heading is localized as القصة and manual film links open in a new tab", async ({ page }) => {
+  await page.goto("/sodo/en/films/");
+  const joker = page.locator("#watched .movie-card").filter({ has: page.locator('a[href="./joker/"]') });
+  await expect(joker.locator(".poster-link")).toHaveAttribute("target", "_blank");
+  await expect(joker.locator(".movie-title-link")).toHaveAttribute("target", "_blank");
+
+  await page.goto("/sodo/ar/films/joker/");
+  await expect(page.locator(".story-block h2")).toHaveText("القصة");
+
+  await page.route("https://wbuyglftsgldasawsllt.supabase.co/functions/v1/trakt-sync", async route => {
+    const origin = route.request().headers().origin || "*";
+    if (route.request().method() === "OPTIONS") {
+      await route.fulfill({ status: 204, headers: { "Access-Control-Allow-Origin": origin, "Access-Control-Allow-Headers": "authorization, apikey, content-type", "Access-Control-Allow-Methods": "POST, OPTIONS" } });
+      return;
+    }
+    await route.fulfill({
+      status: 200,
+      headers: { "Access-Control-Allow-Origin": origin, "Content-Type": "application/json" },
+      body: JSON.stringify({ movies: [{ title: "The Batman", trakt_id: 102, overview: "قصة باتمان", year: 2022 }], series: [] })
+    });
+  });
+  await page.goto("/sodo/ar/films/trakt/?kind=movie&id=102");
+  await expect(page.locator(".story-block h2")).toHaveText("القصة");
 });
