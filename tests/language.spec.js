@@ -320,9 +320,27 @@ test("private SODO account does not attempt Trakt sync while disconnected", asyn
 });
 
 
-test("cinema story heading is localized as القصة in Arabic for manual and imported details", async ({ page }) => {
+test("cinema story heading is localized as القصة and manual film links open in a new tab", async ({ page }) => {
+  await page.goto("/sodo/en/films/");
+  const joker = page.locator("#watched .movie-card").filter({ has: page.locator('a[href="./joker/"]') });
+  await expect(joker.locator(".poster-link")).toHaveAttribute("target", "_blank");
+  await expect(joker.locator(".movie-title-link")).toHaveAttribute("target", "_blank");
+
   await page.goto("/sodo/ar/films/joker/");
   await expect(page.locator(".story-block h2")).toHaveText("القصة");
+
+  await page.route("https://wbuyglftsgldasawsllt.supabase.co/functions/v1/trakt-sync", async route => {
+    const origin = route.request().headers().origin || "*";
+    if (route.request().method() === "OPTIONS") {
+      await route.fulfill({ status: 204, headers: { "Access-Control-Allow-Origin": origin, "Access-Control-Allow-Headers": "authorization, apikey, content-type", "Access-Control-Allow-Methods": "POST, OPTIONS" } });
+      return;
+    }
+    await route.fulfill({
+      status: 200,
+      headers: { "Access-Control-Allow-Origin": origin, "Content-Type": "application/json" },
+      body: JSON.stringify({ movies: [{ title: "The Batman", trakt_id: 102, overview: "قصة باتمان", year: 2022 }], series: [] })
+    });
+  });
   await page.goto("/sodo/ar/films/trakt/?kind=movie&id=102");
   await expect(page.locator(".story-block h2")).toHaveText("القصة");
 });
