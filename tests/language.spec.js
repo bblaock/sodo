@@ -132,13 +132,18 @@ test("public Trakt history merges into the existing SODO film and series grids",
   await page.waitForFunction(() => document.documentElement.dataset.traktHistoryReady === "true");
   const hope = page.locator("#watched .movie-card:has(a[href=\"./hope/\"])");
   await expect(hope).toHaveCount(1);
-  await expect(hope.locator(".trakt-watch-badge")).toContainText("Watched via Trakt");
+  await expect(hope.locator(".trakt-watch-badge")).toHaveCount(0);
   await expect(page.locator("#watched .trakt-imported-card h3")).toContainText("The Batman");
   await expect(page.locator("#watched .trakt-imported-card .movie-poster")).toHaveAttribute("src", "https://wbuyglftsgldasawsllt.supabase.co/storage/v1/object/public/sodo-posters/movie/102.webp");
-  await expect(page.locator("#watched .trakt-imported-card .trakt-imported-details")).toContainText("A masked vigilante investigates corruption in Gotham.");
-  await expect(page.locator("#watched .trakt-imported-card .trakt-imported-details")).toContainText("Robert Pattinson (Bruce Wayne)");
+  const batman = page.locator("#watched .trakt-imported-card").filter({ has: page.locator("h3", { hasText: "The Batman" }) });
+  await expect(batman.locator(".trakt-imported-details")).toHaveCount(0);
+  await expect(batman.locator(".movie-card-info .movie-meta")).toContainText("2022");
+  await expect(batman.locator(".movie-poster")).toHaveAttribute("alt", "The Batman poster");
+  await expect(batman.locator(".trakt-watch-badge")).toHaveCount(0);
   await expect(page.locator("#series .trakt-imported-card h3")).toContainText("MobLand");
   await expect(page.locator("#series .trakt-imported-card")).toContainText("20 episodes");
+  await expect(page.locator("#series .trakt-imported-card .trakt-imported-details")).toHaveCount(0);
+  await expect(page.locator("#series .trakt-imported-card .trakt-watch-badge")).toHaveCount(0);
   await expect(page.locator(".trakt-private-panel")).toHaveCount(0);
   await expect(page.locator(".trakt-sync-summary")).toHaveCount(0);
 });
@@ -200,9 +205,91 @@ test("signed-in SODO owner syncs Trakt before public history is rendered", async
   await expect(page.locator("#series .trakt-imported-card h3")).toHaveText("MobLand");
   await expect(page.locator("#series .trakt-imported-card")).toContainText("20 episodes");
   await expect(page.locator("#watched .trakt-imported-card h3")).toHaveText("The Batman");
-  await expect(page.locator("#watched .trakt-imported-card")).toContainText("Watched");
+  await expect(page.locator("#watched .trakt-imported-card h3")).toHaveText("The Batman");
+  await expect(page.locator("#watched .trakt-imported-card .movie-meta")).toContainText("2022");
   await expect(page.locator("#watched .movie-card h3").filter({ hasText: /^Hope$/ })).toHaveCount(1);
-  await expect(page.locator('#watched .movie-card:has(a[href="./hope/"]) .trakt-watch-badge')).toContainText("Watched via Trakt");
-  await expect(page.locator(".trakt-sync-summary")).toContainText("2 movies");
-  await expect(page.locator(".trakt-sync-summary")).toContainText("20 episodes");
+  await expect(page.locator('#watched .movie-card:has(a[href="./hope/"]) .trakt-watch-badge')).toHaveCount(0);
+  await expect(page.locator("#watched .trakt-imported-card .trakt-imported-details")).toHaveCount(0);
+  await expect(page.locator("#series .trakt-imported-card .trakt-imported-details")).toHaveCount(0);
+  await expect(page.locator(".trakt-watch-badge")).toHaveCount(0);
+  await expect(page.locator(".trakt-sync-summary")).toHaveCount(0);
+});
+
+
+test("private SODO account shows detailed Trakt sync counts only in the account view", async ({ page }) => {
+  await page.addInitScript(() => {
+    const now = Math.floor(Date.now() / 1000);
+    localStorage.setItem("sb-wbuyglftsgldasawsllt-auth-token", JSON.stringify({
+      access_token: "test-access-token",
+      refresh_token: "test-refresh-token",
+      token_type: "bearer",
+      expires_in: 3600,
+      expires_at: now + 3600,
+      user: { id: "test-user", aud: "authenticated", role: "authenticated", email: "test@example.com" }
+    }));
+  });
+
+  await page.route("https://wbuyglftsgldasawsllt.supabase.co/functions/v1/trakt-sync", async route => {
+    const origin = route.request().headers().origin || "*";
+    if (route.request().method() === "OPTIONS") {
+      await route.fulfill({ status: 204, headers: { "Access-Control-Allow-Origin": origin, "Access-Control-Allow-Headers": "authorization, apikey, content-type", "Access-Control-Allow-Methods": "POST, OPTIONS" } });
+      return;
+    }
+    const action = route.request().postDataJSON().action;
+    const payload = action === "status"
+      ? { connected: true, last_synced_at: "2026-11-26T17:45:16.212Z" }
+      : { synced: true, imported: 20, watched_movie_items: 0, watched_movie_rows_inserted: 0, watched_movie_missing_timestamp: 0, history_movie_rows_seen: 0, history_episode_rows_seen: 20, metadata_updated: 1, metadata_pending: 0 };
+    await route.fulfill({
+      status: 200,
+      headers: { "Access-Control-Allow-Origin": origin, "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+  });
+
+  await page.goto("/sodo/account/");
+  await expect(page.locator("#account-panel")).toBeVisible();
+  await expect(page.locator("#message")).toBeVisible();
+  await expect(page.locator("#message")).toContainText("أفلام قائمة Trakt: 0");
+  await expect(page.locator("#message")).toContainText("أفلام سجل المشاهدة: 0");
+  await expect(page.locator("#message")).toContainText("الحلقات: 20");
+  await expect(page.locator("#message")).toContainText("بيانات الأعمال المحدثة: 1");
+});
+
+
+test("private SODO account does not attempt Trakt sync while disconnected", async ({ page }) => {
+  await page.addInitScript(() => {
+    const now = Math.floor(Date.now() / 1000);
+    localStorage.setItem("sb-wbuyglftsgldasawsllt-auth-token", JSON.stringify({
+      access_token: "test-access-token",
+      refresh_token: "test-refresh-token",
+      token_type: "bearer",
+      expires_in: 3600,
+      expires_at: now + 3600,
+      user: { id: "test-user", aud: "authenticated", role: "authenticated", email: "test@example.com" }
+    }));
+  });
+
+  let syncCalls = 0;
+  await page.route("https://wbuyglftsgldasawsllt.supabase.co/functions/v1/trakt-sync", async route => {
+    const origin = route.request().headers().origin || "*";
+    if (route.request().method() === "OPTIONS") {
+      await route.fulfill({ status: 204, headers: { "Access-Control-Allow-Origin": origin, "Access-Control-Allow-Headers": "authorization, apikey, content-type", "Access-Control-Allow-Methods": "POST, OPTIONS" } });
+      return;
+    }
+    const action = route.request().postDataJSON().action;
+    if (action === "sync") syncCalls++;
+    const payload = action === "status" ? { connected: false } : { error: "Trakt is not connected yet" };
+    await route.fulfill({
+      status: action === "status" ? 200 : 409,
+      headers: { "Access-Control-Allow-Origin": origin, "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+  });
+
+  await page.goto("/sodo/account/");
+  await expect(page.locator("#account-panel")).toBeVisible();
+  await expect(page.locator("#connect")).toBeVisible();
+  await expect(page.locator("#sync")).toBeHidden();
+  await expect(page.locator("#message")).toBeHidden();
+  expect(syncCalls).toBe(0);
 });

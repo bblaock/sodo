@@ -29,6 +29,20 @@ async function api(action) {
   if (!response.ok) throw new Error(result.error || "تعذّر تنفيذ الطلب");
   return result;
 }
+function syncMessage(result) {
+  const imported = Number(result.imported || 0);
+  const watchedMovies = Number(result.watched_movie_items || 0);
+  const historyMovies = Number(result.history_movie_rows_seen || 0);
+  const episodes = Number(result.history_episode_rows_seen || 0);
+  const metadataUpdated = Number(result.metadata_updated || 0);
+  const metadataPending = Number(result.metadata_pending || 0);
+  return "اكتملت المزامنة. إجمالي السجلات المستوردة: " + imported
+    + " · أفلام قائمة Trakt: " + watchedMovies
+    + " · أفلام سجل المشاهدة: " + historyMovies
+    + " · الحلقات: " + episodes
+    + " · بيانات الأعمال المحدثة: " + metadataUpdated
+    + " · بانتظار التحديث: " + metadataPending + ".";
+}
 async function refreshStatus() {
   try {
     const status = await api("status");
@@ -38,7 +52,8 @@ async function refreshStatus() {
     $("connect").classList.toggle("hidden", status.connected);
     $("sync").classList.toggle("hidden", !status.connected);
     $("disconnect").classList.toggle("hidden", !status.connected);
-  } catch (error) { say(error.message, true); }
+    return status;
+  } catch (error) { say(error.message, true); return null; }
 }
 async function render() {
   const current = await session();
@@ -46,14 +61,15 @@ async function render() {
   accountPanel.classList.toggle("hidden", !current);
   if (current) {
     $("identity").textContent = "مسجّل الدخول: " + (current.user.email || "حساب SODO");
-    await refreshStatus();
-    try {
-      const result = await api("sync");
-      if (result.unchanged) say("سجل Trakt محدّث؛ لا توجد مشاهدات جديدة.");
-      else say("تم تحديث سجل المشاهدة تلقائياً. المشاهدات الجديدة المستوردة: " + result.imported + ".");
-      await refreshStatus();
-    } catch (error) {
-      say(error.message, true);
+    const status = await refreshStatus();
+    if (status?.connected) {
+      try {
+        const result = await api("sync");
+        say(syncMessage(result));
+        await refreshStatus();
+      } catch (error) {
+        say(error.message, true);
+      }
     }
   }
 }
@@ -87,7 +103,7 @@ $("sync").addEventListener("click", async () => {
   $("sync").disabled = true;
   try {
     const result = await api("sync");
-    say("اكتملت المزامنة. تمت إضافة " + result.imported + " مشاهدة إلى سجلك الخاص.");
+    say(syncMessage(result));
     await refreshStatus();
   } catch (error) { say(error.message, true); }
   finally { $("sync").disabled = false; }
