@@ -48,7 +48,6 @@ function addStyles() {
   const style = document.createElement("style");
   style.id = "trakt-private-styles";
   style.textContent = `
-    .trakt-watch-badge{margin:8px 0 0;color:var(--accent);font-size:10px;text-align:center}
     .trakt-sync-summary{margin:12px 0;padding:9px 12px;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:11px;line-height:1.6;text-align:center}
     .trakt-sync-summary.is-warning{border-color:var(--accent);color:var(--accent)}
     .trakt-imported-details{margin-top:10px;color:var(--muted);font-size:11px;line-height:1.6;text-align:start}
@@ -151,14 +150,6 @@ function findManualCard(cards, item) {
     return !item.year || !year || Number(item.year) === year;
   });
 }
-function addWatchedBadge(card, item, kind) {
-  const info = card.querySelector('.movie-card-info');
-  if (!info || info.querySelector('.trakt-watch-badge')) return;
-  const badge = document.createElement('p');
-  badge.className = 'trakt-watch-badge';
-  badge.textContent = kind === 'series' ? t.watchedLabel + ' · ' + (item.episode_count || 0) + ' ' + t.episodes : t.watchedLabel;
-  info.append(badge);
-}
 function createImportedCard(item, kind) {
   const title = item.title || (kind === 'movie' ? 'Untitled movie' : 'Untitled series');
   const card = document.createElement('article');
@@ -188,30 +179,7 @@ function createImportedCard(item, kind) {
   if (item.runtime) addMeta(meta, item.runtime + ' min');
   if (item.certification) addMeta(meta, item.certification);
   info.append(heading, meta);
-  const details = document.createElement('details');
-  details.className = 'trakt-imported-details';
-  const summary = document.createElement('summary'); summary.textContent = t.details; details.append(summary);
-  const addDetail = (label, value) => {
-    if (value === null || value === undefined || value === '' || (Array.isArray(value) && !value.length)) return;
-    const paragraph = document.createElement('p');
-    const strong = document.createElement('strong'); strong.textContent = label + ': ';
-    paragraph.append(strong, document.createTextNode(Array.isArray(value) ? value.join(' · ') : String(value)));
-    details.append(paragraph);
-  };
-  addDetail(t.synopsis, item.overview || item.tagline);
-  addDetail(t.genres, item.genres);
-  addDetail(t.cast, (item.cast || []).map(person => person.character ? person.name + ' (' + person.character + ')' : person.name));
-  addDetail(t.status, item.status);
-  if (item.trailer || item.homepage) {
-    const links = document.createElement('p');
-    for (const [label, url] of [[t.trailer, item.trailer], [t.homepage, item.homepage]]) {
-      if (!url || !/^https:\/\//i.test(url)) continue;
-      const link = document.createElement('a'); link.href = url; link.target = '_blank'; link.rel = 'noopener noreferrer'; link.textContent = label; links.append(link);
-    }
-    if (links.childElementCount) details.append(links);
-  }
-  if (details.childElementCount > 1) info.append(details);
-  card.append(posterLink, info); addWatchedBadge(card, item, kind);
+  card.append(posterLink, info);
   return card;
 }
 function renderItems(section, items, kind) {
@@ -220,7 +188,7 @@ function renderItems(section, items, kind) {
   const manualCards = Array.from(grid.querySelectorAll('.movie-card:not([data-trakt-imported])'));
   for (const item of items) {
     const manual = findManualCard(manualCards, item);
-    if (manual) { addWatchedBadge(manual, item, kind); continue; }
+    if (manual) continue;
     if (findManualCard(Array.from(grid.querySelectorAll('[data-trakt-imported]')), item)) continue;
     grid.append(createImportedCard(item, kind));
   }
@@ -244,7 +212,7 @@ function renderSyncSummary(result) {
 }
 function clearPanels() {
   document.querySelectorAll('[data-trakt-imported]').forEach(node => node.remove());
-  document.querySelectorAll('.trakt-watch-badge, .trakt-sync-summary').forEach(node => node.remove());
+  document.querySelectorAll('.trakt-watch-badge, .trakt-sync-summary, .trakt-imported-details').forEach(node => node.remove());
 }
 async function callFunction(action, accessToken = null) {
   const requestHeaders = { "Content-Type": "application/json", "apikey": SUPABASE_KEY };
