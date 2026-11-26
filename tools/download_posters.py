@@ -13,6 +13,24 @@ ROOT = Path(__file__).resolve().parents[1]
 DESTINATION = ROOT / "assets" / "posters"
 
 POSTERS = {
+    "coco-2017.webp": [
+        "https://lostfilm.info/images/poster/548/5470372.jpg",
+        "https://char.tw/wp-content/uploads/20181007111703_73.jpg",
+    ],
+    "joker-2019.webp": [
+        "https://cdn11.bigcommerce.com/s-ydriczk/images/stencil/1500x1500/products/89058/93685/Joker-2019-Final-Style-steps-Poster-buy-original-movie-posters-at-starstills__62518.1669120603.jpg?c=2",
+    ],
+    "squid-game-2025.webp": [
+        "https://images.ctfassets.net/4cd45et68cgf/43om5LnJOfqPx29Hwb35MG/c0111a4e124c8d0afb7e80f2319c7fdc/EN-US_SG-S3_Teaser_TheDragFlowers-Unsafe_Vertical_27x40_sRGB_PRE.jpg",
+        "https://distinctpost.com/dpmedia/2025/05/GqOKfvbXwAAs5wm-1229x1536.jpeg",
+    ],
+    "supernatural-2020.webp": [
+        "https://serial.everyeye.it/public/immagini/15092020/supernatural--stagione-15_notizia.jpg",
+        "https://cosmicbook.news/images/supernatural-final-season-poster.jpg",
+    ],
+    "countdown-2025.webp": [
+        "https://resizing.flixster.com/d-Ep1ceYcP8wKWRp8IK_aKPjaao%3D/ems.cHJkLWVtcy1hc3NldHMvdHZzZWFzb24vMjg5ZTIxMjYtZmE4My00NDg2LWI0MjItMzk1ZmI0ZmEzOGE3LmpwZw%3D%3D",
+    ],
     "hope-2026.webp": [
         "https://dx35vtwkllhj9.cloudfront.net/neonrated/hope-2026/images/regions/us/onesheet.jpg",
     ],
