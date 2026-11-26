@@ -14,7 +14,9 @@ const copy = {
     empty: "لا توجد مشاهدات مسجلة في هذا القسم بعد.", loading: "جارٍ تحميل مكتبتك السينمائية…",
     failed: "تعذّر تحميل المكتبة السينمائية حالياً.",
     watchedLabel: "تمت مشاهدته عبر Trakt", watched: "تمت مشاهدته", episodes: "حلقة", last: "آخر مشاهدة",
-    season: "الموسم", episode: "الحلقة", details: "التفاصيل", synopsis: "القصة", genres: "التصنيفات", cast: "طاقم التمثيل", status: "الحالة", runtime: "المدة", certification: "التصنيف العمري", trailer: "الإعلان", homepage: "الموقع الرسمي"
+    season: "الموسم", episode: "الحلقة", details: "التفاصيل", synopsis: "القصة", genres: "التصنيفات", cast: "طاقم التمثيل", status: "الحالة", runtime: "المدة", certification: "التصنيف العمري", trailer: "الإعلان", homepage: "الموقع الرسمي",
+    syncSummary: (movies, episodes, enriched, pending) => `مزامنة Trakt: ${movies} فيلم · ${episodes} حلقة · ${enriched} عمل اكتملت بياناته${pending ? ` · المتبقي ${pending}` : ""}`,
+    noMovies: "لم يُرجع Trakt سجلات أفلام في هذه المزامنة. تحقق من قائمة الأفلام المشاهدة في حساب Trakt."
   },
   en: {
     heading: "My watched library",
@@ -23,7 +25,9 @@ const copy = {
     empty: "No watch history in this section yet.", loading: "Loading your watched library…",
     failed: "Could not load the watched library right now.",
     watchedLabel: "Watched via Trakt", watched: "Watched", episodes: "episodes", last: "Last watched",
-    season: "Season", episode: "Episode", details: "Details", synopsis: "Synopsis", genres: "Genres", cast: "Cast", status: "Status", runtime: "Runtime", certification: "Certification", trailer: "Trailer", homepage: "Official site"
+    season: "Season", episode: "Episode", details: "Details", synopsis: "Synopsis", genres: "Genres", cast: "Cast", status: "Status", runtime: "Runtime", certification: "Certification", trailer: "Trailer", homepage: "Official site",
+    syncSummary: (movies, episodes, enriched, pending) => `Trakt sync: ${movies} movies · ${episodes} episodes · ${enriched} titles enriched${pending ? ` · ${pending} remaining` : ""}`,
+    noMovies: "Trakt returned no watched-movie records in this sync. Check the watched movies list in your Trakt account."
   },
   ru: {
     heading: "Моя коллекция просмотренного",
@@ -32,7 +36,9 @@ const copy = {
     empty: "В этом разделе пока нет просмотров.", loading: "Загрузка моей коллекции…",
     failed: "Не удалось загрузить коллекцию прямо сейчас.",
     watchedLabel: "Просмотрено через Trakt", watched: "Просмотрено", episodes: "эпизодов", last: "Последний просмотр",
-    season: "Сезон", episode: "Серия", details: "Подробности", synopsis: "Описание", genres: "Жанры", cast: "Актёры", status: "Статус", runtime: "Длительность", certification: "Возрастной рейтинг", trailer: "Трейлер", homepage: "Официальный сайт"
+    season: "Сезон", episode: "Серия", details: "Подробности", synopsis: "Описание", genres: "Жанры", cast: "Актёры", status: "Статус", runtime: "Длительность", certification: "Возрастной рейтинг", trailer: "Трейлер", homepage: "Официальный сайт",
+    syncSummary: (movies, episodes, enriched, pending) => `Синхронизация Trakt: ${movies} фильмов · ${episodes} эпизодов · ${enriched} карточек дополнено${pending ? ` · осталось ${pending}` : ""}`,
+    noMovies: "Trakt не вернул записи о просмотренных фильмах. Проверьте список просмотренных фильмов в аккаунте Trakt."
   }
 };
 const t = copy[lang] || copy.en;
@@ -43,6 +49,8 @@ function addStyles() {
   style.id = "trakt-private-styles";
   style.textContent = `
     .trakt-watch-badge{margin:8px 0 0;color:var(--accent);font-size:10px;text-align:center}
+    .trakt-sync-summary{margin:12px 0;padding:9px 12px;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:11px;line-height:1.6;text-align:center}
+    .trakt-sync-summary.is-warning{border-color:var(--accent);color:var(--accent)}
     .trakt-imported-details{margin-top:10px;color:var(--muted);font-size:11px;line-height:1.6;text-align:start}
     .trakt-imported-details summary{cursor:pointer;color:var(--accent);font-weight:650;text-align:center}
     .trakt-imported-details p{margin:7px 0}
@@ -217,9 +225,26 @@ function renderItems(section, items, kind) {
     grid.append(createImportedCard(item, kind));
   }
 }
+function renderSyncSummary(result) {
+  const section = document.getElementById('watched');
+  if (!section || !result) return;
+  const note = document.createElement('p');
+  note.className = 'trakt-sync-summary';
+  const movies = Number(result.watched_movie_items || 0);
+  const episodes = Number(result.history_episode_rows_seen || 0);
+  const enriched = Number(result.metadata_updated || 0);
+  const pending = Number(result.metadata_pending || 0);
+  note.textContent = t.syncSummary(movies, episodes, enriched, pending);
+  if (movies === 0 && Number(result.history_movie_rows_seen || 0) === 0) {
+    note.classList.add('is-warning');
+    note.append(document.createTextNode(' — ' + t.noMovies));
+  }
+  const grid = section.querySelector('.movie-grid');
+  section.insertBefore(note, grid || section.firstChild);
+}
 function clearPanels() {
   document.querySelectorAll('[data-trakt-imported]').forEach(node => node.remove());
-  document.querySelectorAll('.trakt-watch-badge').forEach(node => node.remove());
+  document.querySelectorAll('.trakt-watch-badge, .trakt-sync-summary').forEach(node => node.remove());
 }
 async function callFunction(action, accessToken = null) {
   const requestHeaders = { "Content-Type": "application/json", "apikey": SUPABASE_KEY };
@@ -248,7 +273,10 @@ async function loadPrivateHistory() {
   if (session?.access_token) {
     try {
       const status = await callFunction('status', session.access_token);
-      if (status.connected) await callFunction('sync', session.access_token);
+      if (status.connected) {
+        const syncResult = await callFunction('sync', session.access_token);
+        renderSyncSummary(syncResult);
+      }
     } catch (error) { console.warn('SODO Trakt sync:', error); }
   }
   try {
