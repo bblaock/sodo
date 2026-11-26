@@ -1,0 +1,506 @@
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<link rel="preconnect" href="https://cdn.simpleicons.org">
+<link rel="preconnect" href="https://fonts.cdnfonts.com">
+  <meta charset="UTF-8">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.cdnfonts.com; font-src 'self' data: https://fonts.gstatic.com https://fonts.cdnfonts.com; img-src 'self' data: https:; connect-src 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="theme-color" content="#080a08">
+<meta name="description" content="مساحة لاستكشاف السينما والحكايات والتجارب البصرية.">
+<title>Films — SODO</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.cdnfonts.com/css/tafkir-arabic-trial" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #080a08;
+      --panel: #111510;
+      --text: #f4f7ef;
+      --muted: #b0b9a9;
+      --accent: #c8ff4d;
+      --border: #293126;
+    }
+
+    * { box-sizing: border-box; }
+
+    html[lang="ar"] body { font-family: "Tafkir Arabic TRIAL", "Tafkir Arabic TRIAL Medium", sans-serif; }
+    button, input, select, textarea { font: inherit; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Manrope", sans-serif;
+      line-height: 1.7;
+    }
+
+    header { border-bottom: 1px solid var(--border); }
+
+    .container {
+      width: min(1100px, 88%);
+      margin: auto;
+    }
+
+    .logo {
+      color: var(--accent);
+      font-size: 30px;
+      font-weight: 900;
+      letter-spacing: 5px;
+      text-decoration: none;
+    }
+
+    header nav {
+      min-height: 82px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 25px;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 28px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      font-size: 14px;
+      text-decoration: none;
+      transition: color .2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--accent); }
+
+    .site-tools {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .site-tools select,
+    .theme-toggle {
+      background: var(--panel);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 9px 11px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .theme-toggle {
+      font-size: 18px;
+      min-width: 42px;
+    }
+
+    main {
+      max-width: 850px;
+      margin: auto;
+      padding: 85px 22px;
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      letter-spacing: 4px;
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: clamp(45px, 9vw, 76px);
+      line-height: 1.1;
+      margin: 18px 0;
+      letter-spacing: -3px;
+    }
+
+    h1 span { color: var(--accent); }
+
+    .intro {
+      color: var(--muted);
+      font-size: 17px;
+      max-width: 570px;
+      margin-bottom: 55px;
+    }
+
+    .film {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      padding: 25px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .film h2 {
+      font-size: 21px;
+      margin: 0 0 5px;
+    }
+
+    .film p {
+      color: var(--muted);
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .number {
+      color: var(--accent);
+      font-size: 13px;
+      letter-spacing: 2px;
+    }
+
+    footer {
+      max-width: 1000px;
+      margin: auto;
+      padding: 25px 22px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 700px) {
+      header nav {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 20px 0;
+      }
+
+      .nav-links { gap: 16px; }
+      .site-tools { margin: 5px 0; }
+    }
+
+    @media (max-width: 600px) {
+      header nav {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 20px 0;
+      }
+
+      .nav-links { gap: 16px; }
+      .site-tools { margin: 5px 0; }
+      main { padding-top: 60px; }
+    }
+  
+    .footer-socials {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 0 auto 18px;
+    }
+
+    .footer-socials a {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      min-height: 40px;
+      padding: 7px 13px;
+      border: 1px solid var(--line, var(--border, #293126));
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: .2px;
+      transition: color .2s ease, border-color .2s ease, transform .2s ease;
+    }
+
+    .footer-socials a:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .footer-socials svg {
+      width: 17px;
+      height: 17px;
+      flex: 0 0 17px;
+    }
+
+    body.light-mode .footer-socials a { color: var(--muted); }
+    body.light-mode .footer-socials a:hover { color: #506d16; border-color: #7e9d36; }
+
+ 
+    .cinema-tabs {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin: 0 0 65px;
+    }
+    .cinema-tabs a {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      padding: 18px;
+      min-height: 100px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 14px;
+      transition: border-color .2s ease, transform .2s ease;
+    }
+    .cinema-tabs a:hover { border-color: var(--accent); transform: translateY(-3px); }
+    .cinema-tabs span { color: var(--accent); font-size: 11px; letter-spacing: 2px; }
+    .cinema-tab-label { display: inline-flex; align-items: center; gap: 10px; color: var(--text); font-size: 14px; letter-spacing: 0; }
+    .cinema-tab-icon { width: 23px; height: 23px; flex: 0 0 23px; color: var(--accent); }
+    .cinema-tabs a:hover .cinema-tab-icon { transform: scale(1.06); }
+    .cinema-tab-icon { transition: transform .2s ease; }
+    .cinema-section { display: none; scroll-margin-top: 30px; padding: 28px 0 38px; border-top: 1px solid var(--border); }
+    .cinema-section:target { display: block; }
+    .section-heading { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+    .section-heading .eyebrow { width: 100%; }
+    .section-heading h2 { margin: 0; font-size: clamp(22px, 4vw, 30px); }
+    .status { border: 1px solid var(--border); border-radius: 999px; padding: 4px 11px; color: var(--muted); font-size: 11px; }
+    .status-watched { color: var(--accent); border-color: var(--accent); }
+    .status-planned { color: var(--muted); }
+    .section-note { margin: 18px 0 0; color: var(--muted); font-size: 14px; }
+    @media (max-width: 600px) {
+      .cinema-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin-bottom: 45px; }
+      .cinema-tabs a { min-height: 88px; padding: 12px; gap: 8px; justify-content: space-between; }
+      .section-heading { align-items: flex-start; }
+    }
+
+
+    .watched-list { margin-top: 22px; }
+    .watched-film { padding: 18px 0; }
+    .watched-film h3 { margin: 0; font-size: 19px; font-weight: 600; letter-spacing: .2px; }
+
+    
+    .movie-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:26px}
+    .movie-card{display:flex;flex-direction:column;min-width:0;gap:10px;padding:10px;border:1px solid var(--border);border-radius:12px;background:var(--panel)}
+    .movie-card[hidden]{display:none!important}
+    .movie-card[data-card-href]{cursor:pointer;transition:border-color .2s ease,background-color .2s ease}
+    .movie-card[data-card-href]:hover{border-color:var(--accent)}
+    .movie-card[data-card-href]:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+    .poster-link{position:relative;display:block;width:100%;aspect-ratio:2/3;overflow:hidden;border-radius:8px;background:#20251e;cursor:pointer}
+    .movie-poster{display:block;width:100%;height:100%;object-fit:cover;transition:transform .25s ease}
+    .poster-link:hover .movie-poster{transform:scale(1.045)}
+    .movie-card-info{min-width:0;text-align:center}
+    .movie-card h3{margin:0 0 4px;font-size:15px;line-height:1.35}
+    .movie-title-link{color:var(--text);text-decoration:none}
+    .movie-title-link:hover{color:var(--accent)}
+    .movie-meta{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;color:var(--muted);font-size:11px;line-height:1.5}
+    .movie-rating{display:inline-flex;align-items:center;justify-content:center;gap:5px;color:var(--accent);font-weight:700}.movie-rating img{display:block;width:30px;height:auto;object-fit:contain}
+    .poster-link:focus-visible,.movie-title-link:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+    .movie-pagination{display:flex;justify-content:center;align-items:center;gap:8px;margin:28px 0 4px;direction:ltr}
+    .movie-pagination button{min-width:38px;height:38px;padding:0 10px;border:1px solid var(--border);border-radius:9px;background:var(--panel);color:var(--muted);cursor:pointer;font:600 13px Manrope,sans-serif;transition:color .2s,border-color .2s,background .2s}
+    .movie-pagination button:hover,.movie-pagination button[aria-current=page]{color:var(--bg);background:var(--accent);border-color:var(--accent)}
+    .movie-pagination button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+    @media(max-width:680px){.movie-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.movie-card{padding:6px;gap:7px}.movie-card h3{font-size:12px;overflow-wrap:anywhere}.movie-meta{font-size:9px}.movie-rating img{width:24px}}
+    @media(min-width:681px) and (max-width:900px){.movie-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+
+  </style>
+  <script src="/sodo/language-router.js?v=20261126-language-paths-1" defer></script>
+  <script src="/sodo/site.js?v=20261126-dynamic-i18n-4" defer></script>
+  <script src="/sodo/films-pagination.js?v=20261125-23" defer></script>
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <nav>
+        <a href="/sodo/" class="logo">SODO.</a>
+        <ul class="nav-links">
+          <li><a href="/sodo/" data-i18n="home">Home</a></li>
+          <li><a href="/sodo/about/" data-i18n="about">About</a></li>
+          <li><a href="/sodo/thoughts/" data-i18n="thoughts">Thoughts</a></li>
+          <li><a href="/sodo/films/" data-i18n="films">Films</a></li>
+          <li><a href="/sodo/projects/" data-i18n="projects">Projects</a></li>
+        </ul>
+        <div class="site-tools"></div>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="eyebrow">Stories on screen</div>
+    <h1>Films<span>.</span></h1>
+    <p class="intro">A personal record of films watched and stories discovered.</p>
+
+    <nav class="cinema-tabs" aria-label="Cinema collections">
+      <a href="#watched"><span class="cinema-tab-label"><svg class="cinema-tab-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7.5h16v12H4z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="m4 7.5 3-4 3 4 3-4 3 4 3-4 2 4" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 11.5v4m4-4v4m4-4v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Films I have watched</span><span>01</span></a>
+      <a href="#series"><span class="cinema-tab-label"><svg class="cinema-tab-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="m10 9 5 3-5 3V9Z" fill="currentColor"/></svg>Series I have watched</span><span>02</span></a>
+    </nav>
+
+    <section class="cinema-section" id="watched" aria-label="Films I have watched">
+<div class="section-heading">
+        <div class="eyebrow">01 / COLLECTION</div>
+        <h2>Films I have watched</h2>
+        <span class="status status-watched">Watched</span>
+      </div>
+      <div class="movie-grid">
+      <article class="movie-card">
+        <a class="poster-link" href="./hope/" aria-label="Open Hope film details">
+          <img class="movie-poster" data-src="/sodo/assets/posters/hope-2026.webp" alt="Hope (2026) poster" loading="lazy" decoding="async">
+        </a>
+        <div class="movie-card-info">
+          <h3><a class="movie-title-link" href="./hope/">Hope</a></h3>
+          <div class="movie-meta"><span>2026</span><span class="movie-rating"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/3840px-IMDB_Logo_2016.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="IMDb" loading="lazy" decoding="async"><span>6.5</span></span></div>
+          
+        </div>
+      </article>
+      <article class="movie-card">
+        <a class="poster-link" href="./blackbox/" aria-label="Open Black Box film details">
+          <img class="movie-poster" data-src="/sodo/assets/posters/black-box-2026.webp" alt="Black Box (2026) poster" loading="lazy" decoding="async">
+        </a>
+        <div class="movie-card-info">
+          <h3><a class="movie-title-link" href="./blackbox/">Black Box</a></h3>
+          <div class="movie-meta"><span>2026</span><span class="movie-rating"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/3840px-IMDB_Logo_2016.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="IMDb" loading="lazy" decoding="async"><span>5.1</span></span></div>
+          
+        </div>
+      </article>
+      <article class="movie-card">
+        <a class="poster-link" href="./heartofthebeast/" aria-label="Open Heart of the Beast film details">
+          <img class="movie-poster" data-src="/sodo/assets/posters/heart-of-the-beast.webp" alt="Heart of the Beast (2026) poster" loading="lazy" decoding="async">
+        </a>
+        <div class="movie-card-info">
+          <h3><a class="movie-title-link" href="./heartofthebeast/">Heart of the Beast</a></h3>
+          <div class="movie-meta"><span>2026</span><span class="movie-rating"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/3840px-IMDB_Logo_2016.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="IMDb" loading="lazy" decoding="async"><span>7.1</span></span></div>
+          
+        </div>
+      </article>
+      <article class="movie-card">
+        <a class="poster-link" href="./mebeforeyou/" aria-label="Open Me Before You film details">
+          <img class="movie-poster" data-src="/sodo/assets/posters/me-before-you.webp" alt="Me Before You (2016) poster" loading="lazy" decoding="async">
+        </a>
+        <div class="movie-card-info">
+          <h3><a class="movie-title-link" href="./mebeforeyou/">Me Before You</a></h3>
+          <div class="movie-meta"><span>2016</span><span class="movie-rating"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/3840px-IMDB_Logo_2016.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="IMDb" loading="lazy" decoding="async"><span>7.4</span></span></div>
+          
+        </div>
+      </article>
+      <article class="movie-card">
+        <a class="poster-link" href="./luckystrike/" aria-label="Open Lucky Strike film details">
+          <img class="movie-poster" data-src="/sodo/assets/posters/lucky-strike.webp" alt="Lucky Strike (2026) poster" loading="lazy" decoding="async">
+        </a>
+        <div class="movie-card-info">
+          <h3><a class="movie-title-link" href="./luckystrike/">Lucky Strike</a></h3>
+          <div class="movie-meta"><span>2026</span><span class="movie-rating"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/3840px-IMDB_Logo_2016.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="IMDb" loading="lazy" decoding="async"><span>5.4</span></span></div>
+          
+        </div>
+      </article>
+      </div>
+    </section>
+
+
+    <section class="cinema-section" id="series" aria-label="Series I have watched">
+      <div class="section-heading">
+        <div class="eyebrow">02 / COLLECTION</div>
+        <h2>Series I have watched</h2>
+        <span class="status status-watched">Watched</span>
+      </div>
+      <div class="movie-grid" aria-label="TV series collection">
+      <article class="movie-card">
+        <a class="poster-link" href="./theboys/" aria-label="Open The Boys series details">
+          <img class="movie-poster" data-src="/sodo/assets/posters/the-boys.webp" alt="The Boys (2019–2026) poster" loading="lazy" decoding="async">
+        </a>
+        <div class="movie-card-info">
+          <h3><a class="movie-title-link" href="./theboys/">The Boys</a></h3>
+          <div class="movie-meta"><span>2019–2026</span><span class="movie-rating"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/3840px-IMDB_Logo_2016.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="IMDb" loading="lazy" decoding="async"><span>8.5</span></span></div>
+          
+        </div>
+      </article>
+      <article class="movie-card">
+        <a class="poster-link" href="./daredevil/" aria-label="Open Daredevil series details">
+          <img class="movie-poster" data-src="/sodo/assets/posters/daredevil.webp" alt="Daredevil (2015–2018) poster" loading="lazy" decoding="async">
+        </a>
+        <div class="movie-card-info">
+          <h3><a class="movie-title-link" href="./daredevil/">Daredevil</a></h3>
+          <div class="movie-meta"><span>2015–2018</span><span class="movie-rating"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/3840px-IMDB_Logo_2016.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="IMDb" loading="lazy" decoding="async"><span>8.6</span></span></div>
+          
+        </div>
+      </article>
+      <article class="movie-card">
+        <a class="poster-link" href="./breakingbad/" aria-label="Open Breaking Bad series details">
+          <img class="movie-poster" data-src="/sodo/assets/posters/breaking-bad.webp" alt="Breaking Bad (2008–2013) poster" loading="lazy" decoding="async">
+        </a>
+        <div class="movie-card-info">
+          <h3><a class="movie-title-link" href="./breakingbad/">Breaking Bad</a></h3>
+          <div class="movie-meta"><span>2008–2013</span><span class="movie-rating"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/3840px-IMDB_Logo_2016.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="IMDb" loading="lazy" decoding="async"><span>9.5</span></span></div>
+          
+        </div>
+      </article>
+      <article class="movie-card">
+        <a class="poster-link" href="./gameofthrones/" aria-label="Open Game of Thrones series details">
+          <img class="movie-poster" data-src="/sodo/assets/posters/game-of-thrones.webp" alt="Game of Thrones (2011–2019) poster" loading="lazy" decoding="async">
+        </a>
+        <div class="movie-card-info">
+          <h3><a class="movie-title-link" href="./gameofthrones/">Game of Thrones</a></h3>
+          <div class="movie-meta"><span>2011–2019</span><span class="movie-rating"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/3840px-IMDB_Logo_2016.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="IMDb" loading="lazy" decoding="async"><span>9.2</span></span></div>
+          
+        </div>
+      </article>
+      <article class="movie-card">
+        <a class="poster-link" href="./13reasonswhy/" aria-label="Open 13 Reasons Why series details">
+          <img class="movie-poster" data-src="/sodo/assets/posters/13-reasons-why.webp" alt="13 Reasons Why (2017–2020) poster" loading="lazy" decoding="async">
+        </a>
+        <div class="movie-card-info">
+          <h3><a class="movie-title-link" href="./13reasonswhy/">13 Reasons Why</a></h3>
+          <div class="movie-meta"><span>2017–2020</span><span class="movie-rating"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/3840px-IMDB_Logo_2016.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="IMDb" loading="lazy" decoding="async"><span>7.4</span></span></div>
+          
+        </div>
+      </article>
+      <article class="movie-card">
+        <a class="poster-link" href="./daredevilbornagain/" aria-label="Open Daredevil: Born Again series details">
+          <img class="movie-poster" data-src="/sodo/assets/posters/daredevil-born-again.webp" alt="Daredevil: Born Again (2025–2027) poster" loading="lazy" decoding="async">
+        </a>
+        <div class="movie-card-info">
+          <h3><a class="movie-title-link" href="./daredevilbornagain/">Daredevil: Born Again</a></h3>
+          <div class="movie-meta"><span>2025–2027</span><span class="movie-rating"><img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/3840px-IMDB_Logo_2016.svg.png?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=thumbnail" alt="IMDb" loading="lazy" decoding="async"><span>8.1</span></span></div>
+          
+        </div>
+      </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-socials" aria-label="Social media">
+      <a href="https://x.com/bblaock" target="_blank" rel="noopener noreferrer" aria-label="X — @bblaock">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3L12 14.6 5.6 22H2.5l7.3-8.4L1.8 2h6.5l4.5 6.8L18.9 2Zm-1.1 18h1.7L7.3 3.9H5.5L17.8 20Z" fill="currentColor"/></svg>
+        <span>@bblaock</span>
+      </a>
+      <a href="https://www.instagram.com/bblaock/" target="_blank" rel="noopener noreferrer" aria-label="Instagram — @bblaock">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.5" cy="6.7" r="1.1" fill="currentColor"/></svg>
+        <span>@bblaock</span>
+      </a>
+    </div>
+    © 2026 SODO. — Think. Feel. Create.
+  </footer>
+
+  <script>
+    // Make each film/series card a keyboard-accessible link surface.
+    document.querySelectorAll(".movie-card").forEach((card) => {
+      const posterLink = card.querySelector(".poster-link[href]");
+      if (!posterLink) return;
+
+      card.dataset.cardHref = posterLink.getAttribute("href");
+      card.setAttribute("role", "link");
+      card.setAttribute("tabindex", "0");
+      card.setAttribute("aria-label", posterLink.getAttribute("aria-label") || "Open details");
+
+      card.addEventListener("click", (event) => {
+        if (event.target.closest("a, button, input, select, textarea")) return;
+        window.location.href = posterLink.href;
+      });
+
+      card.addEventListener("keydown", (event) => {
+        if (event.target !== card || (event.key !== "Enter" && event.key !== " ")) return;
+        event.preventDefault();
+        window.location.href = posterLink.href;
+      });
+    });
+  </script>
+</body>
+</html>
