@@ -119,7 +119,13 @@ test("public Trakt history merges into the existing SODO film and series grids",
       await route.fulfill({ status: 204, headers: { "Access-Control-Allow-Origin": origin, "Access-Control-Allow-Headers": "authorization, apikey, content-type", "Access-Control-Allow-Methods": "POST, OPTIONS" } });
       return;
     }
-    const payload = { movies: [{ title: "Hope", year: 2026, trakt_id: 101 }, { title: "The Batman", year: 2022, trakt_id: 102 }], series: [{ title: "MobLand", year: 2025, trakt_id: 103, episode_count: 20 }] };
+    const payload = {
+      movies: [
+        { title: "Hope", year: 2026, trakt_id: 101 },
+        { title: "The Batman", year: 2022, trakt_id: 102, poster_url: "https://wbuyglftsgldasawsllt.supabase.co/storage/v1/object/public/sodo-posters/movie/102.webp", overview: "A masked vigilante investigates corruption in Gotham.", genres: ["Crime", "Drama"], rating: 7.8, cast: [{ name: "Robert Pattinson", character: "Bruce Wayne" }] }
+      ],
+      series: [{ title: "MobLand", year: 2025, trakt_id: 103, episode_count: 20, overview: "A crime family story.", poster_url: "https://wbuyglftsgldasawsllt.supabase.co/storage/v1/object/public/sodo-posters/show/103.webp" }]
+    };
     await route.fulfill({ status: 200, headers: { "Access-Control-Allow-Origin": origin, "Content-Type": "application/json" }, body: JSON.stringify(payload) });
   });
   await page.goto("/sodo/en/films/#watched");
@@ -128,12 +134,15 @@ test("public Trakt history merges into the existing SODO film and series grids",
   await expect(hope).toHaveCount(1);
   await expect(hope.locator(".trakt-watch-badge")).toContainText("Watched via Trakt");
   await expect(page.locator("#watched .trakt-imported-card h3")).toContainText("The Batman");
+  await expect(page.locator("#watched .trakt-imported-card .movie-poster")).toHaveAttribute("src", /storage\\/v1\\/object\\/public\\/sodo-posters\\/movie\\/102\\.webp$/);
+  await expect(page.locator("#watched .trakt-imported-card .trakt-imported-details")).toContainText("A masked vigilante investigates corruption in Gotham.");
+  await expect(page.locator("#watched .trakt-imported-card .trakt-imported-details")).toContainText("Robert Pattinson (Bruce Wayne)");
   await expect(page.locator("#series .trakt-imported-card h3")).toContainText("MobLand");
   await expect(page.locator("#series .trakt-imported-card")).toContainText("20 episodes");
   await expect(page.locator(".trakt-private-panel")).toHaveCount(0);
 });
 
-test("signed-in SODO account receives private Trakt history in Cinema", async ({ page }) => {
+test("signed-in SODO owner syncs Trakt before public history is rendered", async ({ page }) => {
   await page.addInitScript(() => {
     const now = Math.floor(Date.now() / 1000);
     localStorage.setItem("sb-wbuyglftsgldasawsllt-auth-token", JSON.stringify({
