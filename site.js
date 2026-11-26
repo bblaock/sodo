@@ -1442,10 +1442,54 @@
     document.body.classList.remove("sodo-page-leaving");
   });
 
+  
+  function installSocialIconOnlyFooter() {
+    const telegramIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m21.4 4.6-3.2 15.1c-.2 1.1-.9 1.4-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.3-8.4c.4-.4-.1-.6-.6-.2L6.6 13.3l-5-1.6c-1.1-.3-1.1-1.1.2-1.6L20.2 3c.9-.3 1.6.2 1.2 1.6Z" fill="currentColor"/></svg>';
+    document.querySelectorAll(".footer-socials").forEach((footer) => {
+      footer.querySelectorAll("a").forEach((link) => {
+        link.querySelectorAll("span").forEach((label) => label.remove());
+        const href = link.getAttribute("href") || "";
+        if (href.includes("x.com")) link.setAttribute("aria-label", "X");
+        else if (href.includes("instagram.com")) link.setAttribute("aria-label", "Instagram");
+        else if (href.includes("t.me")) link.setAttribute("aria-label", "Telegram");
+      });
+      if (!footer.querySelector('a[href*="t.me/bblaock"]')) {
+        const link = document.createElement("a");
+        link.href = "https://t.me/bblaock";
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.setAttribute("aria-label", "Telegram");
+        link.innerHTML = telegramIcon;
+        footer.appendChild(link);
+      }
+    });
+    if (!document.getElementById("sodo-social-icon-only-style")) {
+      const style = document.createElement("style");
+      style.id = "sodo-social-icon-only-style";
+      style.textContent = `
+        .footer-socials a {
+          width: 42px !important;
+          height: 42px !important;
+          min-width: 42px !important;
+          min-height: 42px !important;
+          padding: 0 !important;
+          gap: 0 !important;
+          justify-content: center !important;
+          align-items: center !important;
+          border-radius: 50% !important;
+        }
+        .footer-socials a span { display: none !important; }
+        .footer-socials a svg { width: 19px !important; height: 19px !important; flex: 0 0 19px !important; }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+
   function initialize() {
     installStyles();
     installMotionSystem();
     createControls();
+    installSocialIconOnlyFooter();
 
     // The locale in the current URL is authoritative on every localized page.
     // Stored preferences are only a fallback for legacy routes.
