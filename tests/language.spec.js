@@ -112,12 +112,26 @@ test("localized primary navigation stays inside the active locale", async ({ pag
 });
 
 
-test("private Trakt history stays hidden from signed-out visitors", async ({ page }) => {
-  await page.goto("/sodo/en/films/");
+test("public Trakt history merges into the existing SODO film and series grids", async ({ page }) => {
+  await page.route("https://wbuyglftsgldasawsllt.supabase.co/functions/v1/trakt-sync", async route => {
+    const origin = route.request().headers().origin || "*";
+    if (route.request().method() === "OPTIONS") {
+      await route.fulfill({ status: 204, headers: { "Access-Control-Allow-Origin": origin, "Access-Control-Allow-Headers": "authorization, apikey, content-type", "Access-Control-Allow-Methods": "POST, OPTIONS" } });
+      return;
+    }
+    const payload = { movies: [{ title: "Hope", year: 2019, trakt_id: 101 }, { title: "The Batman", year: 2022, trakt_id: 102 }], series: [{ title: "MobLand", year: 2025, trakt_id: 103, episode_count: 20 }] };
+    await route.fulfill({ status: 200, headers: { "Access-Control-Allow-Origin": origin, "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+  });
+  await page.goto("/sodo/en/films/#watched");
   await page.waitForFunction(() => document.documentElement.dataset.traktHistoryReady === "true");
+  const hope = page.locator("#watched .movie-card:has(a[href=\"./hope/\"])");
+  await expect(hope).toHaveCount(1);
+  await expect(hope.locator(".trakt-watch-badge")).toContainText("Watched via Trakt");
+  await expect(page.locator("#watched .trakt-imported-card h3")).toContainText("The Batman");
+  await expect(page.locator("#series .trakt-imported-card h3")).toContainText("MobLand");
+  await expect(page.locator("#series .trakt-imported-card")).toContainText("20 episodes");
   await expect(page.locator(".trakt-private-panel")).toHaveCount(0);
 });
-
 
 test("signed-in SODO account receives private Trakt history in Cinema", async ({ page }) => {
   await page.addInitScript(() => {
@@ -173,10 +187,10 @@ test("signed-in SODO account receives private Trakt history in Cinema", async ({
 
   await page.goto("/sodo/en/films/#series");
   await page.waitForFunction(() => document.documentElement.dataset.traktHistoryReady === "true");
-  await expect(page.locator("#series .trakt-private-card h3")).toHaveText("MobLand");
-  await expect(page.locator("#series .trakt-private-card")).toContainText("20 episodes");
-  await expect(page.locator("#watched .trakt-private-card h3")).toHaveText("The Batman");
-  await expect(page.locator("#watched .trakt-private-card")).toContainText("Watched");
+  await expect(page.locator("#series .trakt-imported-card h3")).toHaveText("MobLand");
+  await expect(page.locator("#series .trakt-imported-card")).toContainText("20 episodes");
+  await expect(page.locator("#watched .trakt-imported-card h3")).toHaveText("The Batman");
+  await expect(page.locator("#watched .trakt-imported-card")).toContainText("Watched");
   await expect(page.locator("#watched .movie-card h3").filter({ hasText: /^Hope$/ })).toHaveCount(1);
-  await expect(page.locator('#watched .movie-card:has(a[href="./hope/"]) .trakt-private-note')).toContainText("PRIVATE · TRAKT");
+  await expect(page.locator('#watched .movie-card:has(a[href="./hope/"]) .trakt-watch-badge')).toContainText("Watched via Trakt");
 });
