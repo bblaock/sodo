@@ -855,6 +855,8 @@
       /* Shared, layout-stable header across every SODO section.
          Preserve the existing visual/transition effects; normalize only geometry. */
       body > header {
+        position: relative;
+        z-index: 100;
         box-sizing: border-box;
         width: 100%;
         max-width: 1044px;
@@ -908,6 +910,8 @@
       }
 
       body > header .site-tools {
+        position: relative;
+        z-index: 101;
         flex: 0 0 auto;
         margin-inline-start: 0;
       }
@@ -1010,6 +1014,7 @@
 
       .language-menu {
         position: absolute;
+        z-index: 102;
         top: calc(100% + 9px);
         inset-inline-end: 0;
         width: 50px;
