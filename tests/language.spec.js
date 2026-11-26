@@ -205,7 +205,8 @@ test("signed-in SODO owner syncs Trakt before public history is rendered", async
   await expect(page.locator("#series .trakt-imported-card h3")).toHaveText("MobLand");
   await expect(page.locator("#series .trakt-imported-card")).toContainText("20 episodes");
   await expect(page.locator("#watched .trakt-imported-card h3")).toHaveText("The Batman");
-  await expect(page.locator("#watched .trakt-imported-card")).toContainText("Watched");
+  await expect(page.locator("#watched .trakt-imported-card h3")).toHaveText("The Batman");
+  await expect(page.locator("#watched .trakt-imported-card .movie-meta")).toContainText("2022");
   await expect(page.locator("#watched .movie-card h3").filter({ hasText: /^Hope$/ })).toHaveCount(1);
   await expect(page.locator('#watched .movie-card:has(a[href="./hope/"]) .trakt-watch-badge')).toHaveCount(0);
   await expect(page.locator("#watched .trakt-imported-card .trakt-imported-details")).toHaveCount(0);
