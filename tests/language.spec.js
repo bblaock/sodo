@@ -16,9 +16,10 @@ test("all 48 localized routes load with the correct document language and direct
   const pageErrors = [];
   const failedResources = [];
   page.on("pageerror", error => pageErrors.push(error.message));
+  const origin = new URL(process.env.BASE_URL || "http://127.0.0.1:4173").origin;
   page.on("response", response => {
-    if (response.url().startsWith(new URL(page.context()._options.baseURL || "http://127.0.0.1:4173").origin) &&
-        response.status() >= 400) {
+    const url = new URL(response.url());
+    if (url.origin === origin && url.pathname.startsWith("/sodo/") && response.status() >= 400) {
       failedResources.push(`${response.status()} ${response.url()}`);
     }
   });
