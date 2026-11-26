@@ -22,29 +22,12 @@
     if (supported.includes(rest.split("/")[0]) || /^(assets\/|site\.js|language-router\.js)/.test(rest)) return value;
     return localeRoot(language) + rest + url.search + url.hash;
   };
-  const bindLanguageChoice = (event) => {
-    const option = event.target.closest(".language-option[data-lang]");
-    if (!option) return;
-    const next = option.dataset.lang;
-    if (!supported.includes(next) || next === language) return;
-    event.preventDefault();
-    event.stopPropagation();
-    location.href = localizedCurrentPath(next);
-  };
-
-  document.addEventListener("pointerup", bindLanguageChoice, true);
-  document.addEventListener("click", bindLanguageChoice, true);
+  // The shared site.js owns language-menu interactions and navigates to the
+  // equivalent locale route. This router only establishes URL locale state
+  // and localizes internal links, avoiding competing capture-phase handlers.
   document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll('a[href^="/sodo/"]').forEach((anchor) => {
       anchor.setAttribute("href", localize(anchor.getAttribute("href")));
     });
-    const selector = document.querySelector("#site-language");
-    if (selector) {
-      selector.value = language;
-      selector.addEventListener("change", () => {
-        const next = supported.includes(selector.value) ? selector.value : "ar";
-        location.href = localizedCurrentPath(next);
-      }, true);
-    }
   });
 })();
