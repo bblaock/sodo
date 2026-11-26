@@ -214,3 +214,43 @@ test("signed-in SODO owner syncs Trakt before public history is rendered", async
   await expect(page.locator(".trakt-watch-badge")).toHaveCount(0);
   await expect(page.locator(".trakt-sync-summary")).toHaveCount(0);
 });
+
+
+test("private SODO account shows detailed Trakt sync counts only in the account view", async ({ page }) => {
+  await page.addInitScript(() => {
+    const now = Math.floor(Date.now() / 1000);
+    localStorage.setItem("sb-wbuyglftsgldasawsllt-auth-token", JSON.stringify({
+      access_token: "test-access-token",
+      refresh_token: "test-refresh-token",
+      token_type: "bearer",
+      expires_in: 3600,
+      expires_at: now + 3600,
+      user: { id: "test-user", aud: "authenticated", role: "authenticated", email: "test@example.com" }
+    }));
+  });
+
+  await page.route("https://wbuyglftsgldasawsllt.supabase.co/functions/v1/trakt-sync", async route => {
+    const origin = route.request().headers().origin || "*";
+    if (route.request().method() === "OPTIONS") {
+      await route.fulfill({ status: 204, headers: { "Access-Control-Allow-Origin": origin, "Access-Control-Allow-Headers": "authorization, apikey, content-type", "Access-Control-Allow-Methods": "POST, OPTIONS" } });
+      return;
+    }
+    const action = route.request().postDataJSON().action;
+    const payload = action === "status"
+      ? { connected: true, last_synced_at: "2026-11-26T17:45:16.212Z" }
+      : { synced: true, imported: 20, watched_movie_items: 0, watched_movie_rows_inserted: 0, watched_movie_missing_timestamp: 0, history_movie_rows_seen: 0, history_episode_rows_seen: 20, metadata_updated: 1, metadata_pending: 0 };
+    await route.fulfill({
+      status: 200,
+      headers: { "Access-Control-Allow-Origin": origin, "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+  });
+
+  await page.goto("/sodo/account/");
+  await expect(page.locator("#account-panel")).toBeVisible();
+  await expect(page.locator("#message")).toBeVisible();
+  await expect(page.locator("#message")).toContainText("أفلام قائمة Trakt: 0");
+  await expect(page.locator("#message")).toContainText("أفلام سجل المشاهدة: 0");
+  await expect(page.locator("#message")).toContainText("الحلقات: 20");
+  await expect(page.locator("#message")).toContainText("بيانات الأعمال المحدثة: 1");
+});
