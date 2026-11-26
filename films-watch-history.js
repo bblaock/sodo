@@ -14,7 +14,7 @@ const copy = {
     empty: "لا توجد مشاهدات مسجلة في هذا القسم بعد.", loading: "جارٍ تحميل مكتبتك السينمائية…",
     failed: "تعذّر تحميل المكتبة السينمائية حالياً.",
     watchedLabel: "تمت مشاهدته عبر Trakt", watched: "تمت مشاهدته", episodes: "حلقة", last: "آخر مشاهدة",
-    season: "الموسم", episode: "الحلقة"
+    season: "الموسم", episode: "الحلقة", details: "التفاصيل", synopsis: "القصة", genres: "التصنيفات", cast: "طاقم التمثيل", status: "الحالة", runtime: "المدة", certification: "التصنيف العمري", trailer: "الإعلان", homepage: "الموقع الرسمي"
   },
   en: {
     heading: "My watched library",
@@ -23,7 +23,7 @@ const copy = {
     empty: "No watch history in this section yet.", loading: "Loading your watched library…",
     failed: "Could not load the watched library right now.",
     watchedLabel: "Watched via Trakt", watched: "Watched", episodes: "episodes", last: "Last watched",
-    season: "Season", episode: "Episode"
+    season: "Season", episode: "Episode", details: "Details", synopsis: "Synopsis", genres: "Genres", cast: "Cast", status: "Status", runtime: "Runtime", certification: "Certification", trailer: "Trailer", homepage: "Official site"
   },
   ru: {
     heading: "Моя коллекция просмотренного",
@@ -32,7 +32,7 @@ const copy = {
     empty: "В этом разделе пока нет просмотров.", loading: "Загрузка моей коллекции…",
     failed: "Не удалось загрузить коллекцию прямо сейчас.",
     watchedLabel: "Просмотрено через Trakt", watched: "Просмотрено", episodes: "эпизодов", last: "Последний просмотр",
-    season: "Сезон", episode: "Серия"
+    season: "Сезон", episode: "Серия", details: "Подробности", synopsis: "Описание", genres: "Жанры", cast: "Актёры", status: "Статус", runtime: "Длительность", certification: "Возрастной рейтинг", trailer: "Трейлер", homepage: "Официальный сайт"
   }
 };
 const t = copy[lang] || copy.en;
@@ -43,6 +43,11 @@ function addStyles() {
   style.id = "trakt-private-styles";
   style.textContent = `
     .trakt-watch-badge{margin:8px 0 0;color:var(--accent);font-size:10px;text-align:center}
+    .trakt-imported-details{margin-top:10px;color:var(--muted);font-size:11px;line-height:1.6;text-align:start}
+    .trakt-imported-details summary{cursor:pointer;color:var(--accent);font-weight:650;text-align:center}
+    .trakt-imported-details p{margin:7px 0}
+    .trakt-imported-details strong{color:var(--text)}
+    .trakt-imported-details a{color:var(--accent);text-decoration:underline;text-underline-offset:3px;margin-inline-end:8px}
     .trakt-poster-placeholder{display:flex;align-items:center;justify-content:center;padding:14px;background:radial-gradient(ellipse at 50% 35%,#303d26 0%,#171e14 48%,#0b0e0a 100%);color:var(--accent);font-weight:800;text-align:center;overflow-wrap:anywhere}
     .trakt-private-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
     .trakt-private-heading h3{margin:0;color:var(--text);font-size:16px;font-weight:650}
@@ -114,7 +119,23 @@ function cardYear(card) {
   const match = value.match(/\d{4}/);
   return match ? Number(match[0]) : null;
 }
+function manualIds(card) {
+  const links = Array.from(card.querySelectorAll('a[href]')).map(link => link.href);
+  const imdb = card.dataset.imdbId || links.map(url => url.match(/imdb\.com\/title\/(tt\d+)/i)?.[1]).find(Boolean) || null;
+  const tmdb = card.dataset.tmdbId || links.map(url => url.match(/themoviedb\.org\/(?:movie|tv)\/(\d+)/i)?.[1]).find(Boolean) || null;
+  return { imdb: imdb ? String(imdb) : null, tmdb: tmdb ? String(tmdb) : null };
+}
 function findManualCard(cards, item) {
+  const incomingImdb = item.imdb_id ? String(item.imdb_id) : null;
+  if (incomingImdb) {
+    const match = cards.find(card => manualIds(card).imdb === incomingImdb);
+    if (match) return match;
+  }
+  const incomingTmdb = item.tmdb_id ? String(item.tmdb_id) : null;
+  if (incomingTmdb) {
+    const match = cards.find(card => manualIds(card).tmdb === incomingTmdb);
+    if (match) return match;
+  }
   const title = normalize(item.title);
   return cards.find(card => {
     if (!title || normalize(card.querySelector('h3')?.textContent) !== title) return false;
@@ -156,7 +177,33 @@ function createImportedCard(item, kind) {
   addMeta(meta, item.year);
   if (kind === 'series' && item.episode_count) addMeta(meta, item.episode_count + ' ' + t.episodes);
   if (item.rating) addMeta(meta, Number(item.rating).toFixed(1) + '/10');
-  info.append(heading, meta); card.append(posterLink, info); addWatchedBadge(card, item, kind);
+  if (item.runtime) addMeta(meta, item.runtime + ' min');
+  if (item.certification) addMeta(meta, item.certification);
+  info.append(heading, meta);
+  const details = document.createElement('details');
+  details.className = 'trakt-imported-details';
+  const summary = document.createElement('summary'); summary.textContent = t.details; details.append(summary);
+  const addDetail = (label, value) => {
+    if (value === null || value === undefined || value === '' || (Array.isArray(value) && !value.length)) return;
+    const paragraph = document.createElement('p');
+    const strong = document.createElement('strong'); strong.textContent = label + ': ';
+    paragraph.append(strong, document.createTextNode(Array.isArray(value) ? value.join(' · ') : String(value)));
+    details.append(paragraph);
+  };
+  addDetail(t.synopsis, item.overview || item.tagline);
+  addDetail(t.genres, item.genres);
+  addDetail(t.cast, (item.cast || []).map(person => person.character ? person.name + ' (' + person.character + ')' : person.name));
+  addDetail(t.status, item.status);
+  if (item.trailer || item.homepage) {
+    const links = document.createElement('p');
+    for (const [label, url] of [[t.trailer, item.trailer], [t.homepage, item.homepage]]) {
+      if (!url || !/^https:\/\//i.test(url)) continue;
+      const link = document.createElement('a'); link.href = url; link.target = '_blank'; link.rel = 'noopener noreferrer'; link.textContent = label; links.append(link);
+    }
+    if (links.childElementCount) details.append(links);
+  }
+  if (details.childElementCount > 1) info.append(details);
+  card.append(posterLink, info); addWatchedBadge(card, item, kind);
   return card;
 }
 function renderItems(section, items, kind) {
