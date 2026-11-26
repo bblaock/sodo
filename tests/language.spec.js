@@ -178,5 +178,5 @@ test("signed-in SODO account receives private Trakt history in Cinema", async ({
   await expect(page.locator("#watched .trakt-private-card h3")).toHaveText("The Batman");
   await expect(page.locator("#watched .trakt-private-card")).toContainText("Watched");
   await expect(page.locator("#watched .movie-card h3").filter({ hasText: /^Hope$/ })).toHaveCount(1);
-  await expect(page.locator("#watched .movie-card").filter({ has: page.locator(".trakt-private-note") })).toContainText("PRIVATE · TRAKT");
+  await expect(page.locator("#watched .trakt-private-note")).toContainText("PRIVATE · TRAKT");
 });
