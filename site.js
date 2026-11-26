@@ -2,6 +2,20 @@
 
 (() => {
   "use strict";
+  // Fix Arabic glyph joining by removing inappropriate tracking on Arabic routes.
+  // Keep the site's original Tafkir Arabic font; other language routes are untouched.
+  if (document.documentElement.lang === "ar") {
+    const arabicSpacingFix = document.createElement("style");
+    arabicSpacingFix.textContent = `
+      html[lang="ar"] body :is(h1,h2,h3,h4,h5,h6,p,a,button,label,small,strong,em,li,blockquote) {
+        letter-spacing: normal !important;
+      }
+      html[lang="ar"] .logo { letter-spacing: 5px !important; }
+      html[lang="ar"] .eyebrow { letter-spacing: 0 !important; }
+    `;
+    document.head.appendChild(arabicSpacingFix);
+  }
+
     const translations = {
     ar: {
       home: "الرئيسية",
