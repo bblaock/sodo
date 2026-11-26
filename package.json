@@ -1,0 +1,12 @@
+{
+  "name": "sodo-language-qa",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Browser-level regression tests for SODO locale routing and translation",
+  "scripts": {
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.1"
+  }
+}
