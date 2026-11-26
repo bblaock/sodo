@@ -155,7 +155,7 @@ function createImportedCard(item, kind) {
   const card = document.createElement('article');
   card.className = 'movie-card trakt-imported-card';
   card.dataset.traktImported = 'true';
-  const target = 'https://trakt.tv/' + (kind === 'movie' ? 'movies/' : 'shows/') + encodeURIComponent(item.trakt_id || title);
+  const target = '/sodo/' + lang + '/films/trakt/?kind=' + encodeURIComponent(kind) + '&id=' + encodeURIComponent(item.trakt_id || '');
   const posterLink = document.createElement('a');
   posterLink.className = 'poster-link';
   posterLink.href = target; posterLink.target = '_blank'; posterLink.rel = 'noopener noreferrer';
