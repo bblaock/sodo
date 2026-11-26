@@ -791,9 +791,9 @@
           ${icons.globe}<span class="language-code">AR</span>
         </button>
         <div class="language-menu" id="site-language-menu" role="menu">
-          <a class="language-option" href="/sodo/ar/" data-lang="ar" role="menuitem" aria-label="العربية">${flagIcons.ar}</a>
-          <a class="language-option" href="/sodo/en/" data-lang="en" role="menuitem" aria-label="English">${flagIcons.en}</a>
-          <a class="language-option" href="/sodo/ru/" data-lang="ru" role="menuitem" aria-label="Русский">${flagIcons.ru}</a>
+          <a class="language-option" data-no-page-transition href="/sodo/ar/" data-lang="ar" role="menuitem" aria-label="العربية">${flagIcons.ar}</a>
+          <a class="language-option" data-no-page-transition href="/sodo/en/" data-lang="en" role="menuitem" aria-label="English">${flagIcons.en}</a>
+          <a class="language-option" data-no-page-transition href="/sodo/ru/" data-lang="ru" role="menuitem" aria-label="Русский">${flagIcons.ru}</a>
         </div>
       </div>
       <button class="site-tool-button theme-toggle" type="button" aria-label="Toggle theme"></button>
@@ -1522,7 +1522,7 @@
       const card = !link && event.target.closest("[data-card-href]");
       if (card && event.target.closest("a, button, input, select, textarea")) return;
       if (!link && !card) return;
-      if (link && (link.target || link.hasAttribute("download") ||
+      if (link && (link.classList.contains("language-option") || link.target || link.hasAttribute("download") ||
           link.hasAttribute("data-no-page-transition") ||
           (link.getAttribute("rel") || "").split(/\s+/).includes("external"))) return;
 
