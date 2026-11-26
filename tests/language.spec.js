@@ -145,9 +145,9 @@ test("public Trakt history merges into the existing SODO film and series grids",
   await batman.locator(".poster-link").click();
   await expect(page).toHaveURL(url => {
     const parsed = new URL(url);
-    expect(parsed.pathname).toBe("/sodo/en/films/trakt/");
-    expect(parsed.searchParams.get("kind")).toBe("movie");
-    expect(parsed.searchParams.get("id")).toBe("102");
+    return parsed.pathname === "/sodo/en/films/trakt/" &&
+      parsed.searchParams.get("kind") === "movie" &&
+      parsed.searchParams.get("id") === "102";
   });
   await expect(page.locator("#trakt-title")).toHaveText("The Batman");
   await expect(page.locator("#trakt-overview")).toContainText("A masked vigilante");
