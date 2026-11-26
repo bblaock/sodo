@@ -1,0 +1,52 @@
+name: Host SODO cinema posters
+
+on:
+  push:
+    branches:
+      - sodo/host-all-posters
+    paths:
+      - ".github/workflows/host-posters.yml"
+      - "tools/download_posters.py"
+      - "films/**"
+      - "films.html"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sodo-host-posters
+  cancel-in-progress: false
+
+jobs:
+  download-and-commit:
+    name: Download and optimize poster assets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out poster branch
+        uses: actions/checkout@v4
+        with:
+          ref: sodo/host-all-posters
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install image optimizer
+        run: python -m pip install --disable-pip-version-check Pillow
+
+      - name: Download and optimize all cinema posters
+        run: python tools/download_posters.py
+
+      - name: Commit local poster assets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/posters/*.webp
+          if git diff --cached --quiet; then
+            echo "Poster assets are already up to date."
+          else
+            git commit -m "Add locally hosted optimized cinema posters"
+            git push origin sodo/host-all-posters
+          fi
