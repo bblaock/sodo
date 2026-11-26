@@ -248,3 +248,4 @@ async function refresh() {
 }
 supabase.auth.onAuthStateChange(() => { queueMicrotask(refresh); });
 refresh();
+document.documentElement.dataset.traktHistoryReady = "true";
