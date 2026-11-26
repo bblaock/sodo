@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 from collections import Counter
 from html.parser import HTMLParser
 from pathlib import Path
@@ -112,6 +113,51 @@ def resolve_local_target(raw_url: str, source: Path, root: Path) -> Path | None:
     return candidates[0]
 
 
+def validate_locale_routes(root: Path, errors: list[str]) -> int:
+    """Ensure every supported language has the complete canonical route tree."""
+    config_path = root / "locales" / "routes.json"
+    router_path = root / "language-router.js"
+    if not config_path.is_file():
+        errors.append("locales/routes.json: missing locale route configuration")
+        return 0
+    if not router_path.is_file():
+        errors.append("language-router.js: missing language-first route resolver")
+    try:
+        config = json.loads(config_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        errors.append(f"locales/routes.json: invalid configuration ({exc})")
+        return 0
+
+    languages = config.get("supportedLanguages", [])
+    if languages != ["ar", "en", "ru"]:
+        errors.append("locales/routes.json: supportedLanguages must be [ar, en, ru]")
+
+    required_routes = [
+        "index.html",
+        "about/index.html",
+        "thoughts/index.html",
+        "films/index.html",
+        "projects/index.html",
+    ]
+    canonical_film_pages = sorted((root / "films").glob("*/index.html"))
+    required_routes.extend(
+        f"films/{page.parent.name}/index.html" for page in canonical_film_pages
+    )
+
+    checked = 0
+    for language in languages:
+        for route in required_routes:
+            target = root / language / route
+            checked += 1
+            if not target.is_file():
+                errors.append(f"{language}/{route}: missing localized route")
+                continue
+            source = target.read_text(encoding="utf-8")
+            if 'src="/sodo/language-router.js' not in source:
+                errors.append(f"{language}/{route}: language router script is not loaded")
+    return checked
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run SODO static-site QA checks.")
     parser.add_argument("--root", type=Path, default=ROOT, help="Website root directory")
@@ -126,6 +172,7 @@ def main() -> int:
     errors: list[str] = []
     warnings: list[str] = []
     checked_references = 0
+    locale_routes_checked = validate_locale_routes(root, errors)
 
     for page in pages:
         try:
@@ -167,7 +214,7 @@ def main() -> int:
                     f"\"{raw_url}\" (expected {target.relative_to(root)})"
                 )
 
-    print(f"SODO QA: scanned {len(pages)} HTML pages and {checked_references} local references.")
+    print(f"SODO QA: scanned {len(pages)} HTML pages, {checked_references} local references, and {locale_routes_checked} localized routes.")
     if warnings:
         print(f"\nWarnings ({len(warnings)}):")
         for warning in warnings:
