@@ -133,6 +133,18 @@ test("signed-in SODO account receives private Trakt history in Cinema", async ({
   });
 
   await page.route("https://wbuyglftsgldasawsllt.supabase.co/functions/v1/trakt-sync", async route => {
+    const origin = route.request().headers().origin || "*";
+    if (route.request().method() === "OPTIONS") {
+      await route.fulfill({
+        status: 204,
+        headers: {
+          "Access-Control-Allow-Origin": origin,
+          "Access-Control-Allow-Headers": "authorization, apikey, content-type",
+          "Access-Control-Allow-Methods": "POST, OPTIONS"
+        }
+      });
+      return;
+    }
     const action = route.request().postDataJSON().action;
     const payload = action === "status"
       ? { connected: true }
@@ -149,7 +161,11 @@ test("signed-in SODO account receives private Trakt history in Cinema", async ({
               last_episode: 6
             }]
           };
-    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(payload) });
+    await route.fulfill({
+      status: 200,
+      headers: { "Access-Control-Allow-Origin": origin, "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
   });
 
   await page.goto("/sodo/en/films/#series");
