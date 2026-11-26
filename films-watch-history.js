@@ -10,28 +10,28 @@ const copy = {
   ar: {
     heading: "مكتبتي السينمائية",
     account: "فتح حساب SODO", connect: "اربط حساب Trakt من صفحة حسابك لعرض المشاهدات هنا.",
-    movies: "الأفلام المسجلة في Trakt", series: "المسلسلات المسجلة في Trakt",
+    movies: "الأفلام التي شاهدتها", series: "المسلسلات التي شاهدتها",
     empty: "لا توجد مشاهدات مسجلة في هذا القسم بعد.", loading: "جارٍ تحميل مكتبتك السينمائية…",
-    failed: "تعذّر تحميل سجل المشاهدة. افتح حساب SODO وحاول المزامنة مجدداً.",
-    private: "تمت مشاهدته · TRAKT", watched: "تمت مشاهدته", episodes: "حلقة", last: "آخر مشاهدة",
+    failed: "تعذّر تحميل المكتبة السينمائية حالياً.",
+    watchedLabel: "تمت مشاهدته عبر Trakt", watched: "تمت مشاهدته", episodes: "حلقة", last: "آخر مشاهدة",
     season: "الموسم", episode: "الحلقة"
   },
   en: {
     heading: "My watched library",
     account: "Open SODO account", connect: "Connect Trakt from your account page to show your activity here.",
-    movies: "Movies recorded by Trakt", series: "Series recorded by Trakt",
+    movies: "Movies I have watched", series: "Series I have watched",
     empty: "No watch history in this section yet.", loading: "Loading your watched library…",
-    failed: "Could not load watch history. Open your SODO account and try syncing again.",
-    private: "WATCHED · TRAKT", watched: "Watched", episodes: "episodes", last: "Last watched",
+    failed: "Could not load the watched library right now.",
+    watchedLabel: "Watched via Trakt", watched: "Watched", episodes: "episodes", last: "Last watched",
     season: "Season", episode: "Episode"
   },
   ru: {
     heading: "Моя коллекция просмотренного",
     account: "Открыть аккаунт SODO", connect: "Подключите Trakt на странице аккаунта, чтобы увидеть просмотры здесь.",
-    movies: "Фильмы из Trakt", series: "Сериалы из Trakt",
+    movies: "Просмотренные фильмы", series: "Просмотренные сериалы",
     empty: "В этом разделе пока нет просмотров.", loading: "Загрузка моей коллекции…",
-    failed: "Не удалось загрузить историю. Откройте аккаунт SODO и повторите синхронизацию.",
-    private: "ПРОСМОТРЕНО · TRAKT", watched: "Просмотрено", episodes: "эпизодов", last: "Последний просмотр",
+    failed: "Не удалось загрузить коллекцию прямо сейчас.",
+    watchedLabel: "Просмотрено через Trakt", watched: "Просмотрено", episodes: "эпизодов", last: "Последний просмотр",
     season: "Сезон", episode: "Серия"
   }
 };
@@ -83,7 +83,7 @@ function makePanel(section, kind) {
   title.textContent = t.heading + " — " + (kind === "movie" ? t.movies : t.series);
   const label = document.createElement("span");
   label.className = "trakt-private-label";
-  label.textContent = t.private;
+  label.textContent = t.watchedLabel;
   header.append(title, label);
   panel.append(header);
   section.append(panel);
