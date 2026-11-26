@@ -6,6 +6,7 @@ const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const TRAKT_CLIENT_ID = "_T6j_nnJftnEGLtgQ-E1iWD7EuSjVOv7e-e0x5Z5IPw";
 const REDIRECT_URI = "https://bblaock.github.io/sodo/";
 const ORIGIN = "https://bblaock.github.io";
+const PUBLIC_WATCH_HISTORY_USER_ID = "f720934d-a7de-4d49-bf01-9fccfc99eb32";
 const TRAKT_API = "https://api.trakt.tv";
 const db = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
 
@@ -16,6 +17,7 @@ const headers = {
   "Vary": "Origin",
 };
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { ...headers, "Content-Type": "application/json", "Cache-Control": "private, no-store" } });
+const publicJson = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { ...headers, "Content-Type": "application/json", "Cache-Control": "public, max-age=60, s-maxage=300" } });
 const b64url = (bytes: Uint8Array) => btoa(String.fromCharCode(...bytes)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
 const hex = (bytes: Uint8Array) => Array.from(bytes, b => b.toString(16).padStart(2, "0")).join("");
 const unhex = (s: string) => new Uint8Array((s.match(/.{1,2}/g) || []).map(x => parseInt(x, 16)));
@@ -106,6 +108,30 @@ Deno.serve(async (req: Request) => {
   try { body = await req.json(); } catch { return json({ error: "Invalid JSON body" }, 400); }
   const action = String(body.action || "");
   try {
+    if (action === "public-history") {
+      const { data: rows, error } = await db.from("sodo_watch_history")
+        .select("media_type,trakt_id,title,year,watched_at,show_trakt_id,show_title")
+        .eq("user_id", PUBLIC_WATCH_HISTORY_USER_ID)
+        .order("watched_at", { ascending: false }).limit(5000);
+      if (error) throw new Error("Could not read the public SODO watch library");
+      const movies = new Map<number, any>();
+      const series = new Map<string, any>();
+      for (const row of rows || []) {
+        if (row.media_type === "movie") {
+          const key = Number(row.trakt_id);
+          if (!movies.has(key)) movies.set(key, { title: row.title, year: row.year });
+        } else if (row.media_type === "episode" && row.show_title) {
+          const key = String(row.show_trakt_id || row.show_title);
+          const item = series.get(key) || { title: row.show_title, year: row.year, episode_ids: new Set<number>() };
+          item.episode_ids.add(Number(row.trakt_id));
+          series.set(key, item);
+        }
+      }
+      return publicJson({
+        movies: Array.from(movies.values()),
+        series: Array.from(series.values()).map(({ title, year, episode_ids }) => ({ title, year, episode_count: episode_ids.size })),
+      });
+    }
     if (action === "callback") {
       if (!body.code || !body.state) return json({ error: "Missing Trakt authorization code or state" }, 400);
       const stateHash = hex(await sha256(String(body.state)));
