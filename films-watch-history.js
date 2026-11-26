@@ -155,10 +155,11 @@ function createImportedCard(item, kind) {
   const card = document.createElement('article');
   card.className = 'movie-card trakt-imported-card';
   card.dataset.traktImported = 'true';
-  const target = 'https://trakt.tv/' + (kind === 'movie' ? 'movies/' : 'shows/') + encodeURIComponent(item.trakt_id || title);
+  const target = '/sodo/' + lang + '/films/trakt/?kind=' + encodeURIComponent(kind) + '&id=' + encodeURIComponent(item.trakt_id || '');
   const posterLink = document.createElement('a');
   posterLink.className = 'poster-link';
-  posterLink.href = target; posterLink.target = '_blank'; posterLink.rel = 'noopener noreferrer';
+  posterLink.href = target;
+  posterLink.setAttribute('data-no-page-transition', '');
   if (item.poster_url) {
     const image = document.createElement('img');
     image.className = 'movie-poster'; image.src = item.poster_url; image.alt = title + ' poster';
@@ -170,8 +171,7 @@ function createImportedCard(item, kind) {
   const info = document.createElement('div'); info.className = 'movie-card-info';
   const heading = document.createElement('h3');
   const titleLink = document.createElement('a');
-  titleLink.className = 'movie-title-link'; titleLink.href = target; titleLink.target = '_blank';
-  titleLink.rel = 'noopener noreferrer'; titleLink.textContent = title; heading.append(titleLink);
+  titleLink.className = 'movie-title-link'; titleLink.href = target; titleLink.setAttribute('data-no-page-transition', ''); titleLink.textContent = title; heading.append(titleLink);
   const meta = document.createElement('div'); meta.className = 'movie-meta';
   addMeta(meta, item.year);
   if (kind === 'series' && item.episode_count) addMeta(meta, item.episode_count + ' ' + t.episodes);
