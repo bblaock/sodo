@@ -8,7 +8,7 @@ const lang = document.documentElement.lang || "en";
 
 const copy = {
   ar: {
-    heading: "سجل Trakt الخاص", login: "سجّل الدخول إلى حساب SODO لعرض سجل مشاهدتك الخاص.",
+    heading: "سجل Trakt الخاص",
     account: "فتح حساب SODO", connect: "اربط حساب Trakt من صفحة حسابك لعرض المشاهدات هنا.",
     movies: "الأفلام المسجلة في Trakt", series: "المسلسلات المسجلة في Trakt",
     empty: "لا توجد مشاهدات مسجلة في هذا القسم بعد.", loading: "جارٍ تحميل سجل المشاهدة الخاص…",
@@ -17,7 +17,7 @@ const copy = {
     season: "الموسم", episode: "الحلقة"
   },
   en: {
-    heading: "Private Trakt history", login: "Sign in to your SODO account to view your private watch history.",
+    heading: "Private Trakt history",
     account: "Open SODO account", connect: "Connect Trakt from your account page to show your activity here.",
     movies: "Movies recorded by Trakt", series: "Series recorded by Trakt",
     empty: "No watch history in this section yet.", loading: "Loading your private watch history…",
@@ -26,7 +26,7 @@ const copy = {
     season: "Season", episode: "Episode"
   },
   ru: {
-    heading: "Личная история Trakt", login: "Войдите в аккаунт SODO, чтобы увидеть личную историю просмотров.",
+    heading: "Личная история Trakt",
     account: "Открыть аккаунт SODO", connect: "Подключите Trakt на странице аккаунта, чтобы увидеть просмотры здесь.",
     movies: "Фильмы из Trakt", series: "Сериалы из Trakt",
     empty: "В этом разделе пока нет просмотров.", loading: "Загрузка личной истории просмотров…",
@@ -180,16 +180,6 @@ async function callFunction(action, accessToken) {
 
 async function loadPrivateHistory() {
   clearPanels();
-  addStyles();
-  const sections = {
-    movie: document.getElementById("watched"),
-    series: document.getElementById("series")
-  };
-  const panels = {};
-  for (const kind of ["movie", "series"]) {
-    if (sections[kind]) panels[kind] = makePanel(sections[kind], kind);
-  }
-
   let session;
   try {
     const result = await supabase.auth.getSession();
@@ -202,9 +192,17 @@ async function loadPrivateHistory() {
     session = null;
   }
 
-  if (!session?.access_token) {
-    for (const panel of Object.values(panels)) panel.append(messageNode(t.login, true));
-    return;
+  // Keep the public Cinema pages free of account prompts and private-history UI.
+  if (!session?.access_token) return;
+
+  addStyles();
+  const sections = {
+    movie: document.getElementById("watched"),
+    series: document.getElementById("series")
+  };
+  const panels = {};
+  for (const kind of ["movie", "series"]) {
+    if (sections[kind]) panels[kind] = makePanel(sections[kind], kind);
   }
 
   for (const panel of Object.values(panels)) panel.append(messageNode(t.loading));
