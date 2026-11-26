@@ -1580,6 +1580,7 @@
     createControls();
 
     applyLanguage(getPreference("sodo-language", "ar"));
+    observeDynamicTranslations();
     applyTheme(getPreference("sodo-theme", "dark"));
     createWelcomeNotice();
     document.documentElement.classList.add("site-ready");
