@@ -140,6 +140,7 @@ test("public Trakt history merges into the existing SODO film and series grids",
   await expect(page.locator("#series .trakt-imported-card h3")).toContainText("MobLand");
   await expect(page.locator("#series .trakt-imported-card")).toContainText("20 episodes");
   await expect(page.locator(".trakt-private-panel")).toHaveCount(0);
+  await expect(page.locator(".trakt-sync-summary")).toHaveCount(0);
 });
 
 test("signed-in SODO owner syncs Trakt before public history is rendered", async ({ page }) => {
@@ -172,7 +173,7 @@ test("signed-in SODO owner syncs Trakt before public history is rendered", async
     const payload = action === "status"
       ? { connected: true }
       : action === "sync"
-        ? { synced: true, imported: 0 }
+        ? { synced: true, imported: 22, watched_movie_items: 2, watched_movie_rows_inserted: 2, history_movie_rows_seen: 2, history_episode_rows_seen: 20, metadata_updated: 2, metadata_pending: 0 }
         : {
             movies: [
               { title: "The Batman", year: 2022, last_watched_at: "2026-11-20T18:00:00Z" },
@@ -202,4 +203,6 @@ test("signed-in SODO owner syncs Trakt before public history is rendered", async
   await expect(page.locator("#watched .trakt-imported-card")).toContainText("Watched");
   await expect(page.locator("#watched .movie-card h3").filter({ hasText: /^Hope$/ })).toHaveCount(1);
   await expect(page.locator('#watched .movie-card:has(a[href="./hope/"]) .trakt-watch-badge')).toContainText("Watched via Trakt");
+  await expect(page.locator(".trakt-sync-summary")).toContainText("2 movies");
+  await expect(page.locator(".trakt-sync-summary")).toContainText("20 episodes");
 });
