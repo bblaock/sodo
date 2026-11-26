@@ -1128,6 +1128,129 @@
     `;
 
     document.head.appendChild(style);
+
+    // Keep text metrics and tap states stable across every page and device.
+    // This layer intentionally avoids changing the site's palette or animations.
+    const stabilityStyle = document.createElement("style");
+    stabilityStyle.id = "sodo-stability-style";
+    stabilityStyle.textContent = `
+      html {
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+        scroll-behavior: smooth;
+      }
+
+      body {
+        min-width: 320px;
+        overflow-x: clip;
+      }
+
+      img, svg, video {
+        max-width: 100%;
+      }
+
+      a, button, [role="button"] {
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+      }
+
+      button, input, select, textarea {
+        font-family: inherit;
+        max-width: 100%;
+      }
+
+      a, button, input, select, textarea, [role="button"] {
+        font-synthesis: none;
+      }
+
+      a:focus-visible,
+      button:focus-visible,
+      input:focus-visible,
+      select:focus-visible,
+      textarea:focus-visible,
+      [role="button"]:focus-visible {
+        outline: 2px solid var(--accent, #c8ff4d);
+        outline-offset: 3px;
+      }
+
+      body > header,
+      body > main,
+      body > footer,
+      main,
+      main > section,
+      .container,
+      .movie-grid,
+      .movie-card,
+      .movie-card-info,
+      .card,
+      .project,
+      .film,
+      .film-copy {
+        min-width: 0;
+      }
+
+      .movie-grid {
+        align-items: stretch;
+      }
+
+      .movie-card {
+        height: 100%;
+      }
+
+      .movie-card h3,
+      .movie-title-link,
+      .movie-meta,
+      .section-heading h2,
+      .card h3,
+      .project h2 {
+        overflow-wrap: anywhere;
+      }
+
+      .movie-poster {
+        background: #20251e;
+      }
+
+      @media (max-width: 380px) {
+        body > header {
+          padding-inline: 14px;
+        }
+
+        .site-tools {
+          flex-wrap: wrap;
+        }
+
+        .movie-grid {
+          gap: 8px;
+        }
+
+        .movie-card {
+          padding: 5px;
+        }
+
+        .movie-card h3 {
+          font-size: 12px;
+          line-height: 1.45;
+        }
+
+        .movie-meta {
+          font-size: 10px;
+          line-height: 1.45;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+
+        *, *::before, *::after {
+          animation-duration: .01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: .01ms !important;
+        }
+      }
+    `;
+    document.head.appendChild(stabilityStyle);
   }
 
   function createWelcomeNotice() {
