@@ -15,6 +15,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
+    /* Prevent first-load header layout shift while shared JS initializes. */
+    header nav { visibility: hidden; }
+    html.site-ready header nav { visibility: visible; }
     :root {
       --bg: #080a08;
       --panel: #111510;
