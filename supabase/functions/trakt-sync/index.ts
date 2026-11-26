@@ -150,7 +150,7 @@ Deno.serve(async (req: Request) => {
     if (action === "history") {
       const { data: rows, error } = await db
         .from("sodo_watch_history")
-        .select("media_type,trakt_id,title,year,watched_at,imdb_id,tmdb_id,show_trakt_id,show_title,season_number,episode_number")
+        .select("media_type,trakt_id,title,year,watched_at,show_trakt_id,show_title,season_number,episode_number")
         .eq("user_id", user.id)
         .order("watched_at", { ascending: false })
         .limit(5000);
@@ -162,8 +162,7 @@ Deno.serve(async (req: Request) => {
         if (row.media_type === "movie") {
           const key = Number(row.trakt_id);
           const item = movies.get(key) || {
-            trakt_id: key, title: row.title, year: row.year, imdb_id: row.imdb_id,
-            tmdb_id: row.tmdb_id, watch_count: 0, last_watched_at: row.watched_at,
+            title: row.title, year: row.year, watch_count: 0, last_watched_at: row.watched_at,
           };
           item.watch_count += 1;
           if (new Date(row.watched_at).getTime() > new Date(item.last_watched_at).getTime()) item.last_watched_at = row.watched_at;
@@ -171,15 +170,13 @@ Deno.serve(async (req: Request) => {
         } else if (row.media_type === "episode" && row.show_title) {
           const key = String(row.show_trakt_id || row.show_title);
           const item = series.get(key) || {
-            trakt_id: row.show_trakt_id, title: row.show_title, year: row.year,
-            imdb_id: row.imdb_id, tmdb_id: row.tmdb_id, episode_count: 0,
-            last_watched_at: row.watched_at, last_episode_title: row.title,
-            last_season: row.season_number, last_episode: row.episode_number,
+            title: row.show_title, year: row.year, episode_ids: new Set<number>(),
+            last_watched_at: row.watched_at, last_season: row.season_number,
+            last_episode: row.episode_number,
           };
-          item.episode_count += 1;
+          item.episode_ids.add(Number(row.trakt_id));
           if (new Date(row.watched_at).getTime() > new Date(item.last_watched_at).getTime()) {
             item.last_watched_at = row.watched_at;
-            item.last_episode_title = row.title;
             item.last_season = row.season_number;
             item.last_episode = row.episode_number;
           }
@@ -187,8 +184,14 @@ Deno.serve(async (req: Request) => {
         }
       }
       return json({
-        movies: Array.from(movies.values()).sort((a, b) => new Date(b.last_watched_at).getTime() - new Date(a.last_watched_at).getTime()),
-        series: Array.from(series.values()).sort((a, b) => new Date(b.last_watched_at).getTime() - new Date(a.last_watched_at).getTime()),
+        movies: Array.from(movies.values())
+          .map(({ title, year, watch_count, last_watched_at }) => ({ title, year, watch_count, last_watched_at }))
+          .sort((a, b) => new Date(b.last_watched_at).getTime() - new Date(a.last_watched_at).getTime()),
+        series: Array.from(series.values())
+          .map(({ title, year, episode_ids, last_watched_at, last_season, last_episode }) => ({
+            title, year, episode_count: episode_ids.size, last_watched_at, last_season, last_episode,
+          }))
+          .sort((a, b) => new Date(b.last_watched_at).getTime() - new Date(a.last_watched_at).getTime()),
       });
     }
     if (action === "sync") {
