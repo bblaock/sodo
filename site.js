@@ -1547,6 +1547,14 @@
     }, true);
   }
 
+  // Safari/iOS may restore the previous document from the back-forward cache.
+  // Clear the exit state so a swipe-back never leaves the restored page invisible
+  // or unable to receive taps until the user refreshes.
+  window.addEventListener("pageshow", function onSodoPageShow() {
+    if (!document.body) return;
+    document.body.classList.remove("sodo-page-leaving");
+  });
+
   function initialize() {
     installStyles();
     installMotionSystem();
