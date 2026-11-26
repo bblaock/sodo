@@ -1,0 +1,116 @@
+name: SODO Browser and Quality Checks
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sodo-quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  browser-and-markup:
+    name: Browser tests and HTML validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install test tools
+        run: npm install --no-audit --no-fund
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run existing Python QA
+        run: |
+          python -m py_compile tools/sodo_qa.py
+          python tools/sodo_qa.py
+
+      - name: Validate core HTML pages with Nu HTML Checker
+        run: |
+          docker run --rm -v "$PWD:/src" validator/validator:latest vnu --errors-only \
+            /src/index.html \
+            /src/thoughts/index.html \
+            /src/films/index.html \
+            /src/projects/index.html
+
+      - name: Run Playwright browser tests
+        run: npm run test:e2e
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sodo-playwright-report
+          path: playwright-report/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  lighthouse:
+    name: Lighthouse performance and accessibility audit
+    runs-on: ubuntu-latest
+    needs: browser-and-markup
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install audit tools
+        run: npm install --no-audit --no-fund
+
+      - name: Run Lighthouse CI
+        run: npx lhci autorun --config=lighthouserc.js
+
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sodo-lighthouse-reports
+          path: .lighthouseci/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  post-deploy-smoke:
+    name: Verify published GitHub Pages site
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs: [browser-and-markup, lighthouse]
+    steps:
+      - name: Wait for GitHub Pages and verify core routes
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="https://bblaock.github.io/sodo"
+          routes=("/" "/thoughts/" "/films/" "/projects/" "/films/breakingbad/")
+          for attempt in $(seq 1 36); do
+            if curl --fail --silent --show-error "$base/" -o /tmp/sodo-home.html 2>/dev/null; then
+              break
+            fi
+            if [ "$attempt" -eq 36 ]; then
+              echo "GitHub Pages did not become reachable within six minutes."
+              exit 1
+            fi
+            sleep 10
+          done
+          for route in "${routes[@]}"; do
+            code=$(curl --silent --output /dev/null --write-out "%{http_code}" "$base$route")
+            echo "$code $route"
+            test "$code" = "200"
+          done
+          grep -qi "SODO" /tmp/sodo-home.html
