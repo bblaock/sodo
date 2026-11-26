@@ -162,9 +162,8 @@ Deno.serve(async (req: Request) => {
         if (row.media_type === "movie") {
           const key = Number(row.trakt_id);
           const item = movies.get(key) || {
-            title: row.title, year: row.year, watch_count: 0, last_watched_at: row.watched_at,
+            title: row.title, year: row.year, last_watched_at: row.watched_at,
           };
-          item.watch_count += 1;
           if (new Date(row.watched_at).getTime() > new Date(item.last_watched_at).getTime()) item.last_watched_at = row.watched_at;
           movies.set(key, item);
         } else if (row.media_type === "episode" && row.show_title) {
@@ -185,7 +184,7 @@ Deno.serve(async (req: Request) => {
       }
       return json({
         movies: Array.from(movies.values())
-          .map(({ title, year, watch_count, last_watched_at }) => ({ title, year, watch_count, last_watched_at }))
+          .map(({ title, year, last_watched_at }) => ({ title, year, last_watched_at }))
           .sort((a, b) => new Date(b.last_watched_at).getTime() - new Date(a.last_watched_at).getTime()),
         series: Array.from(series.values())
           .map(({ title, year, episode_ids, last_watched_at, last_season, last_episode }) => ({
@@ -200,11 +199,56 @@ Deno.serve(async (req: Request) => {
       const accessToken = await validAccessToken(user.id, creds);
       const activityResponse = await traktFetch("/sync/last_activities", accessToken);
       const activities = await activityResponse.json();
+
+      // Trakt's watched list is separate from watch history. Import it on every sync
+      // so a movie marked Watched is not missed when last_activities is unchanged.
+      let watchedMovieTotal = 0;
+      let watchedPage = 1;
+      let watchedPageCount = 1;
+      do {
+        const response = await traktFetch("/sync/watched/movies?page=" + watchedPage + "&limit=250", accessToken);
+        watchedPageCount = Number(response.headers.get("x-pagination-page-count") || 1);
+        const items = await response.json();
+        if (!Array.isArray(items) || items.length === 0) break;
+        const rows = items.flatMap((entry: any) => {
+          const movie = entry.movie;
+          const watchedAt = entry.last_watched_at || entry.last_updated_at;
+          if (!movie?.ids?.trakt || !watchedAt) return [];
+          return [{
+            user_id: user.id, trakt_id: movie.ids.trakt, media_type: "movie",
+            title: movie.title, year: movie.year ?? null, watched_at: watchedAt,
+            imdb_id: movie.ids.imdb ?? null, tmdb_id: movie.ids.tmdb ?? null,
+          }];
+        });
+        for (let i = 0; i < rows.length; i += 500) {
+          const { data, error } = await db.from("sodo_watch_history")
+            .upsert(rows.slice(i, i + 500), {
+              onConflict: "user_id,media_type,trakt_id,watched_at", ignoreDuplicates: true,
+            })
+            .select("trakt_id");
+          if (error) throw new Error("Could not save watched movies from Trakt");
+          watchedMovieTotal += data?.length || 0;
+        }
+        if (watchedPage >= watchedPageCount) break;
+        watchedPage++;
+      } while (watchedPage <= 1000);
+
       const { data: previousState } = await db.rpc("sodo_trakt_get_sync_state", { p_user_id: user.id });
-      if (previousState?.last_activities && JSON.stringify(previousState.last_activities) === JSON.stringify(activities)) {
-        return json({ synced: false, unchanged: true, imported: 0, last_synced_at: previousState.last_synced_at ?? null });
+      const activitiesUnchanged = previousState?.last_activities &&
+        JSON.stringify(previousState.last_activities) === JSON.stringify(activities);
+      if (activitiesUnchanged) {
+        const now = new Date().toISOString();
+        const { error } = await db.rpc("sodo_trakt_set_sync_state", {
+          p_user_id: user.id, p_last_activities: activities, p_last_synced_at: now, p_last_error: null,
+        });
+        if (error) throw new Error("Could not save sync status");
+        return json({
+          synced: watchedMovieTotal > 0, unchanged: watchedMovieTotal === 0,
+          imported: watchedMovieTotal, last_synced_at: now,
+        });
       }
-      let total = 0, page = 1, pageCount = 100;
+
+      let total = watchedMovieTotal, page = 1, pageCount = 100;
       do {
         const response = await traktFetch("/sync/history?page=" + page + "&limit=100", accessToken);
         pageCount = Math.min(Number(response.headers.get("x-pagination-page-count") || 100), 100);
