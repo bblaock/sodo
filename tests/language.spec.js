@@ -119,7 +119,7 @@ test("public Trakt history merges into the existing SODO film and series grids",
       await route.fulfill({ status: 204, headers: { "Access-Control-Allow-Origin": origin, "Access-Control-Allow-Headers": "authorization, apikey, content-type", "Access-Control-Allow-Methods": "POST, OPTIONS" } });
       return;
     }
-    const payload = { movies: [{ title: "Hope", year: 2019, trakt_id: 101 }, { title: "The Batman", year: 2022, trakt_id: 102 }], series: [{ title: "MobLand", year: 2025, trakt_id: 103, episode_count: 20 }] };
+    const payload = { movies: [{ title: "Hope", year: 2026, trakt_id: 101 }, { title: "The Batman", year: 2022, trakt_id: 102 }], series: [{ title: "MobLand", year: 2025, trakt_id: 103, episode_count: 20 }] };
     await route.fulfill({ status: 200, headers: { "Access-Control-Allow-Origin": origin, "Content-Type": "application/json" }, body: JSON.stringify(payload) });
   });
   await page.goto("/sodo/en/films/#watched");
