@@ -761,13 +761,33 @@
       menu.classList.toggle("open", willOpen);
       trigger.setAttribute("aria-expanded", String(willOpen));
     });
-    tools.querySelectorAll(".language-option").forEach(button => {
-      button.addEventListener("click", () => {
-        applyLanguage(button.dataset.lang);
-        menu.classList.remove("open");
-        trigger.setAttribute("aria-expanded", "false");
-      });
-    });
+    // Use one delegated capture handler so language selection remains reliable
+    // even when the flag SVG is the actual tap target on mobile browsers.
+    document.addEventListener("click", event => {
+      const target = event.target instanceof Element ? event.target : null;
+      const option = target && target.closest(".language-option[data-lang]");
+      if (!option || !tools.contains(option)) return;
+
+      event.preventDefault();
+      event.stopImmediatePropagation();
+
+      const selectedLanguage = option.dataset.lang;
+      if (!translations[selectedLanguage]) return;
+
+      try {
+        applyLanguage(selectedLanguage);
+      } catch (error) {
+        console.error("SODO language switch failed:", error);
+        document.documentElement.lang = selectedLanguage;
+        document.documentElement.dir = selectedLanguage === "ar" ? "rtl" : "ltr";
+        const code = tools.querySelector(".language-code");
+        if (code) code.textContent = selectedLanguage.toUpperCase();
+        savePreference("sodo-language", selectedLanguage);
+      }
+
+      menu.classList.remove("open");
+      trigger.setAttribute("aria-expanded", "false");
+    }, true);
     document.addEventListener("click", event => {
       if (!tools.contains(event.target)) {
         menu.classList.remove("open");
