@@ -32,7 +32,7 @@ test("all 48 localized routes load with the correct document language and direct
     await expect(page.locator("html")).toHaveAttribute("dir", route.language === "ar" ? "rtl" : "ltr");
     await expect(page.locator(".language-code")).toHaveText(route.language.toUpperCase());
     await expect(page.locator(".language-trigger")).toBeVisible();
-    await expect(page.locator("body")).toHaveClass(/site-ready/);
+    await expect(page.locator("html")).toHaveClass(/site-ready/);
   }
 
   expect(pageErrors, "uncaught JavaScript errors across localized routes").toEqual([]);
@@ -41,6 +41,8 @@ test("all 48 localized routes load with the correct document language and direct
 
 test("language switching changes URL, document language, direction, and visible copy", async ({ page }) => {
   await page.goto("/sodo/en/");
+  await page.locator(".sodo-welcome-close").click();
+  await expect(page.locator("#sodo-welcome-overlay")).toHaveCount(0);
   await expect(page.locator('[data-i18n="heroText"]')).toHaveText(
     "A space for ideas, culture, cinema, and creative exploration. Somewhere between what we think and what we create."
   );
@@ -77,6 +79,8 @@ test("language switching changes URL, document language, direction, and visible 
 
 test("switching language preserves the current section and film detail route", async ({ page }) => {
   await page.goto("/sodo/en/films/theboys/");
+  await page.locator(".sodo-welcome-close").click();
+  await expect(page.locator("#sodo-welcome-overlay")).toHaveCount(0);
   await page.locator(".language-trigger").click();
   const russian = page.locator('.language-option[data-lang="ru"]');
   await expect(russian).toHaveAttribute("href", "/sodo/ru/films/theboys/");
@@ -95,7 +99,7 @@ test("switching language preserves the current section and film detail route", a
 test("localized primary navigation stays inside the active locale", async ({ page }) => {
   for (const language of languages) {
     await page.goto(`/sodo/${language}/`);
-    const links = page.locator("header nav a[href]");
+    const links = page.locator("header nav a[href]:not(.language-option):not(.logo)");
     const hrefs = await links.evaluateAll(items => items.map(item => item.getAttribute("href")));
     for (const href of hrefs) {
       if (href && href.startsWith("/sodo/")) {
