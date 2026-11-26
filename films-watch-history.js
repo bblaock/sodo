@@ -13,7 +13,7 @@ const copy = {
     movies: "الأفلام المسجلة في Trakt", series: "المسلسلات المسجلة في Trakt",
     empty: "لا توجد مشاهدات مسجلة في هذا القسم بعد.", loading: "جارٍ تحميل سجل المشاهدة الخاص…",
     failed: "تعذّر تحميل سجل المشاهدة. افتح حساب SODO وحاول المزامنة مجدداً.",
-    private: "خاص · TRAKT", views: "مشاهدة", episodes: "حلقة", last: "آخر مشاهدة",
+    private: "خاص · TRAKT", watched: "تمت مشاهدته", episodes: "حلقة", last: "آخر مشاهدة",
     season: "الموسم", episode: "الحلقة"
   },
   en: {
@@ -22,7 +22,7 @@ const copy = {
     movies: "Movies recorded by Trakt", series: "Series recorded by Trakt",
     empty: "No watch history in this section yet.", loading: "Loading your private watch history…",
     failed: "Could not load watch history. Open your SODO account and try syncing again.",
-    private: "PRIVATE · TRAKT", views: "views", episodes: "episodes", last: "Last watched",
+    private: "PRIVATE · TRAKT", watched: "Watched", episodes: "episodes", last: "Last watched",
     season: "Season", episode: "Episode"
   },
   ru: {
@@ -31,7 +31,7 @@ const copy = {
     movies: "Фильмы из Trakt", series: "Сериалы из Trakt",
     empty: "В этом разделе пока нет просмотров.", loading: "Загрузка личной истории просмотров…",
     failed: "Не удалось загрузить историю. Откройте аккаунт SODO и повторите синхронизацию.",
-    private: "ЛИЧНОЕ · TRAKT", views: "просмотров", episodes: "эпизодов", last: "Последний просмотр",
+    private: "ЛИЧНОЕ · TRAKT", watched: "Просмотрено", episodes: "эпизодов", last: "Последний просмотр",
     season: "Сезон", episode: "Серия"
   }
 };
@@ -115,8 +115,8 @@ function renderItems(panel, items, kind) {
   for (const item of items) {
     const title = item.title || (kind === "movie" ? "Untitled movie" : "Untitled series");
     const existing = existingCards.find(card => normalize(card.querySelector("h3")?.textContent) === normalize(title));
-    const count = kind === "movie" ? item.watch_count : item.episode_count;
-    const countText = kind === "movie" ? count + " " + t.views : count + " " + t.episodes;
+    const count = kind === "movie" ? null : item.episode_count;
+    const countText = kind === "movie" ? t.watched : count + " " + t.episodes;
     const metaText = [item.year, countText, t.last + ": " + formatDate(item.last_watched_at)].filter(Boolean);
 
     if (existing) {
