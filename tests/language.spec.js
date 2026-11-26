@@ -141,6 +141,7 @@ test("public Trakt history merges into the existing SODO film and series grids",
   await expect(batman.locator(".movie-poster")).toHaveAttribute("alt", "The Batman poster");
   await expect(batman.locator(".poster-link")).toHaveAttribute("href", "/sodo/en/films/trakt/?kind=movie&id=102");
   await expect(batman.locator(".movie-title-link")).toHaveAttribute("href", "/sodo/en/films/trakt/?kind=movie&id=102");
+  await page.locator("#sodo-welcome-overlay").evaluate(el => el.remove()).catch(() => {});
   await batman.locator(".poster-link").click();
   await expect(page).toHaveURL(url => {
     const parsed = new URL(url);
