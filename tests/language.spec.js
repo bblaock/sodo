@@ -254,3 +254,42 @@ test("private SODO account shows detailed Trakt sync counts only in the account 
   await expect(page.locator("#message")).toContainText("الحلقات: 20");
   await expect(page.locator("#message")).toContainText("بيانات الأعمال المحدثة: 1");
 });
+
+
+test("private SODO account does not attempt Trakt sync while disconnected", async ({ page }) => {
+  await page.addInitScript(() => {
+    const now = Math.floor(Date.now() / 1000);
+    localStorage.setItem("sb-wbuyglftsgldasawsllt-auth-token", JSON.stringify({
+      access_token: "test-access-token",
+      refresh_token: "test-refresh-token",
+      token_type: "bearer",
+      expires_in: 3600,
+      expires_at: now + 3600,
+      user: { id: "test-user", aud: "authenticated", role: "authenticated", email: "test@example.com" }
+    }));
+  });
+
+  let syncCalls = 0;
+  await page.route("https://wbuyglftsgldasawsllt.supabase.co/functions/v1/trakt-sync", async route => {
+    const origin = route.request().headers().origin || "*";
+    if (route.request().method() === "OPTIONS") {
+      await route.fulfill({ status: 204, headers: { "Access-Control-Allow-Origin": origin, "Access-Control-Allow-Headers": "authorization, apikey, content-type", "Access-Control-Allow-Methods": "POST, OPTIONS" } });
+      return;
+    }
+    const action = route.request().postDataJSON().action;
+    if (action === "sync") syncCalls++;
+    const payload = action === "status" ? { connected: false } : { error: "Trakt is not connected yet" };
+    await route.fulfill({
+      status: action === "status" ? 200 : 409,
+      headers: { "Access-Control-Allow-Origin": origin, "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+  });
+
+  await page.goto("/sodo/account/");
+  await expect(page.locator("#account-panel")).toBeVisible();
+  await expect(page.locator("#connect")).toBeVisible();
+  await expect(page.locator("#sync")).toBeHidden();
+  await expect(page.locator("#message")).toBeHidden();
+  expect(syncCalls).toBe(0);
+});
