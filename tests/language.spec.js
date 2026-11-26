@@ -110,3 +110,10 @@ test("localized primary navigation stays inside the active locale", async ({ pag
     }
   }
 });
+
+
+test("private Trakt history stays hidden from signed-out visitors", async ({ page }) => {
+  await page.goto("/sodo/en/films/");
+  await page.waitForFunction(() => document.documentElement.dataset.traktHistoryReady === "true");
+  await expect(page.locator(".trakt-private-panel")).toHaveCount(0);
+});
