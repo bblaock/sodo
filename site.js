@@ -93,8 +93,6 @@
       "After the death of classmate Hannah Baker, Clay Jensen receives a set of recordings in which she explains the events and people connected to her decision. The story follows the students as they confront grief, secrets, and the consequences of their actions.": "بعد وفاة زميلته هانا بيكر، يتلقى كلاي جنسن مجموعة تسجيلات تشرح فيها الأحداث والأشخاص المرتبطين بقرارها. ويتابع العمل الطلاب وهم يواجهون الحزن والأسرار وعواقب أفعالهم.",
       "Matt Murdock and Wilson Fisk find themselves on a collision course as their past identities resurface. As Fisk rises to power in New York, Daredevil fights back to protect the city and the people he loves.": "يجد مات موردوك وويلسون فيسك نفسيهما في مواجهة حتمية مع عودة هوياتهما السابقة إلى الواجهة. وبينما يصعد فيسك إلى السلطة في نيويورك، يقاوم ديرديفل لحماية المدينة والأشخاص الذين يحبهم.",
       projects: "مشاريع",
-      "welcomeGreeting": "تحية حب",
-      "welcomeNotice": "الموقع ما زال تجريبياً وقد يحتوي على بعض الأخطاء. إذا لاحظت أي خطأ، يرجى مراسلتي عبر:",
       eyebrow: "مساحة شخصية",
       heroText: "مساحة للأفكار والثقافة والسينما والاستكشاف الإبداعي. مكان ما بين ما نفكر فيه وما نصنعه.",
       discover: "اكتشف SODO ↗",
@@ -250,8 +248,6 @@
       "During the Battle of the Bulge, a wounded American soldier is trapped behind German lines. With only his radio and survival skills, he must evade enemy forces and find a way back to his unit.": "During the Battle of the Bulge, a wounded American soldier is trapped behind German lines. With only his radio and survival skills, he must evade enemy forces and find a way back to his unit.",
       "We could not reliably identify a film with this exact title. The title is kept in your watched list without inventing a year, rating, synopsis, or poster.": "We could not reliably identify a film with this exact title. The title is kept in your watched list without inventing a year, rating, synopsis, or poster.",
       projects: "Projects",
-      "welcomeGreeting": "A warm hello",
-      "welcomeNotice": "This website is still experimental and may contain errors. If you notice any issue, please contact me via:",
       eyebrow: "A Personal Space",
       heroText: "A space for ideas, culture, cinema, and creative exploration. Somewhere between what we think and what we create.",
       discover: "Discover SODO ↗",
@@ -392,8 +388,6 @@
       "After the death of classmate Hannah Baker, Clay Jensen receives a set of recordings in which she explains the events and people connected to her decision. The story follows the students as they confront grief, secrets, and the consequences of their actions.": "После смерти одноклассницы Ханны Бейкер Клэй Дженсен получает записи, в которых она рассказывает о событиях и людях, связанных с её решением. Ученикам предстоит столкнуться с горем, тайнами и последствиями собственных поступков.",
       "Matt Murdock and Wilson Fisk find themselves on a collision course as their past identities resurface. As Fisk rises to power in New York, Daredevil fights back to protect the city and the people he loves.": "Мэтт Мёрдок и Уилсон Фиск оказываются на пути неизбежного столкновения, когда возвращается их прошлое. Пока Фиск укрепляет власть в Нью-Йорке, Сорвиголова борется за защиту города и близких ему людей.",
       projects: "Проекты",
-      "welcomeGreeting": "С теплом и любовью",
-      "welcomeNotice": "Сайт пока находится в экспериментальном режиме и может содержать ошибки. Если вы заметите проблему, пожалуйста, напишите мне:",
       eyebrow: "Личное пространство",
       heroText: "Пространство для идей, культуры, кино и творчества. Место между тем, что мы думаем, и тем, что создаём.",
       discover: "Открыть SODO ↗",
@@ -1139,84 +1133,6 @@
           min-width: 70px;
         }
       }
-      .sodo-welcome-overlay {
-        position: fixed;
-        inset: 0;
-        z-index: 10000;
-        display: grid;
-        place-items: center;
-        padding: 20px;
-        background: rgba(0, 0, 0, .38);
-        backdrop-filter: blur(3px);
-        -webkit-backdrop-filter: blur(3px);
-        opacity: 1;
-        transition: opacity .18s ease;
-      }
-      .sodo-welcome-overlay.is-closing { opacity: 0; }
-      .sodo-welcome-card {
-        position: relative;
-        width: min(100%, 390px);
-        padding: 30px 28px 26px;
-        text-align: center;
-        color: var(--text, #f4f7ef);
-        background: rgba(17, 21, 16, .82);
-        border: 1px solid rgba(200, 255, 77, .28);
-        border-radius: 18px;
-        box-shadow: 0 24px 80px rgba(0,0,0,.42);
-        backdrop-filter: blur(18px);
-        -webkit-backdrop-filter: blur(18px);
-        animation: sodo-welcome-in .28s ease both;
-      }
-      .sodo-welcome-close {
-        position: absolute;
-        top: 11px;
-        inset-inline-end: 11px;
-        width: 34px;
-        height: 34px;
-        display: grid;
-        place-items: center;
-        border: 1px solid var(--line, #293126);
-        border-radius: 50%;
-        background: rgba(255,255,255,.035);
-        color: var(--muted, #b0b9a9);
-        cursor: pointer;
-        transition: .2s ease;
-      }
-      .sodo-welcome-close:hover { color: var(--accent, #c8ff4d); border-color: var(--accent, #c8ff4d); }
-      .sodo-welcome-close svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
-      .sodo-welcome-mark {
-        width: 46px;
-        height: 46px;
-        display: grid;
-        place-items: center;
-        margin: 0 auto 16px;
-        border: 1px solid rgba(200,255,77,.48);
-        border-radius: 14px;
-        color: var(--accent, #c8ff4d);
-        font: 900 20px Manrope, sans-serif;
-        letter-spacing: 1px;
-        box-shadow: 0 0 28px rgba(200,255,77,.08);
-      }
-      .sodo-welcome-card h2 { margin: 0 0 12px; color: var(--accent, #c8ff4d); font-size: 23px; line-height: 1.4; }
-      .sodo-welcome-card p { margin: 0 auto 20px; max-width: 310px; color: var(--muted, #b0b9a9); font-size: 14px; line-height: 1.9; }
-      .sodo-welcome-telegram {
-        width: 43px;
-        height: 43px;
-        display: inline-grid;
-        place-items: center;
-        border: 1px solid rgba(200,255,77,.42);
-        border-radius: 50%;
-        color: var(--accent, #c8ff4d);
-        background: rgba(200,255,77,.07);
-        transition: transform .2s ease, background .2s ease;
-      }
-      .sodo-welcome-telegram:hover { transform: translateY(-2px); background: rgba(200,255,77,.14); }
-      .sodo-welcome-telegram svg { width: 20px; height: 20px; fill: currentColor; }
-      body.light-mode .sodo-welcome-card { background: rgba(255,255,255,.88); }
-      body.light-mode .sodo-welcome-close { background: rgba(0,0,0,.025); }
-      @keyframes sodo-welcome-in { from { opacity: 0; transform: translateY(9px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
-      @media(max-width:480px) { .sodo-welcome-card { padding: 28px 22px 23px; } .sodo-welcome-card h2 { font-size: 21px; } .sodo-welcome-card p { font-size: 13px; } }
-
 
 
 
@@ -1346,48 +1262,6 @@
       }
     `;
     document.head.appendChild(stabilityStyle);
-  }
-
-  function createWelcomeNotice() {
-    try {
-      if (sessionStorage.getItem("sodo-welcome-dismissed") === "1") return;
-    } catch (_) {}
-
-    if (document.getElementById("sodo-welcome-overlay")) return;
-
-    const overlay = document.createElement("div");
-    overlay.id = "sodo-welcome-overlay";
-    overlay.className = "sodo-welcome-overlay";
-    overlay.innerHTML = `
-      <section class="sodo-welcome-card" role="dialog" aria-modal="true" aria-labelledby="sodo-welcome-title">
-        <button class="sodo-welcome-close" type="button" aria-label="Close welcome message" title="Close">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
-        </button>
-        <div class="sodo-welcome-mark" aria-hidden="true">S.</div>
-        <h2 id="sodo-welcome-title" data-i18n="welcomeGreeting">تحية حب</h2>
-        <p data-i18n="welcomeNotice">الموقع ما زال تجريبياً وقد يحتوي على بعض الأخطاء. إذا لاحظت أي خطأ، يرجى مراسلتي عبر:</p>
-        <a class="sodo-welcome-telegram" href="https://t.me/bblaock" target="_blank" rel="noopener noreferrer" aria-label="Telegram">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.6 4.6 18.4 20c-.2 1.1-.8 1.4-1.7.9l-4.8-3.6-2.3 2.2c-.3.3-.5.5-1 .5l.4-4.9 8.9-8c.4-.4-.1-.6-.6-.2L6.3 13.8l-4.7-1.5c-1-.3-1-1 .2-1.5L20.2 3.7c.9-.3 1.7.2 1.4.9Z"/></svg>
-        </a>
-      </section>`;
-    document.body.appendChild(overlay);
-
-    const close = () => {
-      overlay.classList.add("is-closing");
-      try { sessionStorage.setItem("sodo-welcome-dismissed", "1"); } catch (_) {}
-      window.setTimeout(() => overlay.remove(), 180);
-    };
-
-    overlay.querySelector(".sodo-welcome-close").addEventListener("click", close);
-    overlay.addEventListener("click", event => {
-      if (event.target === overlay) close();
-    });
-    document.addEventListener("keydown", function onEscape(event) {
-      if (event.key === "Escape" && document.getElementById("sodo-welcome-overlay")) {
-        close();
-        document.removeEventListener("keydown", onEscape);
-      }
-    });
   }
 
   function installMotionSystem() {
@@ -1569,7 +1443,6 @@
     applyLanguage(routeLanguage || getPreference("sodo-language", "ar"));
     observeDynamicTranslations();
     applyTheme(getPreference("sodo-theme", "dark"));
-    createWelcomeNotice();
     document.documentElement.classList.add("site-ready");
   }
 
