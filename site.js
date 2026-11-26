@@ -1460,18 +1460,24 @@
           event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
 
       const link = event.target.closest("a[href]");
-      if (!link || link.target || link.hasAttribute("download") ||
+      const card = !link && event.target.closest("[data-card-href]");
+      if (card && event.target.closest("a, button, input, select, textarea")) return;
+      if (!link && !card) return;
+      if (link && (link.target || link.hasAttribute("download") ||
           link.hasAttribute("data-no-page-transition") ||
-          (link.getAttribute("rel") || "").split(/\s+/).includes("external")) return;
+          (link.getAttribute("rel") || "").split(/\s+/).includes("external"))) return;
 
       let destination;
-      try { destination = new URL(link.href, window.location.href); } catch (_) { return; }
+      try {
+        destination = new URL(link ? link.href : card.dataset.cardHref, window.location.href);
+      } catch (_) { return; }
       if (destination.origin !== window.location.origin ||
           destination.pathname === window.location.pathname &&
           destination.search === window.location.search ||
           destination.hash && destination.pathname === window.location.pathname) return;
 
       event.preventDefault();
+      if (card) event.stopImmediatePropagation();
       document.body.classList.add("sodo-page-leaving");
       window.setTimeout(() => window.location.assign(destination.href), 180);
     }, true);
