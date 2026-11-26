@@ -1303,6 +1303,7 @@
     applyLanguage(getPreference("sodo-language", "ar"));
     applyTheme(getPreference("sodo-theme", "dark"));
     createWelcomeNotice();
+    document.documentElement.classList.add("site-ready");
   }
 
   if (document.readyState === "loading") {
