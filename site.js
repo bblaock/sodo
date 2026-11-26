@@ -517,16 +517,31 @@
   const originalAttributes = new WeakMap();
 
   function translateText(root, dictionary) {
-    // Keep the original source text so switching languages remains reversible.
+    // Arabic is the source language on the main site. Build a reverse lookup so
+    // Arabic-only text can be translated into English or Russian as well.
+    const normalize = value => String(value || "").trim().replace(/\s+/g, " ");
+    const arabicToKey = new Map();
+    Object.entries(translations.ar).forEach(([key, value]) => {
+      const normalizedArabic = normalize(value);
+      if (normalizedArabic && !arabicToKey.has(normalizedArabic)) arabicToKey.set(normalizedArabic, key);
+    });
+
+    const translateOriginal = value => {
+      const normalized = normalize(value);
+      if (!normalized) return undefined;
+      if (dictionary[normalized] !== undefined) return dictionary[normalized];
+      const sourceKey = arabicToKey.get(normalized);
+      return sourceKey !== undefined ? dictionary[sourceKey] : undefined;
+    };
+
+    // Keep original source text so switching between all three languages is reversible.
     root.querySelectorAll("*").forEach(element => {
       if (element.matches("[data-i18n],script,style,code,pre")) return;
       if (element.children.length !== 0) return;
       if (!originalElementTexts.has(element)) originalElementTexts.set(element, element.textContent || "");
       const original = originalElementTexts.get(element);
       const trimmed = original.trim();
-      if (!trimmed) return;
-      const normalized = trimmed.replace(/\s+/g, " ");
-      const translated = dictionary[normalized] ?? dictionary[trimmed];
+      const translated = translateOriginal(trimmed);
       element.textContent = translated !== undefined ? original.replace(trimmed, translated) : original;
     });
 
@@ -540,21 +555,19 @@
       if (!originalTextNodes.has(node)) originalTextNodes.set(node, node.nodeValue);
       const original = originalTextNodes.get(node);
       const trimmed = original.trim();
-      if (!trimmed) return;
-      const normalized = trimmed.replace(/\s+/g, " ");
-      const translated = dictionary[normalized] ?? dictionary[trimmed];
+      const translated = translateOriginal(trimmed);
       node.nodeValue = translated !== undefined ? original.replace(trimmed, translated) : original;
     });
 
     root.querySelectorAll("*").forEach(element => {
       if (element.matches("[data-i18n]")) return;
       ["placeholder", "title", "aria-label", "alt"].forEach(attribute => {
-        const value = element.getAttribute(attribute);
         if (!originalAttributes.has(element)) originalAttributes.set(element, {});
         const saved = originalAttributes.get(element);
-        if (!(attribute in saved)) saved[attribute] = value;
+        if (!(attribute in saved)) saved[attribute] = element.getAttribute(attribute);
         const original = saved[attribute];
-        if (original && dictionary[original] !== undefined) element.setAttribute(attribute, dictionary[original]);
+        const translated = original ? translateOriginal(original) : undefined;
+        if (translated !== undefined) element.setAttribute(attribute, translated);
         else if (original !== null) element.setAttribute(attribute, original);
       });
     });
