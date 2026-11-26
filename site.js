@@ -1462,7 +1462,7 @@
       const link = event.target.closest("a[href]");
       if (!link || link.target || link.hasAttribute("download") ||
           link.hasAttribute("data-no-page-transition") ||
-          (link.getAttribute("rel") || "").split(/\\s+/).includes("external")) return;
+          (link.getAttribute("rel") || "").split(/\s+/).includes("external")) return;
 
       let destination;
       try { destination = new URL(link.href, window.location.href); } catch (_) { return; }
