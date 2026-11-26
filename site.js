@@ -1485,8 +1485,65 @@
     }
   }
 
+  function installCinemaLightTheme() {
+    if (document.getElementById("sodo-cinema-light-theme")) return;
+    const style = document.createElement("style");
+    style.id = "sodo-cinema-light-theme";
+    style.textContent = `
+      body.light-mode .film-layout {
+        background: linear-gradient(135deg, #ffffff 0%, #f7f9f2 58%, #eef2e7 100%) !important;
+        border-color: #d9dfd0 !important;
+        box-shadow: 0 24px 65px #26351a18 !important;
+        color: #171b14 !important;
+      }
+      body.light-mode .film-layout::before {
+        background: radial-gradient(ellipse, #789b3212 0%, #789b3208 34%, transparent 70%) !important;
+      }
+      body.light-mode .film-layout .story-block,
+      body.light-mode .film-layout .work-heading {
+        border-color: #d9dfd0 !important;
+      }
+      body.light-mode .film-layout .story-block h2,
+      body.light-mode .film-layout .work-heading h1,
+      body.light-mode .film-layout .details-panel h2 {
+        color: #171b14 !important;
+      }
+      body.light-mode .film-layout .story {
+        color: #46513f !important;
+      }
+      body.light-mode .film-layout .eyebrow,
+      body.light-mode .film-layout .meta-item strong {
+        color: #36570a !important;
+      }
+      body.light-mode .film-layout .meta-item {
+        background: #ffffff !important;
+        border-color: #d9dfd0 !important;
+        color: #171b14 !important;
+        backdrop-filter: none !important;
+      }
+      body.light-mode .film-layout .meta-label,
+      body.light-mode .film-layout .details-list dt {
+        color: #626b5c !important;
+      }
+      body.light-mode .film-layout .details-panel {
+        background: #ffffff !important;
+        border-color: #d9dfd0 !important;
+        color: #171b14 !important;
+      }
+      body.light-mode .film-layout .details-list dd {
+        color: #252c20 !important;
+      }
+      body.light-mode .film-layout .detail-poster {
+        border-color: #b7c69b !important;
+        box-shadow: 0 18px 42px #26351a20, 0 0 0 5px #26351a08 !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
   function initialize() {
     installStyles();
+    installCinemaLightTheme();
     installMotionSystem();
     createControls();
     installSocialIconOnlyFooter();
