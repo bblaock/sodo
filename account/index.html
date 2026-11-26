@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' https://esm.sh; style-src 'self' 'unsafe-inline'; connect-src 'self' https://wbuyglftsgldasawsllt.supabase.co https://esm.sh; img-src 'self' data:; form-action 'self'; upgrade-insecure-requests">
+  <meta name="theme-color" content="#080a08">
+  <title>حسابي — SODO</title>
+  <style>
+    :root{color-scheme:dark;--bg:#080a08;--panel:#111510;--line:#293126;--text:#f4f7ef;--muted:#b0b9a9;--accent:#c8ff4d}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% 10%,rgba(151,190,67,.1),transparent 45%),var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.7;padding:24px}
+    main{width:min(100%,560px);margin:7vh auto}.brand{color:var(--accent);font-size:28px;font-weight:900;letter-spacing:5px;text-decoration:none}.panel{margin-top:24px;padding:28px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(155deg,#151b12,#0d100c);box-shadow:0 24px 70px #0008}
+    h1{font-size:27px;margin:0 0 6px}.muted{color:var(--muted);font-size:14px;margin:0 0 22px}.field{display:grid;gap:7px;margin:14px 0}label{font-size:13px;color:#dce4d4}input{width:100%;padding:13px 14px;border-radius:10px;border:1px solid #384332;background:#090d08;color:var(--text);font:inherit;direction:ltr;text-align:left}button,.button{width:100%;border:1px solid var(--accent);border-radius:10px;padding:12px 16px;background:var(--accent);color:#080a08;font:inherit;font-weight:800;cursor:pointer;margin-top:10px}button.secondary{background:transparent;color:var(--accent)}button:disabled{opacity:.55;cursor:wait}.actions{display:grid;gap:8px;margin-top:18px}.status{padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:#0b1009;color:var(--muted);font-size:14px;margin:16px 0}.hidden{display:none!important}.small{font-size:12px;color:#87917e;margin-top:18px}.back{display:inline-block;margin-top:20px;color:var(--muted);font-size:13px;text-decoration:none}.rule{border:0;border-top:1px solid var(--line);margin:22px 0}
+  </style>
+  <script type="module" src="/sodo/account.js"></script>
+</head>
+<body>
+<main>
+  <a class="brand" href="/sodo/">SODO.</a>
+  <section class="panel">
+    <h1>حسابك الخاص</h1>
+    <p class="muted">سجّل الدخول حتى يبقى سجل مشاهداتك خاصاً ويتزامن بين أجهزتك.</p>
+    <div id="auth-panel">
+      <div class="field"><label for="email">البريد الإلكتروني</label><input id="email" type="email" autocomplete="email" required placeholder="you@example.com"></div>
+      <div class="field"><label for="password">كلمة المرور</label><input id="password" type="password" autocomplete="current-password" required minlength="8" placeholder="8 أحرف على الأقل"></div>
+      <button id="signin">تسجيل الدخول</button>
+      <button id="signup" class="secondary">إنشاء حساب خاص</button>
+    </div>
+    <div id="account-panel" class="hidden">
+      <div id="identity" class="status"></div>
+      <div id="trakt-status" class="status">جارٍ التحقق من اتصال Trakt…</div>
+      <div class="actions">
+        <button id="connect">ربط حساب Trakt</button>
+        <button id="sync" class="secondary">مزامنة سجل المشاهدة الآن</button>
+        <button id="disconnect" class="secondary">فصل Trakt وحذف بيانات الربط</button>
+        <button id="signout" class="secondary">تسجيل الخروج من SODO</button>
+      </div>
+    </div>
+    <div id="message" class="status hidden" role="status" aria-live="polite"></div>
+    <p class="small">بيانات المشاهدة ورموز Trakt محفوظة في قاعدة خاصة، ولا تُعرض لزوار الموقع. استخدم حساب SODO نفسه على كل جهاز تريد رؤية سجلك عليه.</p>
+  </section>
+  <a class="back" href="/sodo/ar/films/">العودة إلى السينما ←</a>
+</main>
+</body>
+</html>
