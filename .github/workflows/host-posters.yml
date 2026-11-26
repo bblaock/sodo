@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - sodo/host-all-posters
+      - sodo/add-watched-cinema-2026-11-26
     paths:
       - ".github/workflows/host-posters.yml"
       - "tools/download_posters.py"
@@ -25,7 +26,7 @@ jobs:
       - name: Check out poster branch
         uses: actions/checkout@v4
         with:
-          ref: sodo/host-all-posters
+          ref: ${{ github.ref_name }}
           fetch-depth: 0
 
       - name: Set up Python
@@ -48,5 +49,5 @@ jobs:
             echo "Poster assets are already up to date."
           else
             git commit -m "Add locally hosted optimized cinema posters"
-            git push origin sodo/host-all-posters
+            git push origin "${GITHUB_REF_NAME}"
           fi
