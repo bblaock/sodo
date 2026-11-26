@@ -6,6 +6,8 @@ const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const TRAKT_CLIENT_ID = "_T6j_nnJftnEGLtgQ-E1iWD7EuSjVOv7e-e0x5Z5IPw";
 const REDIRECT_URI = "https://bblaock.github.io/sodo/";
 const ORIGIN = "https://bblaock.github.io";
+const PUBLIC_WATCH_HISTORY_USER_ID = "f720934d-a7de-4d49-bf01-9fccfc99eb32";
+const POSTER_BUCKET = "sodo-posters";
 const TRAKT_API = "https://api.trakt.tv";
 const db = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, { auth: { persistSession: false, autoRefreshToken: false } });
 
@@ -16,6 +18,7 @@ const headers = {
   "Vary": "Origin",
 };
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { ...headers, "Content-Type": "application/json", "Cache-Control": "private, no-store" } });
+const publicJson = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { ...headers, "Content-Type": "application/json", "Cache-Control": "public, max-age=60, s-maxage=300" } });
 const b64url = (bytes: Uint8Array) => btoa(String.fromCharCode(...bytes)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
 const hex = (bytes: Uint8Array) => Array.from(bytes, b => b.toString(16).padStart(2, "0")).join("");
 const unhex = (s: string) => new Uint8Array((s.match(/.{1,2}/g) || []).map(x => parseInt(x, 16)));
@@ -86,16 +89,97 @@ async function traktFetch(path: string, accessToken: string) {
 function historyRows(items: any[], userId: string) {
   return items.flatMap((entry: any) => {
     const watchedAt = entry.watched_at;
-    if (entry.type === "movie" && entry.movie?.ids?.trakt) {
+    if (entry.type === "movie" && entry.movie?.ids?.trakt && watchedAt) {
       const m = entry.movie;
       return [{ user_id: userId, trakt_id: m.ids.trakt, media_type: "movie", title: m.title, year: m.year ?? null, watched_at: watchedAt, imdb_id: m.ids.imdb ?? null, tmdb_id: m.ids.tmdb ?? null }];
     }
-    if (entry.type === "episode" && entry.episode?.ids?.trakt) {
+    if (entry.type === "episode" && entry.episode?.ids?.trakt && watchedAt) {
       const e = entry.episode, s = entry.show || {};
       return [{ user_id: userId, trakt_id: e.ids.trakt, media_type: "episode", title: e.title, year: s.year ?? null, watched_at: watchedAt, imdb_id: s.ids?.imdb ?? null, tmdb_id: s.ids?.tmdb ?? null, show_trakt_id: s.ids?.trakt ?? null, show_title: s.title ?? null, season_number: e.season ?? null, episode_number: e.number ?? null }];
     }
     return [];
   });
+}
+
+function firstImage(value: any): string | null {
+  const candidate = Array.isArray(value) ? value[0] : value;
+  if (typeof candidate !== "string" || !candidate.trim()) return null;
+  return candidate.startsWith("http") ? candidate : "https://" + candidate.replace(/^\/+/, "");
+}
+
+async function cachePoster(kind: string, traktId: number, imageUrl: string | null): Promise<string | null> {
+  if (!imageUrl) return null;
+  const response = await fetch(imageUrl);
+  if (!response.ok) return null;
+  const contentType = (response.headers.get("content-type") || "").split(";")[0].toLowerCase();
+  if (!["image/webp", "image/jpeg", "image/png"].includes(contentType)) return null;
+  const bytes = new Uint8Array(await response.arrayBuffer());
+  if (!bytes.length || bytes.length > 5 * 1024 * 1024) return null;
+  const extension = contentType === "image/png" ? "png" : contentType === "image/jpeg" ? "jpg" : "webp";
+  const path = `${kind}/${traktId}.${extension}`;
+  const { error } = await db.storage.from(POSTER_BUCKET).upload(path, bytes, {
+    contentType, cacheControl: "31536000", upsert: true,
+  });
+  if (error) throw new Error("Could not cache a Trakt poster");
+  return db.storage.from(POSTER_BUCKET).getPublicUrl(path).data.publicUrl;
+}
+
+async function enrichMedia(kind: "movie" | "show", traktId: number, accessToken: string) {
+  const endpoint = kind === "movie" ? "movies" : "shows";
+  const response = await traktFetch(`/${endpoint}/${traktId}?extended=full`, accessToken);
+  const media = await response.json();
+  let posterUrl: string | null = null;
+  try { posterUrl = await cachePoster(kind, traktId, firstImage(media.images?.poster)); }
+  catch (error) { console.warn("Trakt poster cache failed", kind, traktId, error); }
+  let castMembers: any[] = [];
+  try {
+    const peopleResponse = await traktFetch(`/${endpoint}/${traktId}/people?extended=full`, accessToken);
+    const people = await peopleResponse.json();
+    castMembers = (Array.isArray(people?.cast) ? people.cast : []).slice(0, 12).map((entry: any) => ({
+      name: entry.person?.name ?? null, character: entry.character ?? null,
+    })).filter((entry: any) => entry.name);
+  } catch { /* cast is optional; preserve the rest of the metadata */ }
+  const ids = media.ids || {};
+  const { error } = await db.from("trakt_media_metadata").upsert({
+    media_type: kind, trakt_id: traktId, imdb_id: ids.imdb ?? null, tmdb_id: ids.tmdb ?? null,
+    title: media.title, year: media.year ?? null, overview: media.overview ?? null,
+    tagline: media.tagline ?? null, poster_url: posterUrl, rating: media.rating ?? null,
+    genres: Array.isArray(media.genres) ? media.genres : [], runtime: media.runtime ?? null,
+    certification: media.certification ?? null, status: media.status ?? null,
+    trailer: media.trailer ?? null, homepage: media.homepage ?? null,
+    cast_members: castMembers, metadata_updated_at: new Date().toISOString(),
+  }, { onConflict: "media_type,trakt_id" });
+  if (error) throw new Error("Could not save Trakt media metadata");
+}
+
+async function enrichWatchLibrary(userId: string, accessToken: string) {
+  const { data: rows, error } = await db.from("sodo_watch_history")
+    .select("media_type,trakt_id,title,year,imdb_id,tmdb_id,show_trakt_id,show_title")
+    .eq("user_id", userId).limit(5000);
+  if (error) throw new Error("Could not prepare media metadata enrichment");
+  const items = new Map<string, { kind: "movie" | "show"; id: number }>();
+  for (const row of rows || []) {
+    if (row.media_type === "movie") items.set(`movie:${row.trakt_id}`, { kind: "movie", id: Number(row.trakt_id) });
+    if (row.media_type === "episode" && row.show_trakt_id) items.set(`show:${row.show_trakt_id}`, { kind: "show", id: Number(row.show_trakt_id) });
+  }
+  const cached = await db.from("trakt_media_metadata")
+    .select("media_type,trakt_id,poster_url,metadata_updated_at")
+    .in("media_type", ["movie", "show"]);
+  if (cached.error) throw new Error("Could not read cached media metadata");
+  const cacheMap = new Map((cached.data || []).map((item: any) => [`${item.media_type}:${item.trakt_id}`, { updated: new Date(item.metadata_updated_at).getTime(), poster: item.poster_url }]));
+  const refreshBefore = Date.now() - 30 * 24 * 60 * 60 * 1000;
+  const pending = Array.from(items.values()).filter(item => {
+    const cachedItem: any = cacheMap.get(`${item.kind}:${item.id}`);
+    return !cachedItem || !cachedItem.poster || cachedItem.updated < refreshBefore;
+  });
+  const batch = pending.slice(0, 20);
+  let updated = 0;
+  for (let i = 0; i < batch.length; i += 3) {
+    const group = batch.slice(i, i + 3);
+    const results = await Promise.allSettled(group.map(item => enrichMedia(item.kind, item.id, accessToken)));
+    updated += results.filter(result => result.status === "fulfilled").length;
+  }
+  return { updated, pending: Math.max(0, pending.length - updated) };
 }
 
 Deno.serve(async (req: Request) => {
@@ -106,6 +190,50 @@ Deno.serve(async (req: Request) => {
   try { body = await req.json(); } catch { return json({ error: "Invalid JSON body" }, 400); }
   const action = String(body.action || "");
   try {
+    if (action === "public-history") {
+      const { data: rows, error } = await db.from("sodo_watch_history")
+        .select("media_type,trakt_id,title,year,watched_at,show_trakt_id,show_title,imdb_id,tmdb_id")
+        .eq("user_id", PUBLIC_WATCH_HISTORY_USER_ID)
+        .order("watched_at", { ascending: false }).limit(5000);
+      if (error) throw new Error("Could not read the public SODO watch library");
+      const movies = new Map<number, any>();
+      const series = new Map<string, any>();
+      for (const row of rows || []) {
+        if (row.media_type === "movie") {
+          const key = Number(row.trakt_id);
+          if (!movies.has(key)) movies.set(key, { title: row.title, year: row.year, trakt_id: row.trakt_id, imdb_id: row.imdb_id, tmdb_id: row.tmdb_id });
+        } else if (row.media_type === "episode" && row.show_title) {
+          const key = String(row.show_trakt_id || row.show_title);
+          const item = series.get(key) || { title: row.show_title, year: row.year, trakt_id: row.show_trakt_id, imdb_id: row.imdb_id, tmdb_id: row.tmdb_id, episode_ids: new Set<number>() };
+          item.episode_ids.add(Number(row.trakt_id));
+          series.set(key, item);
+        }
+      }
+      const movieIds = Array.from(movies.keys());
+      const showIds = Array.from(series.values()).map((item: any) => Number(item.trakt_id)).filter((id: number) => Number.isFinite(id) && id > 0);
+      const [movieMeta, showMeta] = await Promise.all([
+        movieIds.length ? db.from("trakt_media_metadata").select("media_type,trakt_id,overview,tagline,poster_url,rating,genres,runtime,certification,status,trailer,homepage,cast_members").eq("media_type", "movie").in("trakt_id", movieIds) : Promise.resolve({ data: [], error: null }),
+        showIds.length ? db.from("trakt_media_metadata").select("media_type,trakt_id,overview,tagline,poster_url,rating,genres,runtime,certification,status,trailer,homepage,cast_members").eq("media_type", "show").in("trakt_id", showIds) : Promise.resolve({ data: [], error: null }),
+      ]);
+      if (movieMeta.error || showMeta.error) throw new Error("Could not read cached public media details");
+      const metadata = new Map([...(movieMeta.data || []), ...(showMeta.data || [])].map((item: any) => [`${item.media_type}:${item.trakt_id}`, item]));
+      const publicDetails = (item: any, kind: string) => {
+        const detail: any = metadata.get(`${kind}:${item.trakt_id}`) || {};
+        return {
+          overview: detail.overview ?? null, tagline: detail.tagline ?? null, poster_url: detail.poster_url ?? null,
+          rating: detail.rating ?? null, genres: detail.genres ?? [], runtime: detail.runtime ?? null,
+          certification: detail.certification ?? null, status: detail.status ?? null,
+          trailer: detail.trailer ?? null, homepage: detail.homepage ?? null, cast: detail.cast_members ?? [],
+        };
+      };
+      return publicJson({
+        movies: Array.from(movies.values()).map((item: any) => ({ ...item, ...publicDetails(item, "movie") })),
+        series: Array.from(series.values()).map(({ title, year, trakt_id, imdb_id, tmdb_id, episode_ids }) => {
+          const item = { title, year, trakt_id, imdb_id, tmdb_id, episode_count: episode_ids.size };
+          return { ...item, ...publicDetails(item, "show") };
+        }),
+      });
+    }
     if (action === "callback") {
       if (!body.code || !body.state) return json({ error: "Missing Trakt authorization code or state" }, 400);
       const stateHash = hex(await sha256(String(body.state)));
@@ -203,17 +331,19 @@ Deno.serve(async (req: Request) => {
       // Trakt's watched list is separate from watch history. Import it on every sync
       // so a movie marked Watched is not missed when last_activities is unchanged.
       let watchedMovieTotal = 0;
+      let watchedMovieItems = 0;
+      let watchedMovieMissingTimestamp = 0;
       let watchedPage = 1;
-      let watchedPageCount = 1;
       do {
-        const response = await traktFetch("/sync/watched/movies?page=" + watchedPage + "&limit=250", accessToken);
-        watchedPageCount = Number(response.headers.get("x-pagination-page-count") || 1);
+        const response = await traktFetch("/sync/watched/movies?page=" + watchedPage + "&limit=250&extended=full", accessToken);
         const items = await response.json();
         if (!Array.isArray(items) || items.length === 0) break;
+        watchedMovieItems += items.length;
         const rows = items.flatMap((entry: any) => {
           const movie = entry.movie;
           const watchedAt = entry.last_watched_at || entry.last_updated_at;
-          if (!movie?.ids?.trakt || !watchedAt) return [];
+          if (!movie?.ids?.trakt) return [];
+          if (!watchedAt) { watchedMovieMissingTimestamp++; return []; }
           return [{
             user_id: user.id, trakt_id: movie.ids.trakt, media_type: "movie",
             title: movie.title, year: movie.year ?? null, watched_at: watchedAt,
@@ -229,44 +359,38 @@ Deno.serve(async (req: Request) => {
           if (error) throw new Error("Could not save watched movies from Trakt");
           watchedMovieTotal += data?.length || 0;
         }
-        if (watchedPage >= watchedPageCount) break;
         watchedPage++;
       } while (watchedPage <= 1000);
 
-      const { data: previousState } = await db.rpc("sodo_trakt_get_sync_state", { p_user_id: user.id });
-      const activitiesUnchanged = previousState?.last_activities &&
-        JSON.stringify(previousState.last_activities) === JSON.stringify(activities);
-      if (activitiesUnchanged) {
-        const now = new Date().toISOString();
-        const { error } = await db.rpc("sodo_trakt_set_sync_state", {
-          p_user_id: user.id, p_last_activities: activities, p_last_synced_at: now, p_last_error: null,
-        });
-        if (error) throw new Error("Could not save sync status");
-        return json({
-          synced: watchedMovieTotal > 0, unchanged: watchedMovieTotal === 0,
-          imported: watchedMovieTotal, last_synced_at: now,
-        });
-      }
-
-      let total = watchedMovieTotal, page = 1, pageCount = 100;
+      // Always backfill history, even when last_activities is unchanged. Earlier
+      // syncs may have stored only episodes, leaving watched movies absent.
+      let historyMovieRows = 0, historyEpisodeRows = 0, page = 1, total = watchedMovieTotal;
       do {
-        const response = await traktFetch("/sync/history?page=" + page + "&limit=100", accessToken);
-        pageCount = Math.min(Number(response.headers.get("x-pagination-page-count") || 100), 100);
+        const response = await traktFetch("/sync/history?page=" + page + "&limit=250&extended=full", accessToken);
         const items = await response.json();
         if (!Array.isArray(items) || items.length === 0) break;
         const rows = historyRows(items, user.id);
+        historyMovieRows += rows.filter((row: any) => row.media_type === "movie").length;
+        historyEpisodeRows += rows.filter((row: any) => row.media_type === "episode").length;
         for (let i = 0; i < rows.length; i += 500) {
           const { error } = await db.from("sodo_watch_history").upsert(rows.slice(i, i + 500), { onConflict: "user_id,media_type,trakt_id,watched_at", ignoreDuplicates: true });
           if (error) throw new Error("Could not save private watch history");
         }
         total += rows.length;
-        if (items.length < 100) break;
         page++;
-      } while (page <= pageCount);
+      } while (page <= 1000);
+
+      const metadataResult = await enrichWatchLibrary(user.id, accessToken);
       const now = new Date().toISOString();
       const { error } = await db.rpc("sodo_trakt_set_sync_state", { p_user_id: user.id, p_last_activities: activities, p_last_synced_at: now, p_last_error: null });
       if (error) throw new Error("Could not save sync status");
-      return json({ synced: true, imported: total, last_synced_at: now });
+      return json({
+        synced: true, imported: total, watched_movie_items: watchedMovieItems,
+        watched_movie_rows_inserted: watchedMovieTotal, watched_movie_missing_timestamp: watchedMovieMissingTimestamp,
+        history_movie_rows_seen: historyMovieRows, history_episode_rows_seen: historyEpisodeRows,
+        metadata_updated: metadataResult.updated, metadata_pending: metadataResult.pending,
+        last_synced_at: now,
+      });
     }
     return json({ error: "Unknown action" }, 400);
   } catch (error) {
