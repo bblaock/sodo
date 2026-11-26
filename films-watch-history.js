@@ -234,11 +234,19 @@ async function loadPrivateHistory() {
   }
 }
 
-let loadSequence = 0;
+let isLoading = false;
+let refreshPending = false;
 async function refresh() {
-  const sequence = ++loadSequence;
-  await loadPrivateHistory();
-  if (sequence !== loadSequence) clearPanels();
+  if (isLoading) {
+    refreshPending = true;
+    return;
+  }
+  isLoading = true;
+  do {
+    refreshPending = false;
+    await loadPrivateHistory();
+  } while (refreshPending);
+  isLoading = false;
 }
 supabase.auth.onAuthStateChange(() => { queueMicrotask(refresh); });
 refresh();
