@@ -128,7 +128,9 @@ async function enrichMedia(kind: "movie" | "show", traktId: number, accessToken:
   const endpoint = kind === "movie" ? "movies" : "shows";
   const response = await traktFetch(`/${endpoint}/${traktId}?extended=full`, accessToken);
   const media = await response.json();
-  const posterUrl = await cachePoster(kind, traktId, firstImage(media.images?.poster));
+  let posterUrl: string | null = null;
+  try { posterUrl = await cachePoster(kind, traktId, firstImage(media.images?.poster)); }
+  catch (error) { console.warn("Trakt poster cache failed", kind, traktId, error); }
   let castMembers: any[] = [];
   try {
     const peopleResponse = await traktFetch(`/${endpoint}/${traktId}/people?extended=full`, accessToken);
@@ -161,12 +163,15 @@ async function enrichWatchLibrary(userId: string, accessToken: string) {
     if (row.media_type === "episode" && row.show_trakt_id) items.set(`show:${row.show_trakt_id}`, { kind: "show", id: Number(row.show_trakt_id) });
   }
   const cached = await db.from("trakt_media_metadata")
-    .select("media_type,trakt_id,metadata_updated_at")
+    .select("media_type,trakt_id,poster_url,metadata_updated_at")
     .in("media_type", ["movie", "show"]);
   if (cached.error) throw new Error("Could not read cached media metadata");
-  const cacheMap = new Map((cached.data || []).map((item: any) => [`${item.media_type}:${item.trakt_id}`, new Date(item.metadata_updated_at).getTime()]));
+  const cacheMap = new Map((cached.data || []).map((item: any) => [`${item.media_type}:${item.trakt_id}`, { updated: new Date(item.metadata_updated_at).getTime(), poster: item.poster_url }]));
   const refreshBefore = Date.now() - 30 * 24 * 60 * 60 * 1000;
-  const pending = Array.from(items.values()).filter(item => (cacheMap.get(`${item.kind}:${item.id}`) || 0) < refreshBefore);
+  const pending = Array.from(items.values()).filter(item => {
+    const cachedItem: any = cacheMap.get(`${item.kind}:${item.id}`);
+    return !cachedItem || !cachedItem.poster || cachedItem.updated < refreshBefore;
+  });
   const batch = pending.slice(0, 20);
   let updated = 0;
   for (let i = 0; i < batch.length; i += 3) {
@@ -205,7 +210,7 @@ Deno.serve(async (req: Request) => {
         }
       }
       const movieIds = Array.from(movies.keys());
-      const showIds = Array.from(series.values()).map((item: any) => Number(item.trakt_id)).filter(Number.isFinite);
+      const showIds = Array.from(series.values()).map((item: any) => Number(item.trakt_id)).filter((id: number) => Number.isFinite(id) && id > 0);
       const [movieMeta, showMeta] = await Promise.all([
         movieIds.length ? db.from("trakt_media_metadata").select("media_type,trakt_id,overview,tagline,poster_url,rating,genres,runtime,certification,status,trailer,homepage,cast_members").eq("media_type", "movie").in("trakt_id", movieIds) : Promise.resolve({ data: [], error: null }),
         showIds.length ? db.from("trakt_media_metadata").select("media_type,trakt_id,overview,tagline,poster_url,rating,genres,runtime,certification,status,trailer,homepage,cast_members").eq("media_type", "show").in("trakt_id", showIds) : Promise.resolve({ data: [], error: null }),
