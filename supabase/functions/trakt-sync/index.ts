@@ -110,7 +110,7 @@ Deno.serve(async (req: Request) => {
   try {
     if (action === "public-history") {
       const { data: rows, error } = await db.from("sodo_watch_history")
-        .select("media_type,trakt_id,title,year,watched_at,show_trakt_id,show_title")
+        .select("media_type,trakt_id,title,year,watched_at,show_trakt_id,show_title,imdb_id,tmdb_id")
         .eq("user_id", PUBLIC_WATCH_HISTORY_USER_ID)
         .order("watched_at", { ascending: false }).limit(5000);
       if (error) throw new Error("Could not read the public SODO watch library");
@@ -119,17 +119,17 @@ Deno.serve(async (req: Request) => {
       for (const row of rows || []) {
         if (row.media_type === "movie") {
           const key = Number(row.trakt_id);
-          if (!movies.has(key)) movies.set(key, { title: row.title, year: row.year });
+          if (!movies.has(key)) movies.set(key, { title: row.title, year: row.year, trakt_id: row.trakt_id, imdb_id: row.imdb_id, tmdb_id: row.tmdb_id });
         } else if (row.media_type === "episode" && row.show_title) {
           const key = String(row.show_trakt_id || row.show_title);
-          const item = series.get(key) || { title: row.show_title, year: row.year, episode_ids: new Set<number>() };
+          const item = series.get(key) || { title: row.show_title, year: row.year, trakt_id: row.show_trakt_id, imdb_id: row.imdb_id, tmdb_id: row.tmdb_id, episode_ids: new Set<number>() };
           item.episode_ids.add(Number(row.trakt_id));
           series.set(key, item);
         }
       }
       return publicJson({
         movies: Array.from(movies.values()),
-        series: Array.from(series.values()).map(({ title, year, episode_ids }) => ({ title, year, episode_count: episode_ids.size })),
+        series: Array.from(series.values()).map(({ title, year, trakt_id, imdb_id, tmdb_id, episode_ids }) => ({ title, year, trakt_id, imdb_id, tmdb_id, episode_count: episode_ids.size })),
       });
     }
     if (action === "callback") {
