@@ -117,3 +117,43 @@ test("private Trakt history stays hidden from signed-out visitors", async ({ pag
   await page.waitForFunction(() => document.documentElement.dataset.traktHistoryReady === "true");
   await expect(page.locator(".trakt-private-panel")).toHaveCount(0);
 });
+
+
+test("signed-in SODO account receives private Trakt history in Cinema", async ({ page }) => {
+  await page.addInitScript(() => {
+    const now = Math.floor(Date.now() / 1000);
+    localStorage.setItem("sb-wbuyglftsgldasawsllt-auth-token", JSON.stringify({
+      access_token: "test-access-token",
+      refresh_token: "test-refresh-token",
+      token_type: "bearer",
+      expires_in: 3600,
+      expires_at: now + 3600,
+      user: { id: "test-user", aud: "authenticated", role: "authenticated", email: "test@example.com" }
+    }));
+  });
+
+  await page.route("https://wbuyglftsgldasawsllt.supabase.co/functions/v1/trakt-sync", async route => {
+    const action = route.request().postDataJSON().action;
+    const payload = action === "status"
+      ? { connected: true }
+      : action === "sync"
+        ? { synced: true, imported: 0 }
+        : {
+            movies: [],
+            series: [{
+              title: "MobLand",
+              year: 2025,
+              episode_count: 20,
+              last_watched_at: "2026-11-26T15:33:00Z",
+              last_season: 1,
+              last_episode: 6
+            }]
+          };
+    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(payload) });
+  });
+
+  await page.goto("/sodo/en/films/#series");
+  await page.waitForFunction(() => document.documentElement.dataset.traktHistoryReady === "true");
+  await expect(page.locator("#series .trakt-private-card h3")).toHaveText("MobLand");
+  await expect(page.locator("#series .trakt-private-card")).toContainText("20 episodes");
+});
