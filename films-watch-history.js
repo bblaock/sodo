@@ -187,6 +187,23 @@ function createImportedCard(item, kind) {
 function renderItems(section, items, kind) {
   const grid = section?.querySelector('.movie-grid');
   if (!grid) return;
+
+  // Delegate poster navigation from the grid so it also covers cards inserted
+  // asynchronously after the page's initial card listeners have run.
+  if (!grid.dataset.sodoPosterNavigation) {
+    grid.dataset.sodoPosterNavigation = 'true';
+    grid.addEventListener('click', (event) => {
+      const card = event.target.closest('.movie-card');
+      if (!card || !grid.contains(card)) return;
+      const clickedLink = event.target.closest('a.poster-link, a.movie-title-link');
+      const link = clickedLink || card.querySelector('a.poster-link[href], a.movie-title-link[href]');
+      if (!link?.href) return;
+      event.preventDefault();
+      event.stopPropagation();
+      window.open(link.href, '_blank', 'noopener,noreferrer');
+    }, true);
+  }
+
   const manualCards = Array.from(grid.querySelectorAll('.movie-card:not([data-trakt-imported])'));
   for (const item of items) {
     const manual = findManualCard(manualCards, item);
