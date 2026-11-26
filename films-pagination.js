@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
       cards.forEach((card, index) => {
         const visible = index >= first && index < first + effectivePageSize;
         card.hidden = !visible;
-        if (visible) loadPoster(card, index === first);
+        if (visible && window.location.hash === "#" + section.id) loadPoster(card, index === first);
       });
 
       if (!pagination) return;
