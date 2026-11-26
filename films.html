@@ -189,16 +189,17 @@
  
     .cinema-tabs {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 12px;
       margin: 0 0 65px;
     }
     .cinema-tabs a {
       display: flex;
       flex-direction: column;
-      gap: 18px;
-      padding: 18px;
-      min-height: 100px;
+      align-items: flex-start;
+      gap: 7px;
+      padding: 22px;
+      min-height: 160px;
       border: 1px solid var(--border);
       border-radius: 12px;
       color: var(--text);
@@ -207,7 +208,11 @@
       transition: border-color .2s ease, transform .2s ease;
     }
     .cinema-tabs a:hover { border-color: var(--accent); transform: translateY(-3px); }
-    .cinema-tabs span { color: var(--accent); font-size: 11px; letter-spacing: 2px; }
+    .cinema-tabs strong { font-size: 22px; font-weight: 700; line-height: 1.35; }
+    .cinema-tabs small { color: var(--muted); font-size: 12px; line-height: 1.7; }
+    .cinema-icon { display: inline-flex; width: 44px; height: 44px; margin-bottom: 6px; color: var(--accent); }
+    .cinema-icon svg { width: 100%; height: 100%; }
+    .cinema-tabs-ar a { direction: rtl; align-items: flex-start; text-align: right; }
     .cinema-section { scroll-margin-top: 30px; padding: 28px 0 38px; border-top: 1px solid var(--border); }
     .section-heading { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
     .section-heading .eyebrow { width: 100%; }
@@ -218,7 +223,7 @@
     .section-note { margin: 18px 0 0; color: var(--muted); font-size: 14px; }
     @media (max-width: 600px) {
       .cinema-tabs { grid-template-columns: 1fr; gap: 9px; margin-bottom: 45px; }
-      .cinema-tabs a { min-height: 72px; flex-direction: row; align-items: center; justify-content: space-between; }
+      .cinema-tabs a { min-height: 125px; padding: 18px; }
       .section-heading { align-items: flex-start; }
     }
 
@@ -266,14 +271,19 @@
   </header>
 
   <main>
-    <div class="eyebrow">Stories on screen</div>
-    <h1>Films<span>.</span></h1>
-    <p class="intro">A personal record of films watched and stories discovered.</p>
+    <div class="eyebrow">Cinema</div>
+    <h1>سينما<span>.</span></h1>
+    <p class="intro">سجلّ شخصي للأفلام التي شاهدتها والحكايات التي اكتشفتها.</p>
 
-    <nav class="cinema-tabs" aria-label="Cinema sections">
-      <a href="#watched">Watched Films <span>01</span></a>
-      <a href="#watchlist">Watchlist <span>02</span></a>
-      <a href="#series">Series <span>03</span></a>
+    <nav class="cinema-tabs cinema-tabs-ar" aria-label="أقسام السينما">
+      <a href="#watched" aria-label="فتح قسم الأفلام">
+        <span class="cinema-icon" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><rect x="8" y="8" width="32" height="32" rx="6" stroke="currentColor" stroke-width="2.2"/><path d="M8 18h32M8 30h32M18 8v10m12-10v10M18 30v10m12-10v10" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="14" cy="14" r="2" fill="currentColor"/><circle cx="34" cy="14" r="2" fill="currentColor"/><circle cx="14" cy="34" r="2" fill="currentColor"/><circle cx="34" cy="34" r="2" fill="currentColor"/></svg></span>
+        <strong>الأفلام</strong><small>ما شاهدته من أفلام</small>
+      </a>
+      <a href="#series" aria-label="فتح قسم المسلسلات">
+        <span class="cinema-icon" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><rect x="7" y="12" width="34" height="25" rx="5" stroke="currentColor" stroke-width="2.2"/><path d="m19 7 5 5 5-5M15 37v4m18-4v4M13 41h22" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="m21 20 10 4.5L21 29v-9Z" fill="currentColor"/></svg></span>
+        <strong>المسلسلات</strong><small>الحكايات التي تابعتها</small>
+      </a>
     </nav>
 
     <section class="cinema-section" id="watched">
