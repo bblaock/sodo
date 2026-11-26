@@ -1326,8 +1326,160 @@
     applyLanguage(getPreference("sodo-language", "ar"));
   }
 
+  function installMotionSystem() {
+    if (document.getElementById("sodo-motion-style")) return;
+
+    const style = document.createElement("style");
+    style.id = "sodo-motion-style";
+    style.textContent = `
+      :root {
+        --sodo-motion-fast: 160ms;
+        --sodo-motion-base: 260ms;
+        --sodo-motion-slow: 420ms;
+        --sodo-motion-ease: cubic-bezier(.22,.61,.36,1);
+      }
+
+      @keyframes sodo-page-enter {
+        from { opacity: 0; transform: translate3d(0, 9px, 0); }
+        to { opacity: 1; transform: translate3d(0, 0, 0); }
+      }
+
+      body.sodo-motion-enter > header,
+      body.sodo-motion-enter > main,
+      body.sodo-motion-enter > footer {
+        animation: sodo-page-enter 440ms var(--sodo-motion-ease) both;
+      }
+      body.sodo-motion-enter > main { animation-delay: 35ms; }
+      body.sodo-motion-enter > footer { animation-delay: 70ms; }
+
+      [data-sodo-reveal] {
+        opacity: 0;
+        transform: translate3d(0, 15px, 0);
+        transition:
+          opacity var(--sodo-motion-slow) var(--sodo-motion-ease),
+          transform var(--sodo-motion-slow) var(--sodo-motion-ease);
+        transition-delay: var(--sodo-reveal-delay, 0ms);
+        will-change: opacity, transform;
+      }
+      [data-sodo-reveal].sodo-is-visible {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+        will-change: auto;
+      }
+
+      a, button, [role="button"] {
+        -webkit-tap-highlight-color: transparent;
+      }
+      a:active, button:active, [role="button"]:active {
+        transition-duration: var(--sodo-motion-fast);
+      }
+      body.sodo-page-leaving {
+        opacity: 0;
+        transform: translate3d(0, -4px, 0);
+        transition: opacity 180ms ease, transform 180ms ease;
+        pointer-events: none;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        body.sodo-motion-enter > header,
+        body.sodo-motion-enter > main,
+        body.sodo-motion-enter > footer {
+          animation: none !important;
+        }
+        [data-sodo-reveal] {
+          opacity: 1 !important;
+          transform: none !important;
+          transition: none !important;
+          will-change: auto !important;
+        }
+        body.sodo-page-leaving {
+          opacity: 1 !important;
+          transform: none !important;
+          transition: none !important;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+
+    const reducedMotion = window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (reducedMotion) {
+      document.querySelectorAll("[data-sodo-reveal]").forEach(el => {
+        el.classList.add("sodo-is-visible");
+      });
+      return;
+    }
+
+    document.body.classList.add("sodo-motion-enter");
+
+    const revealSelector = [
+      "main > .hero",
+      "main > h1",
+      "main > .intro",
+      "main > .eyebrow",
+      "main > section",
+      "main > .content",
+      ".cards > .card",
+      ".movie-grid > .movie-card",
+      ".cinema-tabs > a",
+      ".project",
+      ".film-layout",
+      ".film-hero",
+      ".work-heading",
+      ".details-panel",
+      ".watched-film",
+      ".footer-socials"
+    ].join(",");
+
+    const revealItems = Array.from(document.querySelectorAll(revealSelector));
+    revealItems.forEach((el, index) => {
+      if (el.closest("#sodo-welcome-overlay")) return;
+      el.setAttribute("data-sodo-reveal", "");
+      el.style.setProperty("--sodo-reveal-delay", (Math.min(index % 6, 5) * 48) + "ms");
+    });
+
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver((entries, currentObserver) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("sodo-is-visible");
+          currentObserver.unobserve(entry.target);
+        });
+      }, { threshold: 0.08, rootMargin: "0px 0px -28px 0px" });
+
+      revealItems.forEach(el => {
+        if (!el.closest("#sodo-welcome-overlay")) observer.observe(el);
+      });
+    } else {
+      revealItems.forEach(el => el.classList.add("sodo-is-visible"));
+    }
+
+    document.addEventListener("click", event => {
+      if (event.defaultPrevented || event.button !== 0 ||
+          event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+      const link = event.target.closest("a[href]");
+      if (!link || link.target || link.hasAttribute("download") ||
+          link.hasAttribute("data-no-page-transition") ||
+          (link.getAttribute("rel") || "").split(/\s+/).includes("external")) return;
+
+      let destination;
+      try { destination = new URL(link.href, window.location.href); } catch (_) { return; }
+      if (destination.origin !== window.location.origin ||
+          destination.pathname === window.location.pathname &&
+          destination.search === window.location.search ||
+          destination.hash && destination.pathname === window.location.pathname) return;
+
+      event.preventDefault();
+      document.body.classList.add("sodo-page-leaving");
+      window.setTimeout(() => window.location.assign(destination.href), 180);
+    }, true);
+  }
+
   function initialize() {
     installStyles();
+    installMotionSystem();
     createControls();
 
     applyLanguage(getPreference("sodo-language", "ar"));
