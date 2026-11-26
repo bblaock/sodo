@@ -12,7 +12,7 @@ const localeRoutes = languages.flatMap(language => [
   ...filmSlugs.map(slug => ({ language, path: `/sodo/${language}/films/${slug}/` }))
 ]);
 
-test("all 48 localized routes load with the correct document language and direction", async ({ page }) => {
+test("all localized routes load with the correct document language and direction", async ({ page }) => {
   const pageErrors = [];
   const failedResources = [];
   page.on("pageerror", error => pageErrors.push(error.message));
@@ -142,7 +142,12 @@ test("public Trakt history merges into the existing SODO film and series grids",
   await expect(batman.locator(".poster-link")).toHaveAttribute("href", "/sodo/en/films/trakt/?kind=movie&id=102");
   await expect(batman.locator(".movie-title-link")).toHaveAttribute("href", "/sodo/en/films/trakt/?kind=movie&id=102");
   await batman.locator(".poster-link").click();
-  await expect(page).toHaveURL(/\\/sodo\\/en\\/films\\/trakt\\/\\?kind=movie&id=102$/);
+  await expect(page).toHaveURL(url => {
+    const parsed = new URL(url);
+    expect(parsed.pathname).toBe("/sodo/en/films/trakt/");
+    expect(parsed.searchParams.get("kind")).toBe("movie");
+    expect(parsed.searchParams.get("id")).toBe("102");
+  });
   await expect(page.locator("#trakt-title")).toHaveText("The Batman");
   await expect(page.locator("#trakt-overview")).toContainText("A masked vigilante");
   await expect(page.locator("#trakt-details")).toContainText("Crime · Drama");
