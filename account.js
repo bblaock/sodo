@@ -47,6 +47,14 @@ async function render() {
   if (current) {
     $("identity").textContent = "مسجّل الدخول: " + (current.user.email || "حساب SODO");
     await refreshStatus();
+    try {
+      const result = await api("sync");
+      if (result.unchanged) say("سجل Trakt محدّث؛ لا توجد مشاهدات جديدة.");
+      else say("تم تحديث سجل المشاهدة تلقائياً. المشاهدات الجديدة المستوردة: " + result.imported + ".");
+      await refreshStatus();
+    } catch (error) {
+      say(error.message, true);
+    }
   }
 }
 $("signin").addEventListener("click", async () => {
