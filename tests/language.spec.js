@@ -4,7 +4,7 @@ const languages = ["ar", "en", "ru"];
 const filmSlugs = [
   "13reasonswhy", "blackbox", "breakingbad", "daredevil",
   "daredevilbornagain", "gameofthrones", "heartofthebeast",
-  "hope", "luckystrike", "mebeforeyou", "theboys"
+  "hope", "luckystrike", "mebeforeyou", "theboys", "trakt"
 ];
 const sectionRoutes = ["", "about/", "thoughts/", "films/", "projects/"];
 const localeRoutes = languages.flatMap(language => [
@@ -139,6 +139,13 @@ test("public Trakt history merges into the existing SODO film and series grids",
   await expect(batman.locator(".trakt-imported-details")).toHaveCount(0);
   await expect(batman.locator(".movie-card-info .movie-meta")).toContainText("2022");
   await expect(batman.locator(".movie-poster")).toHaveAttribute("alt", "The Batman poster");
+  await expect(batman.locator(".poster-link")).toHaveAttribute("href", "/sodo/en/films/trakt/?kind=movie&id=102");
+  await expect(batman.locator(".movie-title-link")).toHaveAttribute("href", "/sodo/en/films/trakt/?kind=movie&id=102");
+  await batman.locator(".poster-link").click();
+  await expect(page).toHaveURL(/\\/sodo\\/en\\/films\\/trakt\\/\\?kind=movie&id=102$/);
+  await expect(page.locator("#trakt-title")).toHaveText("The Batman");
+  await expect(page.locator("#trakt-overview")).toContainText("A masked vigilante");
+  await expect(page.locator("#trakt-details")).toContainText("Crime · Drama");
   await expect(batman.locator(".trakt-watch-badge")).toHaveCount(0);
   await expect(page.locator("#series .trakt-imported-card h3")).toContainText("MobLand");
   await expect(page.locator("#series .trakt-imported-card")).toContainText("20 episodes");
