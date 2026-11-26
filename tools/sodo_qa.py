@@ -67,7 +67,7 @@ def html_files(root: Path) -> list[Path]:
         path for path in root.rglob("*")
         if path.is_file()
         and path.suffix.lower() in HTML_SUFFIXES
-        and not any(part in {".git", ".venv", "__pycache__"} for part in path.parts)
+        and not any(part in {".git", ".venv", "__pycache__", "node_modules"} for part in path.parts)
     )
 
 

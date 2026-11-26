@@ -1,0 +1,14 @@
+{
+  "name": "sodo-site-quality",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Browser and Lighthouse quality checks for the SODO static website",
+  "scripts": {
+    "test:e2e": "playwright test",
+    "test:e2e:report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "@lhci/cli": "^0.15.1"
+  }
+}
