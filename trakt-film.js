@@ -77,7 +77,7 @@ function showError(message) {
 }
 
 async function load() {
-  if (!id || !/^\\d+$/.test(id)) return showError(t.notFound);
+  if (!id || !/^\d+$/.test(id)) return showError(t.notFound);
   try {
     const response = await fetch(SUPABASE_URL + "/functions/v1/trakt-sync", {
       method: "POST",
