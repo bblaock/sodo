@@ -38,7 +38,7 @@ const copy={
 };
 const t=copy[locale]||copy.en;
 const emojis=["😀","😃","😄","😁","😅","😂","🙂","😉","😊","😍","🥰","😘","😎","🤔","😭","😢","😡","🤝","👍","👎","👏","🙏","❤️","💚","✨","🔥","🎉","🌙","⭐","☕"];
-let user=null,profile=null,selectedAvatar=1,activeConversation=null,activeOther=null,activeChannel=null,searchTimer=null,editingProfile=false;
+let user=null,profile=null,selectedAvatar=1,activeConversation=null,activeOther=null,activeChannel=null,requestsChannel=null,searchTimer=null,editingProfile=false;
 function toast(message){const el=$("toast");el.textContent=message;el.classList.remove("hidden");clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.add("hidden"),3200)}
 function show(id,on){$(id).classList.toggle("hidden",!on)}
 function normalizeUsername(value){return value.trim().replace(/^@/,"").toLowerCase()}
@@ -50,7 +50,11 @@ function renderAvatarChoices(){const grid=$("avatar-grid");grid.replaceChildren(
 async function getSession(){const {data,error}=await supabase.auth.getSession();if(error)throw error;return data.session}
 async function loadProfile(){const {data,error}=await supabase.from("chat_profiles").select("id,username,avatar_id").eq("id",user.id).maybeSingle();if(error)throw error;return data}
 function setSelf(){$("self-avatar").src=avatarSrc(profile.avatar_id);$("self-handle").textContent="@"+profile.username}
-async function enterApp(){show("auth-panel",false);show("profile-setup",false);show("chat-app",true);setSelf();await Promise.all([loadConversations(),loadFriendRequests()])}
+async function enterApp(){
+ show("auth-panel",false);show("profile-setup",false);show("chat-app",true);setSelf();
+ await Promise.all([loadConversations(),loadFriendRequests()]);
+ if(!requestsChannel){requestsChannel=supabase.channel("sodo-friend-requests-"+user.id).on("postgres_changes",{event:"*",schema:"public",table:"chat_friend_requests"},()=>loadFriendRequests().catch(e=>console.error(e))).subscribe()}
+}
 async function initialize(){
  const session=await getSession();user=session?.user||null;
  if(!user){show("auth-panel",true);show("profile-setup",false);show("chat-app",false);return}
@@ -121,6 +125,6 @@ async function loadMessages(){const {data,error}=await supabase.from("chat_messa
 $("message-form").addEventListener("submit",async e=>{e.preventDefault();const body=$("message-input").value.trim();if(!body){toast(t.emptyMessage);return}if(!activeConversation)return;const button=$("message-form").querySelector("button[type=submit]");button.disabled=true;try{const {data,error}=await supabase.from("chat_messages").insert({conversation_id:activeConversation.id,sender_id:user.id,body}).select("id,conversation_id,sender_id,body,created_at").single();if(error)throw error;appendMessage(data);$("message-input").value=""}catch(e){toast(e.message||t.sendError)}finally{button.disabled=false;$("message-input").focus()}});
 $("emoji-toggle").addEventListener("click",()=>show("emoji-picker",$("emoji-picker").classList.contains("hidden")));
 const picker=$("emoji-picker");for(const emoji of emojis){const b=document.createElement("button");b.type="button";b.textContent=emoji;b.setAttribute("aria-label",emoji);b.addEventListener("click",()=>{$("message-input").value+=$("message-input").value?" "+emoji:emoji;$("message-input").focus()});picker.append(b)}
-$("signout").addEventListener("click",async()=>{if(activeChannel)await supabase.removeChannel(activeChannel);await supabase.auth.signOut();user=null;profile=null;activeConversation=null;initialize().catch(e=>toast(e.message||t.generic))});
+$("signout").addEventListener("click",async()=>{if(activeChannel)await supabase.removeChannel(activeChannel);if(requestsChannel)await supabase.removeChannel(requestsChannel);activeChannel=null;requestsChannel=null;await supabase.auth.signOut();user=null;profile=null;activeConversation=null;initialize().catch(e=>toast(e.message||t.generic))});
 supabase.auth.onAuthStateChange((_event,session)=>{queueMicrotask(()=>{user=session?.user||null;initialize().catch(e=>toast(e.message||t.generic))})});
 renderAvatarChoices();initialize().catch(e=>toast(e.message||t.generic));
