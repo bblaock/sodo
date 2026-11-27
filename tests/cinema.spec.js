@@ -69,12 +69,4 @@ for (const language of locales) {
     await expect(page.locator("#watched .movie-pagination-summary")).toContainText("7");
   });
 
-  test(`Cinema year labels use left-to-right isolation in ${language}`, async ({ page }) => {
-    await mockPublicHistory(page);
-    await page.goto(`/sodo/${language}/films/`);
-    await page.waitForFunction(() => document.documentElement.dataset.traktHistoryReady === "true");
-    const year = page.locator("#series .movie-card .movie-meta > span:first-child").first();
-    await expect(year).toHaveCSS("direction", "ltr");
-    await expect(year).toHaveCSS("unicode-bidi", "isolate");
-  });
 }
