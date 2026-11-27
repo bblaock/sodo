@@ -344,31 +344,3 @@ test("cinema story heading is localized as القصة and manual film links open
   await page.goto("/sodo/ar/films/trakt/?kind=movie&id=102");
   await expect(page.locator(".story-block h2")).toHaveText("القصة");
 });
-
-
-test("localized SODO Chat pages load with private sign-in and no attachment controls", async ({ page }) => {
-  const pageErrors = [];
-  page.on("pageerror", error => pageErrors.push(error.message));
-  const supabaseStub = `export function createClient(){return {auth:{getSession:async()=>({data:{session:null}}),onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}})}}}`;
-  await page.route("https://esm.sh/@supabase/supabase-js@2", route => route.fulfill({
-    status: 200,
-    contentType: "application/javascript",
-    body: supabaseStub
-  }));
-
-  for (const language of languages) {
-    const response = await page.goto(`/sodo/${language}/chat/`);
-    expect(response, `missing Chat document for ${language}`).not.toBeNull();
-    expect(response.status(), `Chat HTTP status for ${language}`).toBe(200);
-    await expect(page.locator("html")).toHaveAttribute("lang", language);
-    await expect(page.locator("html")).toHaveAttribute("dir", language === "ar" ? "rtl" : "ltr");
-    await expect(page.locator(".intro h1")).toBeVisible();
-    await expect(page.locator("#auth-panel")).toBeVisible();
-    await expect(page.locator("#signin")).toBeVisible();
-    await expect(page.locator("#signup")).toBeVisible();
-    await expect(page.locator("input[type='file']")).toHaveCount(0);
-    await expect(page.locator(".locale-switch a")).toHaveCount(3);
-  }
-
-  expect(pageErrors, "uncaught JavaScript errors on localized Chat pages").toEqual([]);
-});

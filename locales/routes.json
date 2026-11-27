@@ -1,24 +1,9 @@
 {
   "defaultLanguage": "ar",
-  "supportedLanguages": [
-    "ar",
-    "en",
-    "ru"
-  ],
+  "supportedLanguages": ["ar", "en", "ru"],
   "basePath": "/sodo/",
   "routePattern": "/sodo/{language}/{section}/{optionalSlug}/",
-  "sections": [
-    "",
-    "about",
-    "thoughts",
-    "films",
-    "projects",
-    "chat"
-  ],
+  "sections": ["", "about", "thoughts", "films", "projects"],
   "filmDetailPattern": "films/{filmSlug}",
-  "direction": {
-    "ar": "rtl",
-    "en": "ltr",
-    "ru": "ltr"
-  }
+  "direction": {"ar":"rtl","en":"ltr","ru":"ltr"}
 }
