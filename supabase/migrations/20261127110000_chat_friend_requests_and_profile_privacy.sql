@@ -71,7 +71,7 @@ begin
   if new.id is distinct from old.id
     or new.pair_low is distinct from old.pair_low
     or new.pair_high is distinct from old.pair_high
-    or new.created_at is distinct from old.created_at then
+    then
     raise exception 'Friend request identity fields cannot be changed';
   end if;
 
@@ -92,6 +92,7 @@ begin
       else old.requester_id
     end
     and new.status = 'pending'
+    and new.created_at >= old.created_at
     and new.responded_at is null then
     return new;
   end if;
