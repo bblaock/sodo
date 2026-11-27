@@ -46,6 +46,15 @@ for (const language of locales) {
     const importedSeries = page.locator("#series .trakt-imported-card").filter({ hasText: "MobLand" });
     await expect(importedSeries).toHaveAttribute("role", "link");
     await expect(importedSeries).toHaveAttribute("tabindex", "0");
+
+    await imported.focus();
+    await page.keyboard.press("Enter");
+    await expect(page).toHaveURL(url => {
+      const parsed = new URL(url);
+      return parsed.pathname === `/sodo/${language}/films/trakt/` &&
+        parsed.searchParams.get("kind") === "movie" &&
+        parsed.searchParams.get("id") === "991001";
+    });
   });
 
   test(`Cinema search trims whitespace and pagination stays synchronized (${language})`, async ({ page }) => {
