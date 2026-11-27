@@ -7,8 +7,8 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' https://esm.sh; style-src 'self' 'unsafe-inline'; connect-src 'self' https://wbuyglftsgldasawsllt.supabase.co wss://wbuyglftsgldasawsllt.supabase.co https://esm.sh; img-src 'self' data:; form-action 'self'; upgrade-insecure-requests">
 <meta name="theme-color" content="#080a08">
 <title>Чат SODO — SODO</title>
-<link rel="stylesheet" href="/sodo/chat.css?v=20261127-1">
-<script type="module" src="/sodo/chat.js?v=20261127-1"></script>
+<link rel="stylesheet" href="/sodo/chat.css?v=20261127-2">
+<script type="module" src="/sodo/chat.js?v=20261127-2"></script>
 </head>
 <body data-locale="ru">
 <div class="chat-shell">
@@ -60,6 +60,10 @@
 <div class="search-input"><span>@</span><input id="user-search" maxlength="20" autocomplete="off" placeholder="username" dir="ltr"><button type="submit" aria-label="Search">⌕</button></div>
 </form>
 <div id="search-results" class="search-results"></div>
+<div class="requests-stack">
+<section class="request-section"><div class="list-heading"><span>Входящие запросы</span><span id="incoming-count">0</span></div><div id="incoming-requests" class="request-list"></div></section>
+<section class="request-section"><div class="list-heading"><span>Отправленные запросы</span><span id="outgoing-count">0</span></div><div id="outgoing-requests" class="request-list"></div></section>
+</div>
 <div class="list-heading"><span data-copy="conversations">Ваши чаты</span><span id="conversation-count">0</span></div>
 <div id="conversation-list" class="conversation-list"></div>
 <button id="signout" class="signout">Выйти</button>
