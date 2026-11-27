@@ -141,11 +141,14 @@ test("public Trakt history merges into the existing SODO film and series grids a
   await expect(batman.locator(".movie-title-link")).toHaveAttribute("target", "_blank");
   await page.locator('a[href="#series"]').click();
   await expect(page.locator("#series")).toBeVisible();
+  await page.locator("#series .movie-pagination").getByRole("button", { name: "Next page" }).click();
   await expect(page.locator("#series .trakt-imported-card h3")).toContainText("MobLand");
   await expect(page.locator("#series .trakt-imported-card")).toContainText("20 episodes");
   await expect(page.locator("#series .trakt-imported-card .trakt-imported-details")).toHaveCount(0);
   await expect(page.locator("#series .trakt-imported-card .trakt-watch-badge")).toHaveCount(0);
   await page.locator('a[href="#watched"]').click();
+  await expect(batman).toBeVisible();
+  await page.locator("#watched .movie-pagination").getByRole("button", { name: "Next page" }).click();
   await expect(batman).toBeVisible();
   const [detailPage] = await Promise.all([
     page.waitForEvent("popup"),
@@ -226,6 +229,7 @@ test("signed-in SODO owner syncs Trakt before public history is rendered", async
 
   await page.goto("/sodo/en/films/#series");
   await page.waitForFunction(() => document.documentElement.dataset.traktHistoryReady === "true");
+  await page.locator("#series .movie-pagination").getByRole("button", { name: "Next page" }).click();
   await expect(page.locator("#series .trakt-imported-card h3")).toHaveText("MobLand");
   await expect(page.locator("#series .trakt-imported-card")).toContainText("20 episodes");
   await expect(page.locator("#watched .trakt-imported-card h3")).toHaveText("The Batman");
@@ -235,6 +239,9 @@ test("signed-in SODO owner syncs Trakt before public history is rendered", async
   await expect(page.locator('#watched .movie-card:has(a[href="./hope/"]) .trakt-watch-badge')).toHaveCount(0);
   await expect(page.locator("#watched .trakt-imported-card .trakt-imported-details")).toHaveCount(0);
   await expect(page.locator("#series .trakt-imported-card .trakt-imported-details")).toHaveCount(0);
+  await page.locator('a[href="#watched"]').click();
+  await page.locator("#watched .movie-pagination").getByRole("button", { name: "Next page" }).click();
+  await expect(page.locator("#watched .trakt-imported-card h3")).toHaveText("The Batman");
   await expect(page.locator(".trakt-watch-badge")).toHaveCount(0);
   await expect(page.locator(".trakt-sync-summary")).toHaveCount(0);
 });
@@ -342,4 +349,45 @@ test("cinema story heading is localized as القصة and manual film links open
   });
   await page.goto("/sodo/ar/films/trakt/?kind=movie&id=102");
   await expect(page.locator(".story-block h2")).toHaveText("القصة");
+});
+
+
+test("film and series collections paginate independently in every locale", async ({ page }) => {
+  const labels = {
+    ar: { next: "التالي", previous: "السابق", showing: "عرض" },
+    en: { next: "Next page", previous: "Previous page", showing: "Showing" },
+    ru: { next: "Следующая страница", previous: "Предыдущая страница", showing: "Показано" }
+  };
+
+  for (const language of languages) {
+    await page.goto(`/sodo/${language}/films/#watched`);
+    const watched = page.locator("#watched");
+    const watchedPagination = watched.locator(".movie-pagination");
+    await expect(watchedPagination).toBeVisible();
+    await expect(watchedPagination.locator(".movie-pagination-summary")).toContainText(labels[language].showing);
+    await expect(watched.locator(".movie-card:not([hidden])")).toHaveCount(6);
+
+    await watchedPagination.getByRole("button", { name: labels[language].next }).click();
+    await expect(watchedPagination.getByRole("button", { name: "2" })).toHaveAttribute("aria-current", "page");
+    await expect(watched.locator(".movie-card:not([hidden])")).toHaveCount(1);
+
+    await watchedPagination.getByRole("button", { name: labels[language].previous }).click();
+    await expect(watchedPagination.getByRole("button", { name: "1" })).toHaveAttribute("aria-current", "page");
+
+    const search = page.locator("#sodo-cinema-search-input");
+    await expect(search).toBeVisible();
+    await search.fill("Coco");
+    await expect(watched.locator(".movie-card:not([hidden])")).toHaveCount(1);
+    await expect(watched.locator(".movie-pagination-summary")).toContainText("1");
+    await search.fill("");
+
+    await page.locator('a[href="#series"]').click();
+    const series = page.locator("#series");
+    const seriesPagination = series.locator(".movie-pagination");
+    await expect(seriesPagination).toBeVisible();
+    await expect(series.locator(".movie-card:not([hidden])")).toHaveCount(6);
+    await seriesPagination.getByRole("button", { name: labels[language].next }).click();
+    await expect(seriesPagination.getByRole("button", { name: "2" })).toHaveAttribute("aria-current", "page");
+    await expect(series.locator(".movie-card:not([hidden])")).toHaveCount(3);
+  }
 });
