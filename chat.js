@@ -58,7 +58,7 @@ async function searchUsers(query){
  const value=normalizeUsername(query);const results=$("search-results");results.replaceChildren();
  if(value.length<3){toast(t.searchMin);return}
  const {data,error}=await supabase.from("chat_profiles").select("id,username,avatar_id").eq("username",value).neq("id",user.id).order("username").limit(12);
- const {data,error}=await supabase.from("chat_profiles").select("id,username,avatar_id").ilike("username",pattern).neq("id",user.id).order("username").limit(12);
+
  if(error)throw error;
  if(!data.length){const p=document.createElement("p");p.className="tiny-note";p.textContent=t.noUsers;results.append(p);return}
  for(const person of data){
