@@ -29,6 +29,9 @@ select c.user_one, c.user_two, c.user_one, c.user_two, 'accepted', c.created_at,
 from public.chat_conversations c
 on conflict (pair_low, pair_high) do nothing;
 
+alter table public.chat_profiles force row level security;
+alter table public.chat_conversations force row level security;
+alter table public.chat_messages force row level security;
 alter table public.chat_friend_requests enable row level security;
 alter table public.chat_friend_requests force row level security;
 create index chat_friend_requests_requester_status_idx
