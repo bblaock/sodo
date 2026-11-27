@@ -43,13 +43,14 @@ $("save-profile").addEventListener("click",async()=>{
  const username=normalizeUsername($("username").value);if(!validUsername(username)){toast(t.usernameInvalid);return}
  const button=$("save-profile");button.disabled=true;
  try{
-  const query=editingProfile
+  const wasEditing=editingProfile;
+  const query=wasEditing
    ? supabase.from("chat_profiles").update({username,avatar_id:selectedAvatar}).eq("id",user.id)
    : supabase.from("chat_profiles").insert({id:user.id,username,avatar_id:selectedAvatar});
   const {data,error}=await query.select("id,username,avatar_id").single();
   if(error){if(error.code==="23505")throw new Error(t.usernameTaken);throw error}
   profile=data;editingProfile=false;button.textContent=locale==="ar"?"حفظ الملف الشخصي":locale==="ru"?"Сохранить профиль":"Save profile";
-  toast(t.profileSaved);await enterApp()
+  toast(wasEditing?t.updated:t.profileSaved);await enterApp()
  }catch(e){toast(e.message||t.generic)}finally{button.disabled=false}
 });
 $("edit-profile").addEventListener("click",()=>{editingProfile=true;selectedAvatar=profile.avatar_id;renderAvatarChoices();$("username").value=profile.username;show("chat-app",false);show("profile-setup",true);$("save-profile").textContent=locale==="ar"?"حفظ التغييرات":locale==="ru"?"Сохранить изменения":"Save changes"});
