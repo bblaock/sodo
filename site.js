@@ -1552,12 +1552,111 @@
     document.head.appendChild(style);
   }
 
+  function installCinemaSearch() {
+    const path = window.location.pathname;
+    if (!/\/films\/(?:index\.html)?$/.test(path)) return;
+    if (document.getElementById("sodo-cinema-search")) return;
+
+    const grids = Array.from(document.querySelectorAll(".cinema-section .movie-grid"));
+    if (!grids.length) return;
+
+    const lang = document.documentElement.lang || "en";
+    const labels = {
+      ar: { placeholder: "ابحث في السينما…", results: "نتيجة", none: "لا توجد نتائج مطابقة." },
+      en: { placeholder: "Search cinema…", results: "results", none: "No matching titles." },
+      ru: { placeholder: "Поиск по кино…", results: "результатов", none: "Совпадений нет." }
+    };
+    const copy = labels[lang] || labels.en;
+
+    const wrap = document.createElement("div");
+    wrap.id = "sodo-cinema-search";
+    wrap.className = "sodo-cinema-search";
+    wrap.innerHTML = `
+      <label class="sodo-cinema-search-label" for="sodo-cinema-search-input">${copy.placeholder}</label>
+      <div class="sodo-cinema-search-row">
+        <input id="sodo-cinema-search-input" type="search" autocomplete="off" enterkeyhint="search"
+          placeholder="${copy.placeholder}" aria-label="${copy.placeholder}">
+        <span class="sodo-cinema-search-count" aria-live="polite"></span>
+      </div>
+      <p class="sodo-cinema-search-empty" hidden></p>
+    `;
+
+    const style = document.createElement("style");
+    style.id = "sodo-cinema-search-style";
+    style.textContent = `
+      .sodo-cinema-search { margin: 0 0 32px; }
+      .sodo-cinema-search-label {
+        display:block; margin:0 0 9px; color:var(--accent,#c8ff4d);
+        font-size:11px; letter-spacing:1.8px; text-transform:uppercase;
+      }
+      .sodo-cinema-search-row { display:flex; align-items:center; gap:10px; }
+      #sodo-cinema-search-input {
+        flex:1; min-width:0; width:100%; padding:12px 14px;
+        border:1px solid var(--border,#293126); border-radius:10px;
+        background:var(--panel,#111510); color:var(--text,#f4f7ef);
+        outline:none; font:inherit; font-size:14px;
+      }
+      #sodo-cinema-search-input:focus {
+        border-color:var(--accent,#c8ff4d);
+        box-shadow:0 0 0 3px color-mix(in srgb, var(--accent,#c8ff4d) 14%, transparent);
+      }
+      .sodo-cinema-search-count {
+        flex:0 0 auto; color:var(--muted,#b0b9a9); font-size:11px; white-space:nowrap;
+      }
+      .sodo-cinema-search-empty {
+        margin:12px 0 0; color:var(--muted,#b0b9a9); font-size:13px;
+      }
+      @media(max-width:600px) {
+        .sodo-cinema-search-row { align-items:stretch; flex-direction:column; }
+        .sodo-cinema-search-count { text-align:start; }
+      }
+    `;
+    document.head.appendChild(style);
+
+    const anchor = document.querySelector(".cinema-tabs") || grids[0];
+    anchor.parentNode.insertBefore(wrap, anchor);
+
+    const input = wrap.querySelector("#sodo-cinema-search-input");
+    const count = wrap.querySelector(".sodo-cinema-search-count");
+    const empty = wrap.querySelector(".sodo-cinema-search-empty");
+    const cards = grids.flatMap(grid => Array.from(grid.querySelectorAll(":scope > .movie-card")));
+
+    const normalize = value => String(value || "").normalize("NFKC").toLocaleLowerCase();
+    const getText = card => normalize([
+      card.querySelector("h3")?.textContent,
+      card.querySelector(".movie-meta")?.textContent,
+      card.textContent
+    ].join(" "));
+
+    function applyFilter() {
+      const query = normalize(input.value);
+      let visible = 0;
+      cards.forEach(card => {
+        const match = !query || getText(card).includes(query);
+        card.dataset.sodoSearchHidden = match ? "false" : "true";
+        if (match) {
+          card.hidden = false;
+          visible += 1;
+        } else {
+          card.hidden = true;
+        }
+      });
+      count.textContent = query ? String(visible) + " " + copy.results : "";
+      empty.hidden = visible !== 0 || !query;
+      empty.textContent = copy.none;
+    }
+
+    input.addEventListener("input", applyFilter, { passive: true });
+    input.addEventListener("search", applyFilter);
+  }
+
   function initialize() {
     installStyles();
     installCinemaLightTheme();
     installMotionSystem();
     createControls();
     installSocialIconOnlyFooter();
+    installCinemaSearch();
 
     // The locale in the current URL is authoritative on every localized page.
     // Stored preferences are only a fallback for legacy routes.
