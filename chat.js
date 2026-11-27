@@ -12,7 +12,7 @@ const copy={
 const t=copy[locale]||copy.en;
 const emojis=["😀","😃","😄","😁","😅","😂","🙂","😉","😊","😍","🥰","😘","😎","🤔","😭","😢","😡","🤝","👍","👎","👏","🙏","❤️","💚","✨","🔥","🎉","🌙","⭐","☕"];
 const avatarSrc=id=>"/sodo/assets/chat/avatars/avatar-"+id+".svg";
-let user=null,profile=null,selectedAvatar=1,activeConversation=null,activeOther=null,activeChannel=null,searchTimer=null;
+let user=null,profile=null,selectedAvatar=1,activeConversation=null,activeOther=null,activeChannel=null,searchTimer=null,editingProfile=false;
 function toast(message){const el=$("toast");el.textContent=message;el.classList.remove("hidden");clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.add("hidden"),3200)}
 function show(el,on){$(el).classList.toggle("hidden",!on)}
 function normalizeUsername(value){return value.trim().replace(/^@/,"").toLowerCase()}
@@ -42,19 +42,17 @@ $("signup").addEventListener("click",async()=>{
 $("save-profile").addEventListener("click",async()=>{
  const username=normalizeUsername($("username").value);if(!validUsername(username)){toast(t.usernameInvalid);return}
  const button=$("save-profile");button.disabled=true;
- try{const {data,error}=await supabase.from("chat_profiles").insert({id:user.id,username,avatar_id:selectedAvatar}).select("id,username,avatar_id").single();if(error){if(error.code==="23505")throw new Error(t.usernameTaken);throw error}profile=data;toast(t.profileSaved);await enterApp()}
- catch(e){toast(e.message||t.generic)}finally{button.disabled=false}
+ try{
+  const query=editingProfile
+   ? supabase.from("chat_profiles").update({username,avatar_id:selectedAvatar}).eq("id",user.id)
+   : supabase.from("chat_profiles").insert({id:user.id,username,avatar_id:selectedAvatar});
+  const {data,error}=await query.select("id,username,avatar_id").single();
+  if(error){if(error.code==="23505")throw new Error(t.usernameTaken);throw error}
+  profile=data;editingProfile=false;button.textContent=locale==="ar"?"حفظ الملف الشخصي":locale==="ru"?"Сохранить профиль":"Save profile";
+  toast(t.profileSaved);await enterApp()
+ }catch(e){toast(e.message||t.generic)}finally{button.disabled=false}
 });
-$("edit-profile").addEventListener("click",()=>{selectedAvatar=profile.avatar_id;renderAvatarChoices();$("username").value=profile.username;show("chat-app",false);show("profile-setup",true);$("save-profile").textContent=locale==="ar"?"حفظ التغييرات":locale==="ru"?"Сохранить изменения":"Save changes";$("save-profile").onclick=null;$("save-profile").addEventListener("click",saveProfileUpdate,{once:true})});
-async function saveProfileUpdate(){
- const button=$("save-profile");button.disabled=true;try{const username=normalizeUsername($("username").value);if(!validUsername(username)){toast(t.usernameInvalid);return}const {data,error}=await supabase.from("chat_profiles").update({username,avatar_id:selectedAvatar}).eq("id",user.id).select("id,username,avatar_id").single();if(error){if(error.code==="23505")throw new Error(t.usernameTaken);throw error}profile=data;button.textContent=locale==="ar"?"حفظ الملف الشخصي":locale==="ru"?"Сохранить профиль":"Save profile";await enterApp();toast(t.updated)}catch(e){toast(e.message||t.generic)}finally{button.disabled=false}
-}
-async function searchUsers(query){
- const value=normalizeUsername(query);const results=$("search-results");results.replaceChildren();if(value.length<3){toast(t.searchMin);return}
- const {data,error}=await supabase.from("chat_profiles").select("id,username,avatar_id").ilike("username",value+"%").neq("id",user.id).order("username").limit(12);if(error)throw error;
- if(!data.length){const p=document.createElement("p");p.className="tiny-note";p.textContent=t.noUsers;results.append(p);return}
- for(const person of data){const b=document.createElement("button");b.type="button";b.className="user-result";const img=document.createElement("img");img.src=avatarSrc(person.avatar_id);img.alt="";const d=document.createElement("div");const strong=document.createElement("strong");strong.textContent="@"+person.username;const small=document.createElement("span");small.textContent=locale==="ar"?"بدء محادثة خاصة":locale==="ru"?"Начать личный чат":"Start private chat";d.append(strong,small);b.append(img,d);b.addEventListener("click",async()=>{try{await openConversation(person);results.replaceChildren()}catch(e){toast(e.message||t.generic)}});results.append(b)}
-}
+$("edit-profile").addEventListener("click",()=>{editingProfile=true;selectedAvatar=profile.avatar_id;renderAvatarChoices();$("username").value=profile.username;show("chat-app",false);show("profile-setup",true);$("save-profile").textContent=locale==="ar"?"حفظ التغييرات":locale==="ru"?"Сохранить изменения":"Save changes"});
 $("search-form").addEventListener("submit",async e=>{e.preventDefault();try{await searchUsers($("user-search").value)}catch(e){toast(e.message||t.generic)}});
 $("user-search").addEventListener("input",()=>{clearTimeout(searchTimer);const value=$("user-search").value;if(normalizeUsername(value).length<3){$("search-results").replaceChildren();return}searchTimer=setTimeout(()=>searchUsers(value).catch(e=>toast(e.message||t.generic)),300)});
 async function ensureConversation(other){
@@ -77,7 +75,7 @@ async function loadConversations(){
  const byId=new Map(people.map(p=>[p.id,p]));for(const c of rows){const person=byId.get(c.user_one===user.id?c.user_two:c.user_one);if(!person)continue;const b=document.createElement("button");b.type="button";b.className="conversation-item";b.setAttribute("aria-current",String(activeConversation?.id===c.id));const img=document.createElement("img");img.src=avatarSrc(person.avatar_id);img.alt="";const d=document.createElement("div");const strong=document.createElement("strong");strong.textContent="@"+person.username;const small=document.createElement("span");small.textContent=locale==="ar"?"محادثة خاصة":locale==="ru"?"Личный чат":"Private chat";d.append(strong,small);b.append(img,d);b.addEventListener("click",()=>openConversation(person).catch(e=>toast(e.message||t.generic)));list.append(b)}
 }
 function appendMessage(row){
- const container=$("messages");if(container.querySelector('[data-message-id="'+row.id+'"]'))return;
+ const container=$("messages");const placeholder=container.querySelector(".tiny-note");if(placeholder)placeholder.remove();if(container.querySelector('[data-message-id="'+row.id+'"]'))return;
  const article=document.createElement("article");article.className="message"+(row.sender_id===user.id?" mine":"");article.dataset.messageId=String(row.id);const p=document.createElement("p");p.textContent=row.body;const time=document.createElement("time");time.dateTime=row.created_at;time.textContent=new Date(row.created_at).toLocaleTimeString(locale==="ar"?"ar-IQ":locale==="ru"?"ru-RU":"en-US",{hour:"2-digit",minute:"2-digit"});article.append(p,time);container.append(article);container.scrollTop=container.scrollHeight;
 }
 async function loadMessages(){
