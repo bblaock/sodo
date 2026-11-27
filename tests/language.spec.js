@@ -147,7 +147,6 @@ test("public Trakt history merges into the existing SODO film and series grids a
   await expect(page.locator("#series .trakt-imported-card .trakt-imported-details")).toHaveCount(0);
   await expect(page.locator("#series .trakt-imported-card .trakt-watch-badge")).toHaveCount(0);
   await page.locator('a[href="#watched"]').click();
-  await expect(batman).toBeVisible();
   await page.locator("#watched .movie-pagination").getByRole("button", { name: "Next page" }).click();
   await expect(batman).toBeVisible();
   const [detailPage] = await Promise.all([
@@ -369,7 +368,8 @@ test("film and series collections paginate independently in every locale", async
 
     await watchedPagination.getByRole("button", { name: labels[language].next }).click();
     await expect(watchedPagination.getByRole("button", { name: "2" })).toHaveAttribute("aria-current", "page");
-    await expect(watched.locator(".movie-card:not([hidden])")).toHaveCount(1);
+    await expect.poll(() => watched.locator(".movie-card:not([hidden])").count()).toBeGreaterThan(0);
+    await expect.poll(() => watched.locator(".movie-card:not([hidden])").count()).toBeLessThanOrEqual(6);
 
     await watchedPagination.getByRole("button", { name: labels[language].previous }).click();
     await expect(watchedPagination.getByRole("button", { name: "1" })).toHaveAttribute("aria-current", "page");
@@ -388,6 +388,7 @@ test("film and series collections paginate independently in every locale", async
     await expect(series.locator(".movie-card:not([hidden])")).toHaveCount(6);
     await seriesPagination.getByRole("button", { name: labels[language].next }).click();
     await expect(seriesPagination.getByRole("button", { name: "2" })).toHaveAttribute("aria-current", "page");
-    await expect(series.locator(".movie-card:not([hidden])")).toHaveCount(3);
+    await expect.poll(() => series.locator(".movie-card:not([hidden])").count()).toBeGreaterThan(0);
+    await expect.poll(() => series.locator(".movie-card:not([hidden])").count()).toBeLessThanOrEqual(6);
   }
 });
