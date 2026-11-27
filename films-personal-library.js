@@ -292,6 +292,12 @@ async function refreshSession() {
   }
   if (section) section.hidden = false;
   if (tab) tab.hidden = false;
+  entries = [];
+  document.querySelectorAll(".sodo-personal-status").forEach(node => { node.value = ""; });
+  const privateGrid = $("sodo-personal-grid");
+  if (privateGrid) privateGrid.replaceChildren();
+  const privateCount = $("sodo-personal-count");
+  if (privateCount) privateCount.textContent = "0";
   const filter = $("sodo-personal-filter");
   if (filter && !filter.dataset.bound) {
     filter.dataset.bound = "true";
