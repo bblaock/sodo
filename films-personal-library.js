@@ -66,7 +66,7 @@ function getCardData(card) {
   const ratingText = card.querySelector(".movie-rating span")?.textContent?.trim();
   const image = card.querySelector("img.movie-poster");
   const poster = image?.currentSrc || image?.src || image?.dataset.src || "";
-  const mediaKey = imdb ? "imdb:" + imdb : tmdb ? "tmdb:" + tmdb : traktId ? "trakt:" + mediaType + ":" + traktId : slug && slug !== "trakt" ? "slug:" + slug : "title:" + mediaType + ":" + normalize(title) + ":" + (yearText || "0");
+  const mediaKey = imdb ? "imdb:" + mediaType + ":" + imdb : tmdb ? "tmdb:" + mediaType + ":" + tmdb : traktId ? "trakt:" + mediaType + ":" + traktId : slug && slug !== "trakt" ? "slug:" + mediaType + ":" + slug : "title:" + mediaType + ":" + normalize(title).slice(0,180) + ":" + (yearText || "0");
   return {
     media_key: mediaKey, media_type: mediaType, title: title.slice(0,300),
     release_year: yearText ? Number(yearText) : null,
@@ -260,6 +260,8 @@ async function loadEntries() {
     .eq("user_id",session.user.id).order("updated_at",{ascending:false});
   if (error) throw error;
   entries = data || [];
+  const tabCount = document.querySelector("[data-sodo-private-tab] span:last-child");
+  if (tabCount) tabCount.textContent = String(entries.length).padStart(2, "0");
   attachCardControls();
   renderLibrary();
 }
@@ -276,6 +278,8 @@ async function refreshSession() {
   const tab = document.querySelector("[data-sodo-private-tab]");
   if (!session) {
     entries = [];
+    const tabCount = document.querySelector("[data-sodo-private-tab] span:last-child");
+    if (tabCount) tabCount.textContent = "00";
     if (section) section.hidden = true;
     if (tab) tab.hidden = true;
     document.querySelectorAll(".sodo-personal-status").forEach(node => node.remove());
