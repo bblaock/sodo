@@ -177,7 +177,14 @@ function createImportedCard(item, kind) {
   const meta = document.createElement('div'); meta.className = 'movie-meta';
   addMeta(meta, item.year);
   if (kind === 'series' && item.episode_count) addMeta(meta, item.episode_count + ' ' + t.episodes);
-  if (item.rating) addMeta(meta, Number(item.rating).toFixed(1) + '/10');
+  if (item.rating !== null && item.rating !== undefined && item.rating !== "" && Number.isFinite(Number(item.rating))) {
+    const rating = document.createElement("span");
+    rating.className = "movie-rating";
+    const value = document.createElement("span");
+    value.textContent = Number(item.rating).toFixed(1);
+    rating.append(value);
+    meta.append(rating);
+  }
   if (item.runtime) addMeta(meta, item.runtime + ' min');
   if (item.certification) addMeta(meta, item.certification);
   info.append(heading, meta);
@@ -205,11 +212,16 @@ function renderItems(section, items, kind) {
   }
 
   const manualCards = Array.from(grid.querySelectorAll('.movie-card:not([data-trakt-imported])'));
+  let addedCards = false;
   for (const item of items) {
     const manual = findManualCard(manualCards, item);
     if (manual) continue;
     if (findManualCard(Array.from(grid.querySelectorAll('[data-trakt-imported]')), item)) continue;
     grid.append(createImportedCard(item, kind));
+    addedCards = true;
+  }
+  if (addedCards) {
+    document.dispatchEvent(new CustomEvent("sodo:cinema-cards-updated", { detail: { sectionId: section.id, kind } }));
   }
 }
 function renderSyncSummary(result) {

@@ -115,6 +115,15 @@ document.addEventListener("DOMContentLoaded", function () {
       sortMode = event.detail?.sort || "featured";
       applySort();
     });
+    document.addEventListener("sodo:cinema-cards-updated", () => {
+      const currentCards = Array.from(grid.querySelectorAll(":scope > .movie-card"));
+      currentCards.forEach(card => {
+        if (!originalOrder.has(card)) originalOrder.set(card, originalOrder.size);
+      });
+      cards = currentCards;
+      if (sortMode !== "featured") applySort();
+      else renderPage();
+    });
   });
 
   function activateVisibleCollection() {
