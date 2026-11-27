@@ -94,10 +94,10 @@ begin
   if old.status = 'rejected'
     and (select auth.uid()) in (old.requester_id, old.addressee_id)
     and new.requester_id = (select auth.uid())
-    and new.addressee_id = case
+    and new.addressee_id = (case
       when old.requester_id = (select auth.uid()) then old.addressee_id
       else old.requester_id
-    end
+    end)
     and new.status = 'pending'
     and new.created_at >= old.created_at
     and new.responded_at is null then
