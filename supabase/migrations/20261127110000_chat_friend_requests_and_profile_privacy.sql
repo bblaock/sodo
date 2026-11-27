@@ -34,6 +34,8 @@ alter table public.chat_conversations force row level security;
 alter table public.chat_messages force row level security;
 alter table public.chat_friend_requests enable row level security;
 alter table public.chat_friend_requests force row level security;
+create index chat_friend_requests_pair_high_idx
+  on public.chat_friend_requests (pair_high);
 create index chat_friend_requests_requester_status_idx
   on public.chat_friend_requests (requester_id, status, created_at desc);
 create index chat_friend_requests_addressee_status_idx
