@@ -292,6 +292,20 @@
     .movie-meta{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;color:var(--muted);font-size:11px;line-height:1.5}
     .movie-rating{display:inline-flex;align-items:center;justify-content:center;gap:5px;color:var(--accent);font-weight:700}.movie-rating img{display:block;width:30px;height:auto;object-fit:contain}
     .poster-link:focus-visible,.movie-title-link:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+    .sodo-personal-library[hidden],.cinema-tabs a[hidden]{display:none!important}
+    .sodo-personal-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:26px}
+    .sodo-personal-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:18px 0 4px}
+    .sodo-personal-toolbar select,.sodo-personal-status{max-width:100%;min-height:34px;padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--panel);color:var(--text);font:inherit;font-size:11px}
+    .sodo-personal-toolbar select:focus-visible,.sodo-personal-status:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+    .sodo-personal-count{color:var(--muted);font-size:11px}
+    .sodo-personal-status{display:block;width:100%;margin-top:9px;cursor:pointer;text-align:center}
+    .sodo-personal-status:disabled{opacity:.55;cursor:wait}
+    .sodo-personal-message{min-height:20px;margin:8px 0;color:var(--muted);font-size:11px;text-align:center}
+    .sodo-personal-message[data-error="true"]{color:#ff9b91}
+    .sodo-personal-empty{grid-column:1/-1;padding:24px 12px;color:var(--muted);font-size:13px;text-align:center}
+    .sodo-personal-placeholder{display:flex;width:100%;height:100%;align-items:center;justify-content:center;padding:12px;color:var(--accent);font-size:12px;text-align:center;overflow-wrap:anywhere}
+    .sodo-personal-pagination{display:flex;flex-direction:column;align-items:center;gap:10px;margin:20px 0}
+    @media(max-width:680px){.sodo-personal-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.sodo-personal-status{font-size:10px;padding:5px 3px}}
     .movie-pagination{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:10px;margin:28px 0 4px;direction:ltr}
     .movie-pagination-summary{color:var(--muted);font-size:12px;line-height:1.5;text-align:center}
     .movie-pagination-controls{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:8px;direction:ltr}
@@ -308,6 +322,7 @@
   <script src="/sodo/language-router.js?v=20261126-language-paths-2" defer></script>
   <script src="/sodo/site.js?v=20261127-pagination-2" defer></script>
   <script src="/sodo/films-pagination.js?v=20261127-pagination-2" defer></script>
+  <script type="module" src="/sodo/films-personal-library.js?v=20261127-watchlist-1"></script>
   <script type="module" src="/sodo/films-watch-history.js?v=20261127-pagination-2"></script>
 </head>
 
@@ -336,7 +351,24 @@
     <nav class="cinema-tabs" aria-label="Cinema collections">
       <a href="#watched"><span class="cinema-tab-label"><svg class="cinema-tab-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7.5h16v12H4z" stroke="currentColor" stroke-width="1.65" stroke-linejoin="round"/><path d="M4 7.5 6.2 3h15.3l-2.2 4.5M9.1 3l-2.2 4.5M14.2 3 12 7.5M19.3 3l-2.2 4.5" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"/><path d="m10 11 5 2.5-5 2.5V11Z" fill="currentColor"/></svg>Films I have watched</span><span>01</span></a>
       <a href="#series"><span class="cinema-tab-label"><svg class="cinema-tab-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="3.5" width="14" height="15" rx="2.2" stroke="currentColor" stroke-width="1.65"/><path d="M8 7h8M8 10h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="m11 12.5 4 2.2-4 2.3v-4.5Z" fill="currentColor"/><path d="M3 7v12a2 2 0 0 0 2 2h12" stroke="currentColor" stroke-width="1.65" stroke-linecap="round"/></svg>Series I have watched</span><span>02</span></a>
+      <a href="#my-library" data-sodo-private-tab hidden><span class="cinema-tab-label">Мой список</span><span>00</span></a>
     </nav>
+
+    <section class="cinema-section sodo-personal-library" id="my-library" hidden aria-label="Мой список кино">
+      <div class="section-heading">
+        <div class="eyebrow">00 / PERSONAL</div>
+        <h2>Мой список кино</h2>
+        <span class="status status-watched">Доступно только вашему аккаунту</span>
+      </div>
+      <p class="intro">Личное пространство для планирования просмотров и отслеживания сериалов.</p>
+      <div class="sodo-personal-toolbar">
+        <select id="sodo-personal-filter" aria-label="Все статусы"><option value="all">Все статусы</option></select>
+        <span class="sodo-personal-count" id="sodo-personal-count">0</span>
+      </div>
+      <p class="sodo-personal-message" id="sodo-personal-message" aria-live="polite"></p>
+      <div class="sodo-personal-grid" id="sodo-personal-grid"></div>
+      <nav class="sodo-personal-pagination" id="sodo-personal-pagination" aria-label="Personal library pages"></nav>
+    </section>
 
     <section class="cinema-section" id="watched" aria-label="Films I have watched">
 <div class="section-heading">
