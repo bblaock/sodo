@@ -292,19 +292,23 @@
     .movie-meta{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;color:var(--muted);font-size:11px;line-height:1.5}
     .movie-rating{display:inline-flex;align-items:center;justify-content:center;gap:5px;color:var(--accent);font-weight:700}.movie-rating img{display:block;width:30px;height:auto;object-fit:contain}
     .poster-link:focus-visible,.movie-title-link:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
-    .movie-pagination{display:flex;justify-content:center;align-items:center;gap:8px;margin:28px 0 4px;direction:ltr}
+    .movie-pagination{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:10px;margin:28px 0 4px;direction:ltr}
+    .movie-pagination-summary{color:var(--muted);font-size:12px;line-height:1.5;text-align:center}
+    .movie-pagination-controls{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:8px;direction:ltr}
     .movie-pagination button{min-width:38px;height:38px;padding:0 10px;border:1px solid var(--border);border-radius:9px;background:var(--panel);color:var(--muted);cursor:pointer;font:600 13px Manrope,sans-serif;transition:color .2s,border-color .2s,background .2s}
-    .movie-pagination button:hover,.movie-pagination button[aria-current=page]{color:var(--bg);background:var(--accent);border-color:var(--accent)}
+    .movie-pagination button:hover:not(:disabled),.movie-pagination button[aria-current=page]{color:var(--bg);background:var(--accent);border-color:var(--accent)}
+    .movie-pagination button:disabled{opacity:.4;cursor:not-allowed}
     .movie-pagination button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+    @media(max-width:420px){.movie-pagination-controls{gap:5px}.movie-pagination button{min-width:34px;height:36px;padding:0 8px}}
     @media(max-width:680px){.movie-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.movie-card{padding:6px;gap:7px}.movie-card h3{font-size:12px;overflow-wrap:anywhere}.movie-meta{font-size:9px}.movie-rating img{width:24px}}
     @media(min-width:681px) and (max-width:900px){.movie-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 
 
   </style>
   <script src="/sodo/language-router.js?v=20261126-language-paths-2" defer></script>
-  <script src="/sodo/site.js?v=20261127-cinema-dynamic-1" defer></script>
-  <script src="/sodo/films-pagination.js?v=20261127-cinema-dynamic-1" defer></script>
-  <script type="module" src="/sodo/films-watch-history.js?v=20261127-cinema-dynamic-1"></script>
+  <script src="/sodo/site.js?v=20261127-pagination-2" defer></script>
+  <script src="/sodo/films-pagination.js?v=20261127-pagination-2" defer></script>
+  <script type="module" src="/sodo/films-watch-history.js?v=20261127-pagination-2"></script>
 </head>
 
 <body>
