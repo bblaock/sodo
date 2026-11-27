@@ -47,6 +47,8 @@ for (const language of locales) {
     await expect(importedSeries).toHaveAttribute("role", "link");
     await expect(importedSeries).toHaveAttribute("tabindex", "0");
 
+    await page.locator("#watched .movie-pagination-controls button:last-child").click();
+    await expect(imported).toBeVisible();
     await imported.focus();
     await page.keyboard.press("Enter");
     await expect(page).toHaveURL(url => {
