@@ -79,34 +79,63 @@ async function validAccessToken(userId: string, creds: any) {
   await saveTokens(userId, tokens);
   return tokens.access_token as string;
 }
-async function traktFetch(path: string, accessToken: string) {
-  const response = await fetch(TRAKT_API + path, {
-    headers: { Authorization: "Bearer " + accessToken, "trakt-api-key": TRAKT_CLIENT_ID, "trakt-api-version": "2" },
-  });
+async function traktFetch(path: string, accessToken?: string | null) {
+  const requestHeaders: Record<string, string> = { "trakt-api-key": TRAKT_CLIENT_ID, "trakt-api-version": "2" };
+  if (accessToken) requestHeaders.Authorization = "Bearer " + accessToken;
+  const response = await fetch(TRAKT_API + path, { headers: requestHeaders });
   if (!response.ok) throw new Error("Trakt API request failed (" + response.status + ")");
   return response;
 }
 
 const LOCALIZATION_LANGUAGES = ["ar", "en", "ru"] as const;
 
-async function fetchTranslation(kind: "movie" | "show", traktId: number, language: string, accessToken: string) {
-  const endpoint = kind === "movie" ? "movies" : "shows";
-  const response = await traktFetch(`/${endpoint}/${traktId}/translations/${language}`, accessToken);
-  const rows = await response.json();
-  if (!Array.isArray(rows)) return null;
-  const match = rows.find((row: any) => typeof row?.overview === "string" && row.overview.trim());
-  return match ? {
-    title: typeof match.title === "string" ? match.title : null,
-    overview: match.overview.trim(),
-    tagline: typeof match.tagline === "string" && match.tagline.trim() ? match.tagline.trim() : null,
-    language: match.language ?? language,
-    country: match.country ?? null,
-  } : null;
+async function machineTranslate(text: string, targetLanguage: "ar" | "ru") {
+  const source = text.trim();
+  if (!source) return null;
+  const url = new URL("https://api.mymemory.translated.net/get");
+  url.searchParams.set("q", source.slice(0, 500));
+  url.searchParams.set("langpair", "en|" + targetLanguage);
+  url.searchParams.set("mt", "1");
+  const response = await fetch(url.toString());
+  if (!response.ok) return null;
+  const data = await response.json();
+  const translated = data?.responseData?.translatedText;
+  return typeof translated === "string" && translated.trim() ? translated.trim() : null;
 }
 
-async function fetchTranslations(kind: "movie" | "show", traktId: number, accessToken: string) {
+async function fetchTranslation(kind: "movie" | "show", traktId: number, language: string, accessToken: string | null, fallbackOverview: string | null) {
+  const endpoint = kind === "movie" ? "movies" : "shows";
+  try {
+    const response = await traktFetch("/" + endpoint + "/" + traktId + "/translations/" + language, accessToken);
+    const rows = await response.json();
+    if (Array.isArray(rows)) {
+      const match = rows.find((row: any) => typeof row?.overview === "string" && row.overview.trim());
+      if (match) return {
+        title: typeof match.title === "string" ? match.title : null,
+        overview: match.overview.trim(),
+        tagline: typeof match.tagline === "string" && match.tagline.trim() ? match.tagline.trim() : null,
+        language: match.language ?? language,
+        country: match.country ?? null,
+      };
+    }
+  } catch {
+    // Trakt may not have a translation for every language.
+  }
+  if (fallbackOverview && (language === "ar" || language === "ru")) {
+    const translated = await machineTranslate(fallbackOverview, language);
+    if (translated) return { title: null, overview: translated, tagline: null, language, country: null };
+  }
+  return null;
+}
+
+async function fetchTranslations(kind: "movie" | "show", traktId: number, accessToken: string | null, fallbackOverview: string | null) {
   const entries = await Promise.allSettled(
-    LOCALIZATION_LANGUAGES.map(async (language) => [language, await fetchTranslation(kind, traktId, language, accessToken)] as const)
+    LOCALIZATION_LANGUAGES.map(async (language) => {
+      const value = language === "en"
+        ? (fallbackOverview ? { title: null, overview: fallbackOverview, tagline: null, language: "en", country: null } : null)
+        : await fetchTranslation(kind, traktId, language, accessToken, fallbackOverview);
+      return [language, value] as const;
+    })
   );
   const translations: Record<string, any> = {};
   for (const entry of entries) {
@@ -152,7 +181,7 @@ async function cachePoster(kind: string, traktId: number, imageUrl: string | nul
   return db.storage.from(POSTER_BUCKET).getPublicUrl(path).data.publicUrl;
 }
 
-async function enrichMedia(kind: "movie" | "show", traktId: number, accessToken: string) {
+async function enrichMedia(kind: "movie" | "show", traktId: number, accessToken: string | null) {
   const endpoint = kind === "movie" ? "movies" : "shows";
   const response = await traktFetch(`/${endpoint}/${traktId}?extended=full`, accessToken);
   const media = await response.json();
@@ -175,7 +204,7 @@ async function enrichMedia(kind: "movie" | "show", traktId: number, accessToken:
     genres: Array.isArray(media.genres) ? media.genres : [], runtime: media.runtime ?? null,
     certification: media.certification ?? null, status: media.status ?? null,
     trailer: media.trailer ?? null, homepage: media.homepage ?? null,
-    translations: await fetchTranslations(kind, traktId, accessToken),
+    translations: await fetchTranslations(kind, traktId, accessToken, media.overview ?? null),
     cast_members: castMembers, metadata_updated_at: new Date().toISOString(),
   }, { onConflict: "media_type,trakt_id" });
   if (error) throw new Error("Could not save Trakt media metadata");
@@ -245,7 +274,27 @@ Deno.serve(async (req: Request) => {
         showIds.length ? db.from("trakt_media_metadata").select("media_type,trakt_id,overview,tagline,translations,poster_url,rating,genres,runtime,certification,status,trailer,homepage,cast_members").eq("media_type", "show").in("trakt_id", showIds) : Promise.resolve({ data: [], error: null }),
       ]);
       if (movieMeta.error || showMeta.error) throw new Error("Could not read cached public media details");
-      const metadata = new Map([...(movieMeta.data || []), ...(showMeta.data || [])].map((item: any) => [`${item.media_type}:${item.trakt_id}`, item]));
+      const cachedPublic = new Map(
+        [...(movieMeta.data || []), ...(showMeta.data || [])]
+          .map((item: any) => [item.media_type + ":" + item.trakt_id, item])
+      );
+      const publicPending = [
+        ...movieIds.map((id: number) => ({ kind: "movie" as const, id })),
+        ...showIds.map((id: number) => ({ kind: "show" as const, id })),
+      ].filter((item) => {
+        const cached = cachedPublic.get(item.kind + ":" + item.id) as any;
+        return !cached || !cached.translations?.ar?.overview || !cached.translations?.ru?.overview;
+      });
+      for (let i = 0; i < publicPending.length; i += 3) {
+        const group = publicPending.slice(i, i + 3);
+        await Promise.allSettled(group.map((item) => enrichMedia(item.kind, item.id, null)));
+      }
+      const refreshedMeta = await Promise.all([
+        movieIds.length ? db.from("trakt_media_metadata").select("media_type,trakt_id,overview,tagline,translations,poster_url,rating,genres,runtime,certification,status,trailer,homepage,cast_members").eq("media_type", "movie").in("trakt_id", movieIds) : Promise.resolve({ data: [], error: null }),
+        showIds.length ? db.from("trakt_media_metadata").select("media_type,trakt_id,overview,tagline,translations,poster_url,rating,genres,runtime,certification,status,trailer,homepage,cast_members").eq("media_type", "show").in("trakt_id", showIds) : Promise.resolve({ data: [], error: null }),
+      ]);
+      if (refreshedMeta[0].error || refreshedMeta[1].error) throw new Error("Could not refresh cached public media details");
+      const metadata = new Map([...(refreshedMeta[0].data || []), ...(refreshedMeta[1].data || [])].map((item: any) => [item.media_type + ":" + item.trakt_id, item]));
       const publicDetails = (item: any, kind: string) => {
         const detail: any = metadata.get(`${kind}:${item.trakt_id}`) || {};
         return {
