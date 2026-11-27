@@ -2,7 +2,7 @@ const { test, expect } = require("@playwright/test");
 
 const locales = ["ar", "en", "ru"];
 
-async function mockPublicHistory(page, includeImports = true) {
+async function mockPublicHistory(page) {
   await page.route("https://wbuyglftsgldasawsllt.supabase.co/functions/v1/trakt-sync", async route => {
     const origin = route.request().headers().origin || "*";
     if (route.request().method() === "OPTIONS") {
@@ -20,8 +20,8 @@ async function mockPublicHistory(page, includeImports = true) {
       status: 200,
       headers: { "Access-Control-Allow-Origin": origin, "Content-Type": "application/json" },
       body: JSON.stringify({
-        movies: includeImports ? [{ title: "Cinema QA Imported Film", year: 2024, trakt_id: 991001 }] : [],
-        series: includeImports ? [{ title: "Cinema QA Imported Series", year: 2023, trakt_id: 991002, episode_count: 4 }] : []
+        movies: [{ title: "Fury", year: 2014, trakt_id: 991001 }],
+        series: [{ title: "MobLand", year: 2025, trakt_id: 991002, episode_count: 4 }]
       })
     });
   });
@@ -38,18 +38,18 @@ for (const language of locales) {
     await expect(curated).toHaveAttribute("tabindex", "0");
     await expect(curated).toHaveAttribute("aria-label", /.+/);
 
-    const imported = page.locator("#watched .trakt-imported-card").filter({ hasText: "Cinema QA Imported Film" });
+    const imported = page.locator("#watched .trakt-imported-card").filter({ hasText: "Fury" });
     await expect(imported).toHaveAttribute("role", "link");
     await expect(imported).toHaveAttribute("tabindex", "0");
     await expect(imported).toHaveAttribute("aria-label", /.+/);
 
-    const importedSeries = page.locator("#series .trakt-imported-card").filter({ hasText: "Cinema QA Imported Series" });
+    const importedSeries = page.locator("#series .trakt-imported-card").filter({ hasText: "MobLand" });
     await expect(importedSeries).toHaveAttribute("role", "link");
     await expect(importedSeries).toHaveAttribute("tabindex", "0");
   });
 
   test(`Cinema search trims whitespace and pagination stays synchronized (${language})`, async ({ page }) => {
-    await mockPublicHistory(page, false);
+    await mockPublicHistory(page);
     await page.goto(`/sodo/${language}/films/#watched`);
     await page.waitForFunction(() => document.documentElement.dataset.traktHistoryReady === "true");
 
