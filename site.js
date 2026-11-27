@@ -1562,9 +1562,9 @@
 
     const lang = document.documentElement.lang || "en";
     const labels = {
-      ar: { placeholder: "ابحث في السينما…", results: "نتيجة", none: "لا توجد نتائج مطابقة." },
-      en: { placeholder: "Search cinema…", results: "results", none: "No matching titles." },
-      ru: { placeholder: "Поиск по кино…", results: "результатов", none: "Совпадений нет." }
+      ar: { placeholder: "ابحث في السينما…", results: "نتيجة", none: "لا توجد نتائج مطابقة.", sort: "ترتيب", featured: "الترتيب الأصلي", title: "الاسم: أ–ي", year: "الأحدث أولاً", rating: "الأعلى تقييماً" },
+      en: { placeholder: "Search cinema…", results: "results", none: "No matching titles.", sort: "Sort", featured: "Featured order", title: "Title: A–Z", year: "Newest first", rating: "Highest rated" },
+      ru: { placeholder: "Поиск по кино…", results: "результатов", none: "Совпадений нет.", sort: "Сортировка", featured: "Исходный порядок", title: "Название: А–Я", year: "Сначала новые", rating: "С высоким рейтингом" }
     };
     const copy = labels[lang] || labels.en;
 
@@ -1576,6 +1576,13 @@
       <div class="sodo-cinema-search-row">
         <input id="sodo-cinema-search-input" type="search" autocomplete="off" enterkeyhint="search"
           placeholder="${copy.placeholder}" aria-label="${copy.placeholder}">
+        <label class="sodo-cinema-sort-label" for="sodo-cinema-sort">${copy.sort}</label>
+        <select id="sodo-cinema-sort" aria-label="${copy.sort}">
+          <option value="featured">${copy.featured}</option>
+          <option value="title">${copy.title}</option>
+          <option value="year">${copy.year}</option>
+          <option value="rating">${copy.rating}</option>
+        </select>
         <span class="sodo-cinema-search-count" aria-live="polite"></span>
       </div>
       <p class="sodo-cinema-search-empty" hidden></p>
@@ -1591,24 +1598,30 @@
       }
       .sodo-cinema-search-row { display:flex; align-items:center; gap:10px; }
       #sodo-cinema-search-input {
-        flex:1; min-width:0; width:100%; padding:12px 14px;
+        flex:1 1 240px; min-width:0; width:100%; padding:12px 14px;
         border:1px solid var(--border,#293126); border-radius:10px;
         background:var(--panel,#111510); color:var(--text,#f4f7ef);
         outline:none; font:inherit; font-size:14px;
       }
-      #sodo-cinema-search-input:focus {
+      #sodo-cinema-search-input:focus, #sodo-cinema-sort:focus {
         border-color:var(--accent,#c8ff4d);
         box-shadow:0 0 0 3px color-mix(in srgb, var(--accent,#c8ff4d) 14%, transparent);
       }
-      .sodo-cinema-search-count {
-        flex:0 0 auto; color:var(--muted,#b0b9a9); font-size:11px; white-space:nowrap;
+      #sodo-cinema-sort {
+        min-width:145px; max-width:190px; padding:11px 12px;
+        border:1px solid var(--border,#293126); border-radius:10px;
+        background:var(--panel,#111510); color:var(--text,#f4f7ef);
+        font:inherit; font-size:12px;
       }
-      .sodo-cinema-search-empty {
-        margin:12px 0 0; color:var(--muted,#b0b9a9); font-size:13px;
-      }
+      .sodo-cinema-sort-label { color:var(--muted,#b0b9a9); font-size:11px; white-space:nowrap; }
+      .sodo-cinema-search-count { flex:0 0 auto; color:var(--muted,#b0b9a9); font-size:11px; white-space:nowrap; }
+      .sodo-cinema-search-empty { margin:12px 0 0; color:var(--muted,#b0b9a9); font-size:13px; }
       @media(max-width:600px) {
-        .sodo-cinema-search-row { align-items:stretch; flex-direction:column; }
-        .sodo-cinema-search-count { text-align:start; }
+        .sodo-cinema-search-row { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:9px; }
+        #sodo-cinema-search-input { grid-column:1 / -1; }
+        .sodo-cinema-sort-label { grid-column:1; align-self:center; }
+        #sodo-cinema-sort { grid-column:2; width:100%; max-width:none; }
+        .sodo-cinema-search-count { grid-column:1 / -1; text-align:start; }
       }
     `;
     document.head.appendChild(style);
@@ -1617,6 +1630,7 @@
     anchor.parentNode.insertBefore(wrap, anchor);
 
     const input = wrap.querySelector("#sodo-cinema-search-input");
+    const sort = wrap.querySelector("#sodo-cinema-sort");
     const count = wrap.querySelector(".sodo-cinema-search-count");
     const empty = wrap.querySelector(".sodo-cinema-search-empty");
     const cards = grids.flatMap(grid => Array.from(grid.querySelectorAll(":scope > .movie-card")));
@@ -1630,24 +1644,18 @@
 
     function applyFilter() {
       const query = normalize(input.value);
-      let visible = 0;
-      cards.forEach(card => {
-        const match = !query || getText(card).includes(query);
-        card.dataset.sodoSearchHidden = match ? "false" : "true";
-        if (match) {
-          card.hidden = false;
-          visible += 1;
-        } else {
-          card.hidden = true;
-        }
-      });
+      const visible = cards.filter(card => !query || getText(card).includes(query)).length;
       count.textContent = query ? String(visible) + " " + copy.results : "";
       empty.hidden = visible !== 0 || !query;
       empty.textContent = copy.none;
+      document.dispatchEvent(new CustomEvent("sodo:cinema-search", { detail: { query } }));
     }
 
     input.addEventListener("input", applyFilter, { passive: true });
     input.addEventListener("search", applyFilter);
+    sort.addEventListener("change", () => {
+      document.dispatchEvent(new CustomEvent("sodo:cinema-sort", { detail: { sort: sort.value } }));
+    });
   }
 
   function initialize() {
