@@ -41,8 +41,6 @@ test("all localized routes load with the correct document language and direction
 
 test("language switching changes URL, document language, direction, and visible copy", async ({ page }) => {
   await page.goto("/sodo/en/");
-  await page.locator(".sodo-welcome-close").click();
-  await expect(page.locator("#sodo-welcome-overlay")).toHaveCount(0);
   await expect(page.locator('[data-i18n="heroText"]')).toHaveText(
     "A space for ideas, culture, cinema, and creative exploration. Somewhere between what we think and what we create."
   );
@@ -79,8 +77,6 @@ test("language switching changes URL, document language, direction, and visible 
 
 test("switching language preserves the current section and film detail route", async ({ page }) => {
   await page.goto("/sodo/en/films/theboys/");
-  await page.locator(".sodo-welcome-close").click();
-  await expect(page.locator("#sodo-welcome-overlay")).toHaveCount(0);
   await page.locator(".language-trigger").click();
   const russian = page.locator('.language-option[data-lang="ru"]');
   await expect(russian).toHaveAttribute("href", "/sodo/ru/films/theboys/");
@@ -143,13 +139,16 @@ test("public Trakt history merges into the existing SODO film and series grids a
   await expect(batman.locator(".poster-link")).toHaveAttribute("target", "_blank");
   await expect(batman.locator(".movie-title-link")).toHaveAttribute("href", "/sodo/en/films/trakt/?kind=movie&id=102");
   await expect(batman.locator(".movie-title-link")).toHaveAttribute("target", "_blank");
+  await page.locator('a[href="#series"]').click();
+  await expect(page.locator("#series")).toBeVisible();
   await expect(page.locator("#series .trakt-imported-card h3")).toContainText("MobLand");
   await expect(page.locator("#series .trakt-imported-card")).toContainText("20 episodes");
   await expect(page.locator("#series .trakt-imported-card .trakt-imported-details")).toHaveCount(0);
   await expect(page.locator("#series .trakt-imported-card .trakt-watch-badge")).toHaveCount(0);
-  await page.locator("#sodo-welcome-overlay").evaluate(el => el.remove()).catch(() => {});
+  await page.locator('a[href="#watched"]').click();
+  await expect(batman).toBeVisible();
   const [detailPage] = await Promise.all([
-    page.context().waitForEvent("page"),
+    page.waitForEvent("popup"),
     batman.locator(".poster-link").click()
   ]);
   await detailPage.waitForLoadState();
