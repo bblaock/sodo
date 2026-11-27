@@ -821,6 +821,10 @@
         menu.style.width = `${menuWidth}px`;
       }
       menu.classList.toggle("open", willOpen);
+      // Force the visual state as well as the class. This prevents a page-specific
+      // stylesheet from leaving the menu hidden even though the ARIA state changes.
+      menu.style.display = willOpen ? "flex" : "none";
+      menu.style.visibility = willOpen ? "visible" : "hidden";
       trigger.setAttribute("aria-expanded", String(willOpen));
     });
     // Use real links for language navigation. This works consistently with
@@ -829,6 +833,9 @@
     const routeParts = window.location.pathname.slice(localeBase.length).split("/").filter(Boolean);
     if (["ar", "en", "ru"].includes(routeParts[0])) routeParts.shift();
     const routeSuffix = routeParts.length ? routeParts.join("/") + "/" : "";
+    menu.style.display = "none";
+    menu.style.visibility = "hidden";
+
     menu.querySelectorAll(".language-option[data-lang]").forEach(option => {
       option.href = localeBase + option.dataset.lang + "/" + routeSuffix +
         window.location.search + window.location.hash;
@@ -837,12 +844,16 @@
     document.addEventListener("click", event => {
       if (!tools.contains(event.target)) {
         menu.classList.remove("open");
+        menu.style.display = "none";
+        menu.style.visibility = "hidden";
         trigger.setAttribute("aria-expanded", "false");
       }
     });
     document.addEventListener("keydown", event => {
       if (event.key === "Escape" && menu.classList.contains("open")) {
         menu.classList.remove("open");
+        menu.style.display = "none";
+        menu.style.visibility = "hidden";
         trigger.setAttribute("aria-expanded", "false");
         trigger.focus();
       }
