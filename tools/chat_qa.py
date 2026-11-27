@@ -29,7 +29,7 @@ if not script.is_file():
     errors.append("missing chat.js")
 else:
     source = script.read_text(encoding="utf-8")
-    for token in ("chat_profiles", "chat_conversations", "chat_messages", "postgres_changes"):
+    for token in ("chat_profiles", "chat_conversations", "chat_messages", "postgres_changes", "async function searchUsers", "async function ensureConversation", "async function loadMessages"):
         if token not in source:
             errors.append(f"chat.js missing expected feature: {token}")
     if ".upload(" in source or 'type="file"' in source.lower() or "type='file'" in source.lower():
