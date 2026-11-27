@@ -56,7 +56,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  const normalize = value => String(value || "").normalize("NFKC").toLocaleLowerCase();
+  const yearDirectionStyle = document.createElement("style");
+  yearDirectionStyle.id = "sodo-cinema-year-direction";
+  yearDirectionStyle.textContent = ".movie-meta > span:first-child { direction: ltr; unicode-bidi: isolate; }";
+  document.head.appendChild(yearDirectionStyle);
+
+  const normalize = value => String(value || "").normalize("NFKC").trim().toLocaleLowerCase();
   let searchQuery = "";
   let sortMode = "featured";
 
