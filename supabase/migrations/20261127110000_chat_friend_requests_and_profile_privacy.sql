@@ -31,6 +31,23 @@ on conflict (pair_low, pair_high) do nothing;
 
 alter table public.chat_friend_requests enable row level security;
 alter table public.chat_friend_requests force row level security;
+create index chat_friend_requests_requester_status_idx
+  on public.chat_friend_requests (requester_id, status, created_at desc);
+create index chat_friend_requests_addressee_status_idx
+  on public.chat_friend_requests (addressee_id, status, created_at desc);
+
+do $
+begin
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime'
+      and schemaname = 'public'
+      and tablename = 'chat_friend_requests'
+  ) then
+    alter publication supabase_realtime add table public.chat_friend_requests;
+  end if;
+end;
+$;
 
 revoke all on table public.chat_friend_requests from public, anon;
 grant select, insert, update on table public.chat_friend_requests to authenticated;
