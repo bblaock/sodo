@@ -41,7 +41,6 @@ let session = null;
 let entries = [];
 let searchQuery = "";
 let currentPage = 1;
-let isSaving = false;
 
 const $ = id => document.getElementById(id);
 const statusLabel = value => t[value] || value;
@@ -77,12 +76,12 @@ function getCardData(card) {
     detail_url: detailLink?.href || null
   };
 }
-function makeStatusSelect(value, label) {
+function makeStatusSelect(value, label, isLibraryCard = false) {
   const select = document.createElement("select");
   select.className = "sodo-personal-status";
   select.setAttribute("aria-label", label || t.statusLabel);
   const none = document.createElement("option");
-  none.value = ""; none.textContent = t.notAdded;
+  none.value = ""; none.textContent = isLibraryCard ? t.remove : t.notAdded;
   select.append(none);
   statuses.forEach(status => {
     const option = document.createElement("option");
@@ -116,10 +115,9 @@ function showMessage(message, error = false) {
   node.dataset.error = error ? "true" : "false";
 }
 async function saveCardStatus(control, data) {
-  if (!session || isSaving) return;
+  if (!session || control.disabled) return;
   const previous = entries.find(item => item.media_key === data.media_key);
   const nextStatus = control.value;
-  isSaving = true;
   control.disabled = true;
   try {
     if (!nextStatus) {
@@ -143,7 +141,6 @@ async function saveCardStatus(control, data) {
     showMessage(t.saveFailed, true);
     console.error("SODO personal library save:", error);
   } finally {
-    isSaving = false;
     control.disabled = false;
   }
 }
@@ -186,7 +183,7 @@ function buildLibraryCard(item) {
   if (item.imdb_rating !== null && item.imdb_rating !== undefined) {
     const rating = document.createElement("span"); rating.className = "movie-rating"; rating.textContent = Number(item.imdb_rating).toFixed(1); meta.append(rating);
   }
-  const status = makeStatusSelect(item.status, t.statusLabel);
+  const status = makeStatusSelect(item.status, t.statusLabel, true);
   status.addEventListener("change", async () => {
     const old = item.status;
     status.disabled = true;
@@ -267,16 +264,26 @@ async function loadEntries() {
   renderLibrary();
 }
 async function refreshSession() {
-  const { data, error } = await supabase.auth.getSession();
-  if (error) throw error;
-  session = data.session;
+  try {
+    const { data, error } = await supabase.auth.getSession();
+    if (error) throw error;
+    session = data.session;
+  } catch (error) {
+    session = null;
+    console.warn("SODO personal library session:", error);
+  }
   const section = $("my-library");
   const tab = document.querySelector("[data-sodo-private-tab]");
   if (!session) {
     entries = [];
-    if (section) { section.hidden = true; }
+    if (section) section.hidden = true;
     if (tab) tab.hidden = true;
-    document.querySelectorAll(".sodo-card-status").forEach(node => node.remove());
+    document.querySelectorAll(".sodo-personal-status").forEach(node => node.remove());
+    const grid = $("sodo-personal-grid");
+    if (grid) grid.replaceChildren();
+    const count = $("sodo-personal-count");
+    if (count) count.textContent = "0";
+    showMessage("");
     return;
   }
   if (section) section.hidden = false;
