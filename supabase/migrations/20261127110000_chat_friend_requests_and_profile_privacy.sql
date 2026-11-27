@@ -130,10 +130,6 @@ begin
   if p_target_user_id is null or p_target_user_id = v_uid then
     raise exception 'Invalid recipient' using errcode = '22023';
   end if;
-  if not exists (select 1 from public.chat_profiles p where p.id = p_target_user_id) then
-    raise exception 'User not found' using errcode = 'P0002';
-  end if;
-
   v_low := least(v_uid, p_target_user_id);
   v_high := greatest(v_uid, p_target_user_id);
 
