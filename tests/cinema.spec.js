@@ -2,7 +2,7 @@ const { test, expect } = require("@playwright/test");
 
 const locales = ["ar", "en", "ru"];
 
-async function mockPublicHistory(page) {
+async function mockPublicHistory(page, includeImports = true) {
   await page.route("https://wbuyglftsgldasawsllt.supabase.co/functions/v1/trakt-sync", async route => {
     const origin = route.request().headers().origin || "*";
     if (route.request().method() === "OPTIONS") {
@@ -20,8 +20,8 @@ async function mockPublicHistory(page) {
       status: 200,
       headers: { "Access-Control-Allow-Origin": origin, "Content-Type": "application/json" },
       body: JSON.stringify({
-        movies: [{ title: "Cinema QA Imported Film", year: 2024, trakt_id: 991001 }],
-        series: [{ title: "Cinema QA Imported Series", year: 2023, trakt_id: 991002, episode_count: 4 }]
+        movies: includeImports ? [{ title: "Cinema QA Imported Film", year: 2024, trakt_id: 991001 }] : [],
+        series: includeImports ? [{ title: "Cinema QA Imported Series", year: 2023, trakt_id: 991002, episode_count: 4 }] : []
       })
     });
   });
@@ -49,7 +49,7 @@ for (const language of locales) {
   });
 
   test(`Cinema search trims whitespace and pagination stays synchronized (${language})`, async ({ page }) => {
-    await mockPublicHistory(page);
+    await mockPublicHistory(page, false);
     await page.goto(`/sodo/${language}/films/#watched`);
     await page.waitForFunction(() => document.documentElement.dataset.traktHistoryReady === "true");
 
