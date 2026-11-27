@@ -54,6 +54,23 @@ $("save-profile").addEventListener("click",async()=>{
  }catch(e){toast(e.message||t.generic)}finally{button.disabled=false}
 });
 $("edit-profile").addEventListener("click",()=>{editingProfile=true;selectedAvatar=profile.avatar_id;renderAvatarChoices();$("username").value=profile.username;show("chat-app",false);show("profile-setup",true);$("save-profile").textContent=locale==="ar"?"حفظ التغييرات":locale==="ru"?"Сохранить изменения":"Save changes"});
+async function searchUsers(query){
+ const value=normalizeUsername(query);const results=$("search-results");results.replaceChildren();
+ if(value.length<3){toast(t.searchMin);return}
+ const pattern=value.replace(/[_%\\]/g,"\\$("search-form").addEventListener("submit",async e=>")+"%";
+ const {data,error}=await supabase.from("chat_profiles").select("id,username,avatar_id").ilike("username",pattern).neq("id",user.id).order("username").limit(12);
+ if(error)throw error;
+ if(!data.length){const p=document.createElement("p");p.className="tiny-note";p.textContent=t.noUsers;results.append(p);return}
+ for(const person of data){
+  const b=document.createElement("button");b.type="button";b.className="user-result";
+  const img=document.createElement("img");img.src=avatarSrc(person.avatar_id);img.alt="";
+  const d=document.createElement("div");const strong=document.createElement("strong");strong.textContent="@"+person.username;
+  const small=document.createElement("span");small.textContent=locale==="ar"?"بدء محادثة خاصة":locale==="ru"?"Начать личный чат":"Start private chat";
+  d.append(strong,small);b.append(img,d);
+  b.addEventListener("click",async()=>{try{await openConversation(person);results.replaceChildren()}catch(e){toast(e.message||t.generic)}});
+  results.append(b);
+ }
+}
 $("search-form").addEventListener("submit",async e=>{e.preventDefault();try{await searchUsers($("user-search").value)}catch(e){toast(e.message||t.generic)}});
 $("user-search").addEventListener("input",()=>{clearTimeout(searchTimer);const value=$("user-search").value;if(normalizeUsername(value).length<3){$("search-results").replaceChildren();return}searchTimer=setTimeout(()=>searchUsers(value).catch(e=>toast(e.message||t.generic)),300)});
 async function ensureConversation(other){
