@@ -14,7 +14,7 @@ for locale in ("ar", "en", "ru"):
             errors.append(f"incorrect locale marker: {page.relative_to(root)}")
         if "chat.js" not in source or "chat.css" not in source:
             errors.append(f"missing chat assets: {page.relative_to(root)}")
-        if re.search(r'<input[^>]+type=["\\']file', source, re.I):
+        if 'type="file"' in source.lower() or "type='file'" in source.lower():
             errors.append(f"file upload control found: {page.relative_to(root)}")
 
 avatars = list((root / "assets" / "chat" / "avatars").glob("avatar-*.svg"))
@@ -32,7 +32,7 @@ else:
     for token in ("chat_profiles", "chat_conversations", "chat_messages", "postgres_changes"):
         if token not in source:
             errors.append(f"chat.js missing expected feature: {token}")
-    if re.search(r"storage\\.from\\([^)]*\\)\\.upload", source):
+    if ".upload(" in source or 'type="file"' in source.lower() or "type='file'" in source.lower():
         errors.append("file upload implementation found in chat.js")
 
 if errors:
