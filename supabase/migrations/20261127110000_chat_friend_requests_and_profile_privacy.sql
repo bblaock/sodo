@@ -198,10 +198,17 @@ begin
     select p.id, p.username, p.avatar_id
     from public.chat_profiles p
     where p.id = any(coalesce(p_user_ids, '{}'::uuid[]))
-      and exists (
-        select 1 from public.chat_conversations c
-        where (c.user_one = v_uid and c.user_two = p.id)
-           or (c.user_two = v_uid and c.user_one = p.id)
+      and (
+        exists (
+          select 1 from public.chat_conversations c
+          where (c.user_one = v_uid and c.user_two = p.id)
+             or (c.user_two = v_uid and c.user_one = p.id)
+        )
+        or exists (
+          select 1 from public.chat_friend_requests r
+          where (r.requester_id = v_uid and r.addressee_id = p.id)
+             or (r.addressee_id = v_uid and r.requester_id = p.id)
+        )
       );
 end;
 $$;
