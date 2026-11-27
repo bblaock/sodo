@@ -35,10 +35,6 @@ else:
     if ".upload(" in source or 'type="file"' in source.lower() or "type='file'" in source.lower():
         errors.append("file upload implementation found in chat.js")
 
-if errors:
-    raise SystemExit("; ".join(errors))
-print("SODO Chat QA passed: 3 localized pages, 10 SVG avatars, no file upload controls.")
-
 migration = root / "supabase" / "migrations" / "20261127110000_chat_friend_requests_and_profile_privacy.sql"
 if not migration.is_file():
     errors.append("missing friendship and privacy migration")
@@ -54,3 +50,7 @@ if script.is_file():
         errors.append("profile reads must be owner-scoped")
     if '.from("chat_profiles").select("id,username,avatar_id").eq("username"' in source:
         errors.append("public profile search must use the restricted RPC")
+
+if errors:
+    raise SystemExit("; ".join(errors))
+print("SODO Chat QA passed: 3 localized pages, 10 SVG avatars, friend-request/privacy controls, no file uploads.")
