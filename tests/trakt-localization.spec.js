@@ -7,7 +7,7 @@ const languages = [
 ];
 
 for (const [language, synopsis] of languages) {
-  test(\`Trakt detail uses the site's localized synopsis (\${language})\`, async ({ page }) => {
+  test(`Trakt detail uses the site's localized synopsis (${language})`, async ({ page }) => {
     await page.route("**/functions/v1/trakt-sync", async route => {
       await route.fulfill({
         status: 200,
@@ -38,7 +38,7 @@ for (const [language, synopsis] of languages) {
       });
     });
 
-    await page.goto(\`/sodo/\${language}/films/trakt/?kind=movie&id=999999\`);
+    await page.goto(`/sodo/${language}/films/trakt/?kind=movie&id=999999`);
     await expect(page.locator("#trakt-overview")).toHaveText(synopsis);
   });
 }
