@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' https://esm.sh; style-src 'self' 'unsafe-inline'; connect-src 'self' https://wbuyglftsgldasawsllt.supabase.co wss://wbuyglftsgldasawsllt.supabase.co https://esm.sh; img-src 'self' data:; form-action 'self'; upgrade-insecure-requests">
+<meta name="theme-color" content="#080a08">
+<title>SODO Chat — SODO</title>
+<link rel="stylesheet" href="/sodo/chat.css?v=20261127-1">
+<script type="module" src="/sodo/chat.js?v=20261127-1"></script>
+</head>
+<body data-locale="en">
+<div class="chat-shell">
+<header class="chat-top">
+<a class="brand" href="/sodo/en/">SODO<span>.</span></a>
+<div class="top-actions">
+<a class="back-link" href="/sodo/en/films/">Back to site</a>
+<nav class="locale-switch" aria-label="Language">
+<a href="/sodo/ar/chat/" >AR</a>
+<a href="/sodo/en/chat/" aria-current="page">EN</a>
+<a href="/sodo/ru/chat/" >RU</a>
+</nav>
+</div>
+</header>
+<main class="chat-main">
+<section class="intro">
+<p class="eyebrow">SODO / PRIVATE MESSAGES</p>
+<h1>SODO Chat</h1>
+<p class="intro-copy">Private, simple conversations. Find someone using their username.</p>
+</section>
+<section id="auth-panel" class="panel auth-panel">
+<div class="panel-heading"><span class="status-dot"></span><span data-copy="welcome">Welcome to SODO Chat</span></div>
+<p class="muted" data-copy="authHint">Sign in or create an account with your email and password. Your email is never shown to other users.</p>
+<div class="form-grid">
+<label><span data-copy="email">Email</span><input id="email" type="email" autocomplete="email" placeholder="you@example.com"></label>
+<label><span data-copy="password">Password</span><input id="password" type="password" autocomplete="current-password" minlength="8" placeholder="••••••••"></label>
+</div>
+<div class="button-row"><button id="signin" class="primary">Sign in</button><button id="signup" class="secondary">Create account</button></div>
+<p class="tiny-note" data-copy="accountNote">Your username is your chat identity. Real names and email addresses are not displayed.</p>
+</section>
+<section id="profile-setup" class="panel hidden">
+<div class="panel-heading" data-copy="profileTitle">Create your profile</div>
+<p class="muted" data-copy="profileHint">Choose a unique username and one of the ready-made avatars.</p>
+<label class="username-field"><span data-copy="username">Username</span><div class="handle-input"><b>@</b><input id="username" maxlength="20" minlength="3" autocomplete="off" placeholder="username" dir="ltr"></div></label>
+<p class="tiny-note" data-copy="usernameRule">3–20 characters: lowercase letters, numbers and underscores only.</p>
+<div class="avatar-heading" data-copy="chooseAvatar">Choose an avatar</div>
+<div id="avatar-grid" class="avatar-grid"></div>
+<button id="save-profile" class="primary full">Save profile</button>
+</section>
+<section id="chat-app" class="chat-app hidden">
+<aside class="sidebar panel">
+<div class="self-profile">
+<img id="self-avatar" alt="">
+<div><strong id="self-handle"></strong><span data-copy="yourProfile">Your profile</span></div>
+<button id="edit-profile" class="icon-button" type="button" title="Edit avatar">✎</button>
+</div>
+<form id="search-form" class="search-form">
+<label for="user-search" data-copy="findUser">Find a user</label>
+<div class="search-input"><span>@</span><input id="user-search" maxlength="20" autocomplete="off" placeholder="username" dir="ltr"><button type="submit" aria-label="Search">⌕</button></div>
+</form>
+<div id="search-results" class="search-results"></div>
+<div class="list-heading"><span data-copy="conversations">Your conversations</span><span id="conversation-count">0</span></div>
+<div id="conversation-list" class="conversation-list"></div>
+<button id="signout" class="signout">Sign out</button>
+</aside>
+<section class="thread panel">
+<div id="empty-thread" class="empty-thread"><div class="empty-mark">S.</div><h2 data-copy="selectChat">Start a private conversation</h2><p data-copy="selectHint">Search for an @username to start talking.</p></div>
+<div id="active-thread" class="active-thread hidden">
+<header class="thread-header"><img id="thread-avatar" alt=""><div><strong id="thread-handle"></strong><span data-copy="privateChat">Private conversation</span></div></header>
+<div id="messages" class="messages" aria-live="polite"></div>
+<div class="composer-wrap">
+<div id="emoji-picker" class="emoji-picker hidden" aria-label="Emoji picker"></div>
+<form id="message-form" class="message-form"><button id="emoji-toggle" type="button" class="emoji-toggle" aria-label="Emoji">☺</button><input id="message-input" maxlength="2000" autocomplete="off" placeholder="Write a message…"><button type="submit" class="send-button" aria-label="Send">➤</button></form>
+<p class="composer-note" data-copy="textOnly">Text and emoji only · file and image uploads are disabled</p>
+</div>
+</div>
+</section>
+</section>
+<div id="toast" class="toast hidden" role="status"></div>
+</main>
+<footer>© SODO — Think. Feel. Create.</footer>
+</div>
+</body>
+</html>

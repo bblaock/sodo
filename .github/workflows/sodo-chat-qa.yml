@@ -1,0 +1,29 @@
+name: SODO Chat QA
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  chat-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check chat JavaScript syntax
+        run: node --input-type=module --check < chat.js
+      - name: Run site QA
+        run: python tools/sodo_qa.py
+      - name: Run chat QA
+        run: python tools/chat_qa.py
