@@ -23,21 +23,9 @@ const labels = {
 };
 const t = labels[lang] || labels.en;
 
-// Localized story text for the two recently imported titles whose Trakt overview is English-only.
-const storyTranslations = {
-  "139432": {
-    ar: "أبريل 1945. مع اقتراب قوات الحلفاء من تحقيق تقدمها الأخير في الجبهة الأوروبية، يقود رقيب مخضرم دبابة شيرمان وطاقمها المؤلف من خمسة جنود في مهمة قاتلة خلف خطوط العدو.",
-    ru: "Апрель 1945 года. Пока союзники ведут последнее наступление на Европейском театре военных действий, закалённый в боях сержант командует танком «Шерман» с экипажем из пяти человек, отправляясь на смертельно опасное задание в тылу врага."
-  },
-  "228595": {
-    ar: "تتصادم عائلتان نافذتان في عالم الجريمة ضمن حرب تهدد بإسقاط إمبراطورياتهما وتعريض حياة أفرادهما للخطر.",
-    ru: "Две влиятельные криминальные семьи вступают в противостояние, которое грозит разрушить их империи и поставить под угрозу жизни близких."
-  }
-};
-
 function localizedStory(item) {
-  const translations = storyTranslations[String(item.trakt_id)];
-  return translations?.[lang] || item.overview || item.tagline || "";
+  const localized = item.translations?.[lang]?.overview;
+  return localized || item.overview || item.tagline || "";
 }
 const params = new URLSearchParams(location.search);
 const kind = params.get("kind") === "series" ? "series" : "movie";

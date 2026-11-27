@@ -86,6 +86,34 @@ async function traktFetch(path: string, accessToken: string) {
   if (!response.ok) throw new Error("Trakt API request failed (" + response.status + ")");
   return response;
 }
+
+const LOCALIZATION_LANGUAGES = ["ar", "en", "ru"] as const;
+
+async function fetchTranslation(kind: "movie" | "show", traktId: number, language: string, accessToken: string) {
+  const endpoint = kind === "movie" ? "movies" : "shows";
+  const response = await traktFetch(`/${endpoint}/${traktId}/translations/${language}`, accessToken);
+  const rows = await response.json();
+  if (!Array.isArray(rows)) return null;
+  const match = rows.find((row: any) => typeof row?.overview === "string" && row.overview.trim());
+  return match ? {
+    title: typeof match.title === "string" ? match.title : null,
+    overview: match.overview.trim(),
+    tagline: typeof match.tagline === "string" && match.tagline.trim() ? match.tagline.trim() : null,
+    language: match.language ?? language,
+    country: match.country ?? null,
+  } : null;
+}
+
+async function fetchTranslations(kind: "movie" | "show", traktId: number, accessToken: string) {
+  const entries = await Promise.allSettled(
+    LOCALIZATION_LANGUAGES.map(async (language) => [language, await fetchTranslation(kind, traktId, language, accessToken)] as const)
+  );
+  const translations: Record<string, any> = {};
+  for (const entry of entries) {
+    if (entry.status === "fulfilled" && entry.value[1]?.overview) translations[entry.value[0]] = entry.value[1];
+  }
+  return translations;
+}
 function historyRows(items: any[], userId: string) {
   return items.flatMap((entry: any) => {
     const watchedAt = entry.watched_at;
@@ -147,6 +175,7 @@ async function enrichMedia(kind: "movie" | "show", traktId: number, accessToken:
     genres: Array.isArray(media.genres) ? media.genres : [], runtime: media.runtime ?? null,
     certification: media.certification ?? null, status: media.status ?? null,
     trailer: media.trailer ?? null, homepage: media.homepage ?? null,
+    translations: await fetchTranslations(kind, traktId, accessToken),
     cast_members: castMembers, metadata_updated_at: new Date().toISOString(),
   }, { onConflict: "media_type,trakt_id" });
   if (error) throw new Error("Could not save Trakt media metadata");
@@ -163,14 +192,14 @@ async function enrichWatchLibrary(userId: string, accessToken: string) {
     if (row.media_type === "episode" && row.show_trakt_id) items.set(`show:${row.show_trakt_id}`, { kind: "show", id: Number(row.show_trakt_id) });
   }
   const cached = await db.from("trakt_media_metadata")
-    .select("media_type,trakt_id,poster_url,metadata_updated_at")
+    .select("media_type,trakt_id,poster_url,translations,metadata_updated_at")
     .in("media_type", ["movie", "show"]);
   if (cached.error) throw new Error("Could not read cached media metadata");
-  const cacheMap = new Map((cached.data || []).map((item: any) => [`${item.media_type}:${item.trakt_id}`, { updated: new Date(item.metadata_updated_at).getTime(), poster: item.poster_url }]));
+  const cacheMap = new Map((cached.data || []).map((item: any) => [`${item.media_type}:${item.trakt_id}`, { updated: new Date(item.metadata_updated_at).getTime(), poster: item.poster_url, translations: item.translations }]));
   const refreshBefore = Date.now() - 30 * 24 * 60 * 60 * 1000;
   const pending = Array.from(items.values()).filter(item => {
     const cachedItem: any = cacheMap.get(`${item.kind}:${item.id}`);
-    return !cachedItem || !cachedItem.poster || cachedItem.updated < refreshBefore;
+    return !cachedItem || !cachedItem.poster || !cachedItem.translations?.ar?.overview || !cachedItem.translations?.ru?.overview || cachedItem.updated < refreshBefore;
   });
   const batch = pending.slice(0, 20);
   let updated = 0;
@@ -212,15 +241,15 @@ Deno.serve(async (req: Request) => {
       const movieIds = Array.from(movies.keys());
       const showIds = Array.from(series.values()).map((item: any) => Number(item.trakt_id)).filter((id: number) => Number.isFinite(id) && id > 0);
       const [movieMeta, showMeta] = await Promise.all([
-        movieIds.length ? db.from("trakt_media_metadata").select("media_type,trakt_id,overview,tagline,poster_url,rating,genres,runtime,certification,status,trailer,homepage,cast_members").eq("media_type", "movie").in("trakt_id", movieIds) : Promise.resolve({ data: [], error: null }),
-        showIds.length ? db.from("trakt_media_metadata").select("media_type,trakt_id,overview,tagline,poster_url,rating,genres,runtime,certification,status,trailer,homepage,cast_members").eq("media_type", "show").in("trakt_id", showIds) : Promise.resolve({ data: [], error: null }),
+        movieIds.length ? db.from("trakt_media_metadata").select("media_type,trakt_id,overview,tagline,translations,poster_url,rating,genres,runtime,certification,status,trailer,homepage,cast_members").eq("media_type", "movie").in("trakt_id", movieIds) : Promise.resolve({ data: [], error: null }),
+        showIds.length ? db.from("trakt_media_metadata").select("media_type,trakt_id,overview,tagline,translations,poster_url,rating,genres,runtime,certification,status,trailer,homepage,cast_members").eq("media_type", "show").in("trakt_id", showIds) : Promise.resolve({ data: [], error: null }),
       ]);
       if (movieMeta.error || showMeta.error) throw new Error("Could not read cached public media details");
       const metadata = new Map([...(movieMeta.data || []), ...(showMeta.data || [])].map((item: any) => [`${item.media_type}:${item.trakt_id}`, item]));
       const publicDetails = (item: any, kind: string) => {
         const detail: any = metadata.get(`${kind}:${item.trakt_id}`) || {};
         return {
-          overview: detail.overview ?? null, tagline: detail.tagline ?? null, poster_url: detail.poster_url ?? null,
+          overview: detail.overview ?? null, tagline: detail.tagline ?? null, translations: detail.translations ?? {}, poster_url: detail.poster_url ?? null,
           rating: detail.rating ?? null, genres: detail.genres ?? [], runtime: detail.runtime ?? null,
           certification: detail.certification ?? null, status: detail.status ?? null,
           trailer: detail.trailer ?? null, homepage: detail.homepage ?? null, cast: detail.cast_members ?? [],
