@@ -163,14 +163,14 @@ async function enrichWatchLibrary(userId: string, accessToken: string) {
     if (row.media_type === "episode" && row.show_trakt_id) items.set(`show:${row.show_trakt_id}`, { kind: "show", id: Number(row.show_trakt_id) });
   }
   const cached = await db.from("trakt_media_metadata")
-    .select("media_type,trakt_id,poster_url,metadata_updated_at")
+    .select("media_type,trakt_id,poster_url,translations,metadata_updated_at")
     .in("media_type", ["movie", "show"]);
   if (cached.error) throw new Error("Could not read cached media metadata");
   const cacheMap = new Map((cached.data || []).map((item: any) => [`${item.media_type}:${item.trakt_id}`, { updated: new Date(item.metadata_updated_at).getTime(), poster: item.poster_url }]));
   const refreshBefore = Date.now() - 30 * 24 * 60 * 60 * 1000;
   const pending = Array.from(items.values()).filter(item => {
     const cachedItem: any = cacheMap.get(`${item.kind}:${item.id}`);
-    return !cachedItem || !cachedItem.poster || cachedItem.updated < refreshBefore;
+    return !cachedItem || !cachedItem.poster || !cachedItem.translations?.ar?.overview || !cachedItem.translations?.ru?.overview || cachedItem.updated < refreshBefore;
   });
   const batch = pending.slice(0, 20);
   let updated = 0;
@@ -212,8 +212,8 @@ Deno.serve(async (req: Request) => {
       const movieIds = Array.from(movies.keys());
       const showIds = Array.from(series.values()).map((item: any) => Number(item.trakt_id)).filter((id: number) => Number.isFinite(id) && id > 0);
       const [movieMeta, showMeta] = await Promise.all([
-        movieIds.length ? db.from("trakt_media_metadata").select("media_type,trakt_id,overview,tagline,poster_url,rating,genres,runtime,certification,status,trailer,homepage,cast_members").eq("media_type", "movie").in("trakt_id", movieIds) : Promise.resolve({ data: [], error: null }),
-        showIds.length ? db.from("trakt_media_metadata").select("media_type,trakt_id,overview,tagline,poster_url,rating,genres,runtime,certification,status,trailer,homepage,cast_members").eq("media_type", "show").in("trakt_id", showIds) : Promise.resolve({ data: [], error: null }),
+        movieIds.length ? db.from("trakt_media_metadata").select("media_type,trakt_id,overview,tagline,translations,poster_url,rating,genres,runtime,certification,status,trailer,homepage,cast_members").eq("media_type", "movie").in("trakt_id", movieIds) : Promise.resolve({ data: [], error: null }),
+        showIds.length ? db.from("trakt_media_metadata").select("media_type,trakt_id,overview,tagline,translations,poster_url,rating,genres,runtime,certification,status,trailer,homepage,cast_members").eq("media_type", "show").in("trakt_id", showIds) : Promise.resolve({ data: [], error: null }),
       ]);
       if (movieMeta.error || showMeta.error) throw new Error("Could not read cached public media details");
       const metadata = new Map([...(movieMeta.data || []), ...(showMeta.data || [])].map((item: any) => [`${item.media_type}:${item.trakt_id}`, item]));
