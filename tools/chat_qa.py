@@ -29,12 +29,28 @@ if not script.is_file():
     errors.append("missing chat.js")
 else:
     source = script.read_text(encoding="utf-8")
-    for token in ("chat_profiles", "chat_conversations", "chat_messages", "postgres_changes", "async function searchUsers", "async function ensureConversation", "async function loadMessages"):
+    for token in ("chat_profiles", "chat_conversations", "chat_messages", "chat_friend_requests", "search_chat_profile", "send_chat_friend_request", "get_chat_profiles", "incoming-requests", "outgoing-requests", "postgres_changes", "async function searchUsers", "async function ensureConversation", "async function loadMessages"):
         if token not in source:
             errors.append(f"chat.js missing expected feature: {token}")
     if ".upload(" in source or 'type="file"' in source.lower() or "type='file'" in source.lower():
         errors.append("file upload implementation found in chat.js")
 
+migration = root / "supabase" / "migrations" / "20261127110000_chat_friend_requests_and_profile_privacy.sql"
+if not migration.is_file():
+    errors.append("missing friendship and privacy migration")
+else:
+    sql = migration.read_text(encoding="utf-8")
+    for token in ("chat_friend_requests", "search_chat_profile", "get_chat_profiles", "status = 'accepted'", "users read their own chat profile"):
+        if token not in sql:
+            errors.append(f"friendship migration missing expected control: {token}")
+
+if script.is_file():
+    source = script.read_text(encoding="utf-8")
+    if '.from("chat_profiles").select("id,username,avatar_id").eq("id",user.id)' not in source:
+        errors.append("profile reads must be owner-scoped")
+    if '.from("chat_profiles").select("id,username,avatar_id").eq("username"' in source:
+        errors.append("public profile search must use the restricted RPC")
+
 if errors:
     raise SystemExit("; ".join(errors))
-print("SODO Chat QA passed: 3 localized pages, 10 SVG avatars, no file upload controls.")
+print("SODO Chat QA passed: 3 localized pages, 10 SVG avatars, friend-request/privacy controls, no file uploads.")
