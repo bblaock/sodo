@@ -1633,7 +1633,7 @@
     const sort = wrap.querySelector("#sodo-cinema-sort");
     const count = wrap.querySelector(".sodo-cinema-search-count");
     const empty = wrap.querySelector(".sodo-cinema-search-empty");
-    const cards = grids.flatMap(grid => Array.from(grid.querySelectorAll(":scope > .movie-card")));
+    let cards = grids.flatMap(grid => Array.from(grid.querySelectorAll(":scope > .movie-card")));
 
     const normalize = value => String(value || "").normalize("NFKC").toLocaleLowerCase();
     const getText = card => normalize([
@@ -1650,6 +1650,11 @@
       empty.textContent = copy.none;
       document.dispatchEvent(new CustomEvent("sodo:cinema-search", { detail: { query } }));
     }
+
+    document.addEventListener("sodo:cinema-cards-updated", () => {
+      cards = grids.flatMap(grid => Array.from(grid.querySelectorAll(":scope > .movie-card")));
+      applyFilter();
+    });
 
     input.addEventListener("input", applyFilter, { passive: true });
     input.addEventListener("search", applyFilter);
