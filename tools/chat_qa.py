@@ -36,5 +36,5 @@ else:
         errors.append("file upload implementation found in chat.js")
 
 if errors:
-    raise SystemExit("\\n".join(errors))
+    raise SystemExit("; ".join(errors))
 print("SODO Chat QA passed: 3 localized pages, 10 SVG avatars, no file upload controls.")
