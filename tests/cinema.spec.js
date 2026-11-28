@@ -66,7 +66,8 @@ for (const language of locales) {
     await page.waitForFunction(() => document.documentElement.dataset.traktHistoryReady === "true");
 
     const search = page.locator("#sodo-cinema-search-input");
-    await search.fill("  Coco  ");
+    const existingTitle = (await page.locator("#watched .movie-card h3").first().innerText()).trim();
+    await search.fill(`  ${existingTitle}  `);
     await expect(page.locator(".sodo-cinema-search-count")).toContainText("1");
     await expect(page.locator("#watched .movie-pagination-summary")).toContainText("1");
 
