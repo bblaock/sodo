@@ -566,28 +566,6 @@
     © 2026 SODO. — Think. Feel. Create.
   </footer>
 
-  <script>
-    // Make each film/series card a keyboard-accessible link surface.
-    document.querySelectorAll(".movie-card").forEach((card) => {
-      const posterLink = card.querySelector(".poster-link[href]");
-      if (!posterLink) return;
-
-      card.dataset.cardHref = posterLink.getAttribute("href");
-      card.setAttribute("role", "link");
-      card.setAttribute("tabindex", "0");
-      card.setAttribute("aria-label", posterLink.getAttribute("aria-label") || "Open details");
-
-      card.addEventListener("click", (event) => {
-        if (event.target.closest("a, button, input, select, textarea")) return;
-        window.location.href = posterLink.href;
-      });
-
-      card.addEventListener("keydown", (event) => {
-        if (event.target !== card || (event.key !== "Enter" && event.key !== " ")) return;
-        event.preventDefault();
-        window.location.href = posterLink.href;
-      });
-    });
-  </script>
+  <script src="/sodo/films-card-navigation.js?v=20261128-cinema-a11y-1" defer></script>
 </body>
 </html>
