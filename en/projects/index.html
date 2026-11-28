@@ -131,47 +131,80 @@
       margin-bottom: 55px;
     }
 
-    .library-empty {
-      padding: 54px 28px;
-      margin-top: 12px;
-      text-align: center;
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      background: linear-gradient(145deg, rgba(200,255,77,.045), var(--panel) 58%);
-    }
-    .library-mark {
-      width: 58px;
-      height: 58px;
+.book-grid {
       display: grid;
-      place-items: center;
-      margin: 0 auto 20px;
-      border: 1px solid rgba(200,255,77,.35);
-      border-radius: 16px;
-      color: var(--accent);
-      font-size: 21px;
-      font-weight: 800;
-      letter-spacing: -2px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 12px;
     }
-    .library-empty h2 { margin: 0 0 9px; font-size: 22px; }
-    .library-empty p { max-width: 440px; margin: 0 auto; color: var(--muted); }
 
-    .project small {
+    .book-card {
+      position: relative;
+      min-height: 210px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 26px 28px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: linear-gradient(145deg, rgba(200,255,77,.035), var(--panel) 62%);
+      transition: border-color .2s ease, transform .2s ease, background .2s ease;
+    }
+
+    .book-card::before {
+      content: "";
+      position: absolute;
+      inset-inline-start: 0;
+      top: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--accent);
+      opacity: .55;
+    }
+
+    .book-card:hover {
+      border-color: rgba(200,255,77,.55);
+      transform: translateY(-3px);
+    }
+
+    .book-card-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
       color: var(--accent);
-      letter-spacing: 2px;
       font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.7px;
     }
 
-    .project h2 {
-      font-size: 23px;
-      margin: 10px 0;
+    .book-card h2 {
+      max-width: 560px;
+      margin: 34px 0 18px;
+      font-size: clamp(20px, 3vw, 27px);
+      line-height: 1.45;
+      overflow-wrap: anywhere;
     }
 
-    .project p {
-      color: var(--muted);
+    .book-author {
       margin: 0;
+      color: var(--muted);
+      font-size: 13px;
     }
 
-    footer {
+    .book-author span[lang="ar"] {
+      display: inline-block;
+      margin-inline-start: 5px;
+      opacity: .72;
+    }
+
+    @media (max-width: 650px) {
+      .book-grid { grid-template-columns: 1fr; gap: 12px; }
+      .book-card { min-height: 180px; padding: 23px; }
+      .book-card h2 { margin-top: 27px; }
+    }
+
+        footer {
       max-width: 1000px;
       margin: auto;
       padding: 25px 22px;
@@ -271,10 +304,27 @@
 
     <p class="intro">A space for books and ideas that leave a mark. A quiet library, growing one book at a time.</p>
 
-    <section class="library-empty" aria-labelledby="library-empty-title">
-      <div class="library-mark" aria-hidden="true">B.</div>
-      <h2 id="library-empty-title">The library is just beginning</h2>
-      <p>Selected books, short notes, and reading details will appear here.</p>
+    <section class="book-grid" aria-label="Books">
+      <article class="book-card">
+        <div class="book-card-top"><span>BOOK 01</span><span>01 / 04</span></div>
+        <h2>Your Psychological Complexes Are Your Eternal Prison</h2>
+        <p class="book-author">Dr. Yousef Al-Hassani <span lang="ar">(د. يوسف الحسني)</span></p>
+      </article>
+      <article class="book-card">
+        <div class="book-card-top"><span>BOOK 02</span><span>02 / 04</span></div>
+        <h2>Understanding Mental Disorders</h2>
+        <p class="book-author">Dean Burnett <span lang="ar">(دين برنيت)</span></p>
+      </article>
+      <article class="book-card">
+        <div class="book-card-top"><span>BOOK 03</span><span>03 / 04</span></div>
+        <h2>A Guide to Letting Go</h2>
+        <p class="book-author">Al-Shaymaa Abd Al-Aal <span lang="ar">(الشيماء عبد العال)</span></p>
+      </article>
+      <article class="book-card">
+        <div class="book-card-top"><span>BOOK 04</span><span>04 / 04</span></div>
+        <h2>Letters to Milena</h2>
+        <p class="book-author">Franz Kafka</p>
+      </article>
     </section>
   </main>
 
