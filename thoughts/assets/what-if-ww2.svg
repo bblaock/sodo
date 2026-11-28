@@ -1,1 +1,50 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="t d"><title id="t">Two possible paths through history</title><desc id="d">A globe above a branching road, with a quiet city on one side and an uncertain skyline on the other.</desc><defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#101a1c"/><stop offset="1" stop-color="#080a08"/></linearGradient><linearGradient id="globe" x2="1" y2="1"><stop stop-color="#f3d9a5"/><stop offset="1" stop-color="#738b85"/></linearGradient></defs><rect width="1200" height="675" fill="url(#bg)"/><g fill="#c8ff4d" opacity=".6"><circle cx="112" cy="92" r="2"/><circle cx="1025" cy="104" r="2"/><circle cx="892" cy="52" r="1.5"/><circle cx="240" cy="170" r="1.5"/></g><circle cx="600" cy="280" r="205" fill="url(#globe)"/><g fill="none" stroke="#425b57" stroke-width="7" opacity=".55"><path d="M465 120q-55 60-40 125t75 80q-15 65 28 145M640 78q-40 80 10 135t-5 110q-35 55 25 145M760 165q-80 45-70 110t75 75"/><path d="M400 275q200 50 400 0M420 350q180-45 360 0M480 170q120 55 240 0" stroke-width="4"/></g><path d="M0 410L190 355 310 420 430 382 510 455 0 675Z" fill="#29372f"/><path d="M1200 390L1020 340 900 410 800 380 700 470 1200 675Z" fill="#202c2b"/><g fill="#c5a777"><path d="M70 390v-105h55v105zm68 0v-155h42v155zm56 0v-80h72v80zm-135-105 38-45 36 45zm128-50 23-33 23 33z"/><path d="M890 390v-125h42v125zm55 0v-190h55v190zm68 0v-105h60v105zm-45-190 28-35 30 35z" opacity=".45"/></g><path d="M0 675Q240 485 470 500T600 675" fill="none" stroke="#b99a68" stroke-width="90"/><path d="M1200 675Q960 485 730 500T600 675" fill="none" stroke="#3d514e" stroke-width="90"/><path d="M0 675Q240 485 470 500T600 675M1200 675Q960 485 730 500T600 675" fill="none" stroke="#c8ff4d" stroke-width="3" opacity=".8"/><path d="M565 550v-95h70v95m-88-95 53-70 53 70" fill="#080a08"/><circle cx="600" cy="340" r="12" fill="#c8ff4d"/><path d="M600 352v120" stroke="#c8ff4d" stroke-width="3" stroke-dasharray="7 9"/><g fill="#f4f7ef" font-family="Arial,sans-serif" opacity=".8"><text x="90" y="90" font-size="20" letter-spacing="5">HISTORY / WHAT IF</text><text x="1110" y="610" text-anchor="end" font-size="18" letter-spacing="3">SODO — THOUGHTS</text></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+<title id="title">Two paths through the twentieth century</title>
+<desc id="desc">An editorial illustration of a historical crossroads: one route leads through the destruction of war, while another passes through diplomacy and an industrial city. Neither route promises a perfect future.</desc>
+<defs>
+ <linearGradient id="night" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#18252a"/><stop offset="1" stop-color="#080d10"/></linearGradient>
+ <linearGradient id="paper" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f0dfbd"/><stop offset="1" stop-color="#b99b70"/></linearGradient>
+ <linearGradient id="road" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#d9c6a2"/><stop offset="1" stop-color="#8f8067"/></linearGradient>
+ <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M48 0H0V48" fill="none" stroke="#dce6db" stroke-opacity=".07"/></pattern>
+</defs>
+<rect width="1200" height="675" fill="url(#night)"/><rect width="1200" height="675" fill="url(#grid)"/>
+<circle cx="600" cy="210" r="172" fill="#e5d2ac" opacity=".08"/><circle cx="600" cy="210" r="150" fill="none" stroke="#c8ff4d" stroke-opacity=".5" stroke-width="2"/>
+<!-- abstract Europe map -->
+<path d="M515 95l34-15 26 12 16-10 28 18 25-5 18 22-9 21 19 17-13 21-28 4-12 23-25 7-8 27-22-3-10-22-23-8-5-24-22-12 7-22-19-20 10-31z" fill="#e7d8b8" stroke="#a7b79e" stroke-width="3"/>
+<path d="M475 195q125 42 250 0M490 235q110 34 220 0" fill="none" stroke="#8fa19a" stroke-opacity=".45" stroke-width="2"/>
+<circle cx="600" cy="330" r="13" fill="#c8ff4d"/><circle cx="600" cy="330" r="26" fill="none" stroke="#c8ff4d" stroke-opacity=".45" stroke-width="2"/>
+<!-- branching paths -->
+<path d="M600 345C590 410 480 435 330 490S130 590 75 675" fill="none" stroke="#c8ff4d" stroke-width="5" opacity=".9"/>
+<path d="M600 345C610 410 720 435 870 490s200 100 255 185" fill="none" stroke="#c8ff4d" stroke-width="5" opacity=".9"/>
+<path d="M600 345C590 410 480 435 330 490S130 590 75 675" fill="none" stroke="url(#road)" stroke-width="78"/>
+<path d="M600 345C610 410 720 435 870 490s200 100 255 185" fill="none" stroke="url(#road)" stroke-width="78"/>
+<path d="M600 365C592 420 480 455 330 510S150 600 100 675M600 365C608 420 720 455 870 510s180 90 230 165" fill="none" stroke="#f6e8cb" stroke-opacity=".65" stroke-width="2" stroke-dasharray="13 17"/>
+<!-- left: damaged city, restrained and non-glorifying -->
+<g fill="#6f7770">
+ <path d="M0 440h85v-104l22-28 20 28v104h40v-75l28-20 25 20v75h45v-132l30-25 27 25v132h50v-82l23-18 25 18v82h-25v-20H0z"/>
+ <path d="M15 420v-48h17v48m28 0v-58h16v58m91 0v-35h18v35m91 0v-69h18v69m46 0v-42h18v42" fill="#26343a"/>
+ <path d="M0 340l46-28 29 14 35-46 30 28 30-12 35 37 35-27 30 29 37-14 30 19" fill="none" stroke="#a68e6d" stroke-width="9" opacity=".8"/>
+</g>
+<g fill="none" stroke="#a68e6d" stroke-width="9" stroke-linecap="round" opacity=".7"><path d="M55 280q-35-28 0-54t-2-55M105 250q-26-23 0-47t-3-46M235 270q-30-25 0-52t-2-45"/></g>
+<path d="M58 470l38-32 28 30 28-20 30 29 31-23 26 24" fill="none" stroke="#c8ff4d" stroke-opacity=".4" stroke-width="3"/>
+<!-- right: civic institutions and city -->
+<g fill="#a8b7aa">
+ <path d="M865 430v-72h38v72zm48 0V320h48v110zm59 0v-90h42v90zm53 0V285h50v145zm62 0v-63h48v63z"/>
+ <path d="M905 320l32-22 32 22m47-35 31-24 31 24m-8 72h-29v-45h29z" fill="#d5c4a2"/>
+</g>
+<g fill="none" stroke="#c8ff4d" stroke-width="3" opacity=".85"><path d="M885 300h105M940 280v-24m-15 24 15-24 15 24"/><path d="M1018 270h95m-48-26v26m-18-9 18-17 18 17"/></g>
+<!-- diplomatic table -->
+<g transform="translate(885 190)">
+ <path d="M0 48h170l-16 30H16z" fill="#d8c6a5"/>
+ <path d="M25 78v38m120-38v38" stroke="#d8c6a5" stroke-width="8"/>
+ <circle cx="42" cy="28" r="13" fill="#c8ff4d"/><circle cx="128" cy="28" r="13" fill="#91a99c"/>
+ <path d="M42 43v12m-13-4h26m73-8v12m-13-4h26" stroke="#d8c6a5" stroke-width="7" stroke-linecap="round"/>
+</g>
+<!-- horizon and central marker -->
+<path d="M0 455q200-38 385 10M815 465q185-50 385-10" fill="none" stroke="#e5d2ac" stroke-opacity=".22" stroke-width="2"/>
+<g font-family="Arial,sans-serif" fill="#f4f0e5">
+ <text x="70" y="72" font-size="18" letter-spacing="5" opacity=".75">SODO / COUNTERFACTUAL HISTORY</text>
+ <text x="70" y="108" font-size="34" font-weight="700">1939</text>
+ <text x="1130" y="620" font-size="16" letter-spacing="3" text-anchor="end" opacity=".65">ONE QUESTION · MANY POSSIBLE FUTURES</text>
+</g>
+</svg>
