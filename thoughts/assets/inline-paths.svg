@@ -1,1 +1,25 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 360" role="img" aria-labelledby="t d"><title id="t">Many possible paths</title><desc id="d">A small figure stands at a fork in a path while a hand-drawn tree grows nearby, symbolising uncertain futures.</desc><g fill="none" stroke="#aab5a5" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M380 315q-20-68-128-105T75 130M380 315q20-68 128-105t177-80M380 315V125"/><path d="M75 130q100 20 177 80M685 50q-110 34-177 80"/><path d="M380 315v-80m-22 0 22-22 22 22"/><circle cx="380" cy="184" r="13"/><path d="M380 198v43m0-25-19 19m19-19 19 19m-19 6-14 24m14-24 14 24"/><path d="M170 280q-12-42 0-85m0 40q-42-18-48-52 38 0 48 52m0-18q42-18 48-52-38 0-48 52m420 85q12-42 0-85m0 40q-42-18-48-52 38 0 48 52m0-18q42-18 48-52-38 0-48 52"/><path d="M92 315h576"/></g><g fill="none" stroke="#c8ff4d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M380 315q-20-68-128-105M380 315q20-68 128-105"/><path d="M170 195q0-28 0-44m420 44q0-28 0-44"/><circle cx="380" cy="184" r="5"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 420" role="img" aria-labelledby="title desc">
+<title id="title">A world of alternative paths</title><desc id="desc">A traveller stands at a fork in a winding road, looking toward two distinct horizons with a tree and distant city.</desc>
+<g fill="none" stroke="#aab5a5" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+<path d="M54 344h652"/>
+<path d="M90 344q88-82 182-114 48-16 108-16M670 344q-88-82-182-114-48-16-108-16"/>
+<path d="M380 344q-8-72 0-130"/>
+<path d="M90 344q76-93 181-142m399 142q-76-93-181-142" opacity=".7"/>
+<path d="M112 207v-92h66v92m-54-70h42m-42 22h42m-42 22h42"/>
+<path d="M584 207V93h66v114m-54-92h42m-42 22h42m-42 22h42"/>
+<path d="M202 344q-10-52 0-105m0 52q-42-18-49-55 39 1 49 55m0-18q42-18 49-55-39 1-49 55"/>
+<path d="M558 344q10-52 0-105m0 52q42-18 49-55-39 1-49 55m0-18q-42-18-49-55 39 1 49 55"/>
+<path d="M380 213q-17-25-34-11-12 12 0 24 14 12 34-2 20 14 34 2 12-12 0-24-17-14-34 11z"/>
+<circle cx="380" cy="166" r="18"/>
+<path d="M380 184v57m0-32-25 26m25-26 25 26m-25 6-19 30m19-30 19 30"/>
+<path d="M300 122l-30-28m30 28 30-28m-30 28v-47M460 122l-30-28m30 28 30-28m-30 28v-47"/>
+<path d="M270 94h60m-60 0v-14m60 14v-14M430 94h60m-60 0v-14m60 14v-14"/>
+<path d="M335 344q-28-48-22-90m112 90q28-48 22-90" opacity=".55"/>
+</g>
+<g fill="none" stroke="#c8ff4d" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+<path d="M380 344q-8-72 0-130"/>
+<path d="M90 344q76-93 181-142m399 142q-76-93-181-142" opacity=".9"/>
+<path d="M380 166v-32m-9 9 9-9 9 9"/>
+</g>
+<g fill="#c8ff4d"><circle cx="380" cy="166" r="4"/></g>
+</svg>
