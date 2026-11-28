@@ -67,8 +67,8 @@ async def main() -> int:
                 result = await crawler.arun(url=url, config=run_config)
                 status = getattr(result, "status_code", None)
                 html = str(
-                    getattr(result, "cleaned_html", "")
-                    or getattr(result, "html", "")
+                    getattr(result, "html", "")
+                    or getattr(result, "cleaned_html", "")
                     or ""
                 )
                 text = markdown_text(getattr(result, "markdown", ""))
