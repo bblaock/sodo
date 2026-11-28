@@ -108,7 +108,7 @@ if(!slug){
    "world-war-three":"2026-11-28T12:56:00",
    "nuclear-war":"2026-11-28T12:56:00",
    "no-borders":"2026-11-28T12:32:00",
-   "what-if-ww2":"2026-11-27T23:55:00"
+   "what-if-ww2":"2026-11-28T02:55:00"
   };
   const dateLabel=lang==="ar"?"نُشر في":lang==="ru"?"Опубликовано":"Published";
   const cards=[...root.querySelectorAll(".featured")].map(card=>{
