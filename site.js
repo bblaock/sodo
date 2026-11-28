@@ -1635,7 +1635,7 @@
     const empty = wrap.querySelector(".sodo-cinema-search-empty");
     let cards = grids.flatMap(grid => Array.from(grid.querySelectorAll(":scope > .movie-card")));
 
-    const normalize = value => String(value || "").normalize("NFKC").toLocaleLowerCase();
+    const normalize = value => String(value || "").normalize("NFKC").trim().toLocaleLowerCase();
     const getText = card => normalize([
       card.querySelector("h3")?.textContent,
       card.querySelector(".movie-meta")?.textContent,
