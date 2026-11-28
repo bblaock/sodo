@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  const normalize = value => String(value || "").normalize("NFKC").toLocaleLowerCase();
+  const normalize = value => String(value || "").normalize("NFKC").trim().toLocaleLowerCase();
   let searchQuery = "";
   let sortMode = "featured";
 
