@@ -105,7 +105,7 @@
       "Several noble families struggle for control of the Iron Throne and the Seven Kingdoms of Westeros, while an ancient danger gathers beyond the Wall.": "تتصارع عائلات نبيلة عديدة للسيطرة على العرش الحديدي والممالك السبع في ويستروس، بينما يتجمع خطر قديم خلف الجدار.",
       "After the death of classmate Hannah Baker, Clay Jensen receives a set of recordings in which she explains the events and people connected to her decision. The story follows the students as they confront grief, secrets, and the consequences of their actions.": "بعد وفاة زميلته هانا بيكر، يتلقى كلاي جنسن مجموعة تسجيلات تشرح فيها الأحداث والأشخاص المرتبطين بقرارها. ويتابع العمل الطلاب وهم يواجهون الحزن والأسرار وعواقب أفعالهم.",
       "Matt Murdock and Wilson Fisk find themselves on a collision course as their past identities resurface. As Fisk rises to power in New York, Daredevil fights back to protect the city and the people he loves.": "يجد مات موردوك وويلسون فيسك نفسيهما في مواجهة حتمية مع عودة هوياتهما السابقة إلى الواجهة. وبينما يصعد فيسك إلى السلطة في نيويورك، يقاوم ديرديفل لحماية المدينة والأشخاص الذين يحبهم.",
-      projects: "مشاريع",
+      projects: "كتب",
       eyebrow: "مساحة شخصية",
       heroText: "مساحة للأفكار والثقافة والسينما والاستكشاف الإبداعي. مكان ما بين ما نفكر فيه وما نصنعه.",
       discover: "اكتشف SODO ↗",
@@ -260,7 +260,7 @@
       "Louisa Clark becomes the companion of Will Traynor, a wealthy man whose life changed after an accident. As their bond deepens, both are challenged to reconsider what gives life meaning.": "Louisa Clark becomes the companion of Will Traynor, a wealthy man whose life changed after an accident. As their bond deepens, both are challenged to reconsider what gives life meaning.",
       "During the Battle of the Bulge, a wounded American soldier is trapped behind German lines. With only his radio and survival skills, he must evade enemy forces and find a way back to his unit.": "During the Battle of the Bulge, a wounded American soldier is trapped behind German lines. With only his radio and survival skills, he must evade enemy forces and find a way back to his unit.",
       "We could not reliably identify a film with this exact title. The title is kept in your watched list without inventing a year, rating, synopsis, or poster.": "We could not reliably identify a film with this exact title. The title is kept in your watched list without inventing a year, rating, synopsis, or poster.",
-      projects: "Projects",
+      projects: "Books",
       eyebrow: "A Personal Space",
       heroText: "A space for ideas, culture, cinema, and creative exploration. Somewhere between what we think and what we create.",
       discover: "Discover SODO ↗",
@@ -400,7 +400,7 @@
       "Several noble families struggle for control of the Iron Throne and the Seven Kingdoms of Westeros, while an ancient danger gathers beyond the Wall.": "Несколько знатных семей борются за Железный трон и власть над Семью королевствами Вестероса, пока за Стеной пробуждается древняя угроза.",
       "After the death of classmate Hannah Baker, Clay Jensen receives a set of recordings in which she explains the events and people connected to her decision. The story follows the students as they confront grief, secrets, and the consequences of their actions.": "После смерти одноклассницы Ханны Бейкер Клэй Дженсен получает записи, в которых она рассказывает о событиях и людях, связанных с её решением. Ученикам предстоит столкнуться с горем, тайнами и последствиями собственных поступков.",
       "Matt Murdock and Wilson Fisk find themselves on a collision course as their past identities resurface. As Fisk rises to power in New York, Daredevil fights back to protect the city and the people he loves.": "Мэтт Мёрдок и Уилсон Фиск оказываются на пути неизбежного столкновения, когда возвращается их прошлое. Пока Фиск укрепляет власть в Нью-Йорке, Сорвиголова борется за защиту города и близких ему людей.",
-      projects: "Проекты",
+      projects: "Книги",
       eyebrow: "Личное пространство",
       heroText: "Пространство для идей, культуры, кино и творчества. Место между тем, что мы думаем, и тем, что создаём.",
       discover: "Открыть SODO ↗",
@@ -649,21 +649,21 @@
         "about.html": "عن الموقع — SODO",
         "thoughts.html": "أفكار — SODO",
         "films.html": "سينما — SODO",
-        "projects.html": "مشاريع — SODO"
+        "projects.html": "كتب — SODO"
       },
       en: {
         "index.html": "Home — SODO",
         "about.html": "About — SODO",
         "thoughts.html": "Thoughts — SODO",
         "films.html": "Films — SODO",
-        "projects.html": "Projects — SODO"
+        "projects.html": "Books — SODO"
       },
       ru: {
         "index.html": "Главная — SODO",
         "about.html": "О проекте — SODO",
         "thoughts.html": "Мысли — SODO",
         "films.html": "Кино — SODO",
-        "projects.html": "Проекты — SODO"
+        "projects.html": "Книги — SODO"
       }
     };
 
@@ -695,21 +695,21 @@
         "about.html": "تعرّف على SODO وفكرته ومساحته المخصصة للأفكار والثقافة والإبداع.",
         "thoughts.html": "أفكار وتأملات وملاحظات تستحق التفكير والمشاركة.",
         "films.html": "مساحة لاستكشاف السينما والحكايات والتجارب البصرية.",
-        "projects.html": "مشاريع وتجارب إبداعية وأفكار تتحول إلى واقع."
+        "projects.html": "مكتبة SODO الشخصية — كتب تستحق القراءة والتأمل."
       },
       en: {
         "index.html": "SODO — a space for ideas, culture, cinema, and creativity.",
         "about.html": "Discover SODO, its idea, and its space for culture and creative exploration.",
         "thoughts.html": "Thoughts, reflections, and notes worth thinking about and sharing.",
         "films.html": "Explore cinema, storytelling, and visual experiences with SODO.",
-        "projects.html": "Creative projects, experiments, and ideas taking shape."
+        "projects.html": "The personal SODO library — books worth reading and reflecting on."
       },
       ru: {
         "index.html": "SODO — пространство для идей, культуры, кино и творчества.",
         "about.html": "Познакомьтесь с SODO — пространством для культуры, идей и творчества.",
         "thoughts.html": "Мысли, размышления и заметки, которыми стоит делиться.",
         "films.html": "Исследуйте кино, истории и визуальные впечатления вместе с SODO.",
-        "projects.html": "Творческие проекты, эксперименты и идеи в процессе развития."
+        "projects.html": "Личная библиотека SODO — книги, достойные чтения и размышления."
       }
     };
     const description = document.querySelector('meta[name="description"]');
