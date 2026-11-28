@@ -18,8 +18,9 @@
     if (!value || value.startsWith("#") || /^(mailto:|tel:|javascript:|https?:|data:)/i.test(value)) return value;
     const url = new URL(value, location.origin);
     if (url.origin !== location.origin || !url.pathname.startsWith(base)) return value;
-    const rest = url.pathname.slice(base.length);
+    let rest = url.pathname.slice(base.length);
     if (supported.includes(rest.split("/")[0]) || /^(assets\/|site\.js|language-router\.js)/.test(rest)) return value;
+    if (rest === "projects" || rest.startsWith("projects/")) rest = rest.replace(/^projects(?=\/|$)/, "books");
     return localeRoot(language) + rest + url.search + url.hash;
   };
   // The shared site.js owns language-menu interactions and navigates to the

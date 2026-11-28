@@ -1,0 +1,345 @@
+
+<!DOCTYPE html>
+<html lang="ru" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.cdnfonts.com; font-src 'self' data: https://fonts.gstatic.com https://fonts.cdnfonts.com; img-src 'self' data: https:; connect-src 'self'; form-action 'self'; upgrade-insecure-requests">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="theme-color" content="#080a08">
+<meta name="description" content="Личная библиотека SODO — книги, достойные чтения и размышления.">
+<title>Книги — SODO</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.cdnfonts.com/css/tafkir-arabic-trial" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #080a08;
+      --panel: #111510;
+      --text: #f4f7ef;
+      --muted: #b0b9a9;
+      --accent: #c8ff4d;
+      --border: #293126;
+    }
+
+    * { box-sizing: border-box; }
+
+    html[lang="ar"] body { font-family: "Tafkir Arabic TRIAL", "Tafkir Arabic TRIAL Medium", sans-serif; }
+    button, input, select, textarea { font: inherit; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Manrope", sans-serif;
+      line-height: 1.7;
+    }
+
+    header { border-bottom: 1px solid var(--border); }
+
+    .container {
+      width: min(1100px, 88%);
+      margin: auto;
+    }
+
+    .logo {
+      color: var(--accent);
+      font-size: 30px;
+      font-weight: 900;
+      letter-spacing: 5px;
+      text-decoration: none;
+    }
+
+    header nav {
+      min-height: 82px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 25px;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 28px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      font-size: 14px;
+      text-decoration: none;
+      transition: color .2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--accent); }
+
+    .site-tools {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .site-tools select,
+    .theme-toggle {
+      background: var(--panel);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 9px 11px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .theme-toggle {
+      font-size: 18px;
+      min-width: 42px;
+    }
+
+    main {
+      max-width: 850px;
+      margin: auto;
+      padding: 85px 22px;
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      letter-spacing: 4px;
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: clamp(45px, 9vw, 76px);
+      line-height: 1.1;
+      margin: 18px 0;
+      letter-spacing: -3px;
+    }
+
+    h1 span { color: var(--accent); }
+
+    .intro {
+      color: var(--muted);
+      font-size: 17px;
+      max-width: 570px;
+      margin-bottom: 55px;
+    }
+
+.book-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 12px;
+    }
+
+    .book-card {
+      position: relative;
+      min-height: 210px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 26px 28px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: linear-gradient(145deg, rgba(200,255,77,.035), var(--panel) 62%);
+      transition: border-color .2s ease, transform .2s ease, background .2s ease;
+    }
+
+    .book-card::before {
+      content: "";
+      position: absolute;
+      inset-inline-start: 0;
+      top: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--accent);
+      opacity: .55;
+    }
+
+    .book-card:hover {
+      border-color: rgba(200,255,77,.55);
+      transform: translateY(-3px);
+    }
+
+    .book-card-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--accent);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.7px;
+    }
+
+    .book-card h2 {
+      max-width: 560px;
+      margin: 34px 0 18px;
+      font-size: clamp(20px, 3vw, 27px);
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+
+    .book-author {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .book-author span[lang="ar"] {
+      display: inline-block;
+      margin-inline-start: 5px;
+      opacity: .72;
+    }
+
+    @media (max-width: 650px) {
+      .book-grid { grid-template-columns: 1fr; gap: 12px; }
+      .book-card { min-height: 180px; padding: 23px; }
+      .book-card h2 { margin-top: 27px; }
+    }
+
+        footer {
+      max-width: 1000px;
+      margin: auto;
+      padding: 25px 22px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 700px) {
+      header nav {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 20px 0;
+      }
+
+      .nav-links { gap: 16px; }
+      .site-tools { margin: 5px 0; }
+    }
+
+    @media (max-width: 600px) {
+      header nav {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 20px 0;
+      }
+
+      .nav-links { gap: 16px; }
+      .site-tools { margin: 5px 0; }
+      main { padding-top: 60px; }
+      .library-empty { padding: 42px 20px; }
+    }
+  
+    .footer-socials {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 0 auto 18px;
+    }
+
+    .footer-socials a {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      min-height: 40px;
+      padding: 7px 13px;
+      border: 1px solid var(--line, var(--border, #293126));
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: .2px;
+      transition: color .2s ease, border-color .2s ease, transform .2s ease;
+    }
+
+    .footer-socials a:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .footer-socials svg {
+      width: 17px;
+      height: 17px;
+      flex: 0 0 17px;
+    }
+
+    body.light-mode .footer-socials a { color: var(--muted); }
+    body.light-mode .footer-socials a:hover { color: #506d16; border-color: #7e9d36; }
+
+  </style>
+  <script src="/sodo/language-router.js?v=20261126-language-paths-2" defer></script>
+  <script src="/sodo/site.js?v=20261127-social-icons-1" defer></script>
+</head>
+
+<body>
+  <header>
+    <div class="container">
+      <nav>
+        <a href="/sodo/" class="logo">SODO.</a>
+        <ul class="nav-links">
+          <li><a href="/sodo/" data-i18n="home">Home</a></li>
+          <li><a href="/sodo/about/" data-i18n="about">About</a></li>
+          <li><a href="/sodo/thoughts/" data-i18n="thoughts">Thoughts</a></li>
+          <li><a href="/sodo/films/" data-i18n="films">Films</a></li>
+          <li><a href="/sodo/books/" data-i18n="projects">Projects</a></li>
+        </ul>
+        <div class="site-tools"></div>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="eyebrow">ЛИЧНАЯ БИБЛИОТЕКА</div>
+
+    <h1>Книги<span>.</span></h1>
+
+    <p class="intro">Пространство для книг и идей, которые оставляют след. Тихая библиотека, растущая книга за книгой.</p>
+
+    <section class="book-grid" aria-label="Книги">
+      <article class="book-card">
+        <div class="book-card-top"><span>КНИГА 01</span><span>01 / 04</span></div>
+        <h2>Твои психологические комплексы — твоя вечная тюрьма</h2>
+        <p class="book-author">Доктор Юсуф аль-Хасани <span lang="ar">(د. يوسف الحسني)</span></p>
+      </article>
+      <article class="book-card">
+        <div class="book-card-top"><span>КНИГА 02</span><span>02 / 04</span></div>
+        <h2>Понимание психических расстройств</h2>
+        <p class="book-author">Дин Бёрнетт <span lang="ar">(دين برنيت)</span></p>
+      </article>
+      <article class="book-card">
+        <div class="book-card-top"><span>КНИГА 03</span><span>03 / 04</span></div>
+        <h2>Руководство по отпусканию привязанности</h2>
+        <p class="book-author">Аш-Шайма Абд аль-Аль <span lang="ar">(الشيماء عبد العال)</span></p>
+      </article>
+      <article class="book-card">
+        <div class="book-card-top"><span>КНИГА 04</span><span>04 / 04</span></div>
+        <h2>Письма к Милене</h2>
+        <p class="book-author">Франц Кафка</p>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-socials" aria-label="Social media">
+      <a href="https://x.com/bblaock" target="_blank" rel="noopener noreferrer" aria-label="X — @bblaock">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3L12 14.6 5.6 22H2.5l7.3-8.4L1.8 2h6.5l4.5 6.8L18.9 2Zm-1.1 18h1.7L7.3 3.9H5.5L17.8 20Z" fill="currentColor"/></svg>
+        <span>@bblaock</span>
+      </a>
+      <a href="https://www.instagram.com/bblaock/" target="_blank" rel="noopener noreferrer" aria-label="Instagram — @bblaock">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.5" cy="6.7" r="1.1" fill="currentColor"/></svg>
+        <span>@bblaock</span>
+      </a>
+    </div>
+    © 2026 SODO. — Think. Feel. Create.
+  </footer>
+</body>
+</html>

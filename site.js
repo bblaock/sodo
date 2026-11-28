@@ -114,7 +114,7 @@
       different: "وجهات نظر مختلفة.",
       notes: "ملاحظات وتأملات وأفكار تستحق المشاركة.",
       cinema: "قصص وتجارب سينمائية وبصرية.",
-      work: "تجارب إبداعية وأعمال قيد التطوير.",
+      work: "كتب مختارة وقراءات تستحق التأمل.",
       footer: "جميع الحقوق محفوظة",
       "Think.": "فكّر.",
       "Feel.": "اشعر.",
@@ -184,7 +184,7 @@
       "02 / EXPLORE": "02 / استكشف",
       "01 — IDEAS": "01 — أفكار",
       "02 — CINEMA": "02 — سينما",
-      "03 — WORK": "03 — مشاريع",
+      "03 — BOOKS": "03 — كتب",
       "01 — A BEGINNING": "01 — بداية",
       "02 — PERSPECTIVE": "02 — وجهة نظر",
       "03 — CREATIVITY": "03 — إبداع",
@@ -269,7 +269,7 @@
       different: "Different perspectives.",
       notes: "Notes, reflections and ideas worth sharing.",
       cinema: "Stories, cinema and visual experiences.",
-      work: "Creative experiments and things in progress.",
+      work: "A growing collection of books and ideas worth exploring.",
       footer: "All rights reserved",
       "فكّر.": "Think.",
       "اشعر.": "Feel.",
@@ -409,7 +409,7 @@
       different: "Разные взгляды.",
       notes: "Заметки, размышления и идеи, которыми стоит делиться.",
       cinema: "Истории, кино и визуальные впечатления.",
-      work: "Творческие эксперименты и проекты в процессе.",
+      work: "Коллекция книг и идей, к которым хочется возвращаться.",
       footer: "Все права защищены",
       "Think.": "Думай.",
       "Feel.": "Чувствуй.",
@@ -481,7 +481,7 @@
       "02 / EXPLORE": "02 / ИССЛЕДОВАТЬ",
       "01 — IDEAS": "01 — ИДЕИ",
       "02 — CINEMA": "02 — КИНО",
-      "03 — WORK": "03 — ПРОЕКТЫ",
+      "03 — BOOKS": "03 — КНИГИ",
       "01 — A BEGINNING": "01 — НАЧАЛО",
       "02 — PERSPECTIVE": "02 — ВЗГЛЯД",
       "03 — CREATIVITY": "03 — ТВОРЧЕСТВО",
@@ -1635,7 +1635,7 @@
     const empty = wrap.querySelector(".sodo-cinema-search-empty");
     let cards = grids.flatMap(grid => Array.from(grid.querySelectorAll(":scope > .movie-card")));
 
-    const normalize = value => String(value || "").normalize("NFKC").toLocaleLowerCase();
+    const normalize = value => String(value || "").normalize("NFKC").trim().toLocaleLowerCase();
     const getText = card => normalize([
       card.querySelector("h3")?.textContent,
       card.querySelector(".movie-meta")?.textContent,
