@@ -115,7 +115,7 @@ if(!slug){
    const href=card.querySelector("a.read-link")?.getAttribute("href")||"";
    const slug=Object.keys(published).find(key=>href.includes("/"+key+"/"))||"what-if-ww2";
    return {card,slug,date:published[slug]};
-  }).sort((a,b)=>b.date.localeCompare(a.date));
+  }).sort((a,b)=>a.date.localeCompare(b.date));
   cards.forEach(({card,slug,date})=>{
    const tag=card.querySelector(".tag");
    if(tag&&!card.querySelector(".publish-date")){
