@@ -104,9 +104,32 @@ if(!slug){
    const card='<article class="featured" data-category="what-if"><div class="featured-copy"><span class="tag">'+labels[i]+'</span><h2>'+a.title+'</h2><p>'+a.card+'</p><a class="read-link" href="/sodo/'+lang+'/thoughts/'+key+'/">'+labels[2]+' →</a></div></article>';
    heading.insertAdjacentHTML("beforebegin",card);
   });
+  const published={
+   "world-war-three":"2026-11-28T12:56:00",
+   "nuclear-war":"2026-11-28T12:56:00",
+   "no-borders":"2026-11-28T12:32:00",
+   "what-if-ww2":"2026-11-28T02:55:00"
+  };
+  const dateLabel=lang==="ar"?"نُشر في":lang==="ru"?"Опубликовано":"Published";
+  const cards=[...root.querySelectorAll(".featured")].map(card=>{
+   const href=card.querySelector("a.read-link")?.getAttribute("href")||"";
+   const slug=Object.keys(published).find(key=>href.includes("/"+key+"/"))||"what-if-ww2";
+   return {card,slug,date:published[slug]};
+  }).sort((a,b)=>b.date.localeCompare(a.date));
+  cards.forEach(({card,slug,date})=>{
+   const tag=card.querySelector(".tag");
+   if(tag&&!card.querySelector(".publish-date")){
+    const formatted=new Intl.DateTimeFormat(lang==="ar"?"ar-IQ":lang==="ru"?"ru-RU":"en-GB",{day:"numeric",month:"long",year:"numeric"}).format(new Date(date));
+    tag.insertAdjacentHTML("afterend",'<time class="publish-date" datetime="'+date.slice(0,10)+'">'+dateLabel+' '+formatted+'</time>');
+   }
+   heading.parentNode.insertBefore(card,heading);
+  });
  }
  return;
 }
 const a=articles[slug][lang]||articles[slug].en;
-root.innerHTML='<main class="article-main"><a class="back-link" href="/sodo/'+lang+'/thoughts/">← '+(lang==="ar"?"العودة إلى الأفكار":lang==="ru"?"Назад к мыслям":"Back to Thoughts")+'</a><div class="eyebrow">'+(lang==="ar"?"ماذا لو؟":lang==="ru"?"Что, если?":"What if?")+' · SODO THOUGHTS</div><h1 class="article-title">'+a.title+'</h1><p class="article-deck">'+a.deck+'</p><div class="meta">'+a.read+'</div><div class="article-body">'+a.body+'</div></main>';
+const publishedAt="2026-11-28";
+const publishedLabel=lang==="ar"?"نُشر في":lang==="ru"?"Опубликовано":"Published";
+const formattedDate=new Intl.DateTimeFormat(lang==="ar"?"ar-IQ":lang==="ru"?"ru-RU":"en-GB",{day:"numeric",month:"long",year:"numeric"}).format(new Date(publishedAt+"T12:00:00"));
+root.innerHTML='<main class="article-main"><a class="back-link" href="/sodo/'+lang+'/thoughts/">← '+(lang==="ar"?"العودة إلى الأفكار":lang==="ru"?"Назад к мыслям":"Back to Thoughts")+'</a><div class="eyebrow">'+(lang==="ar"?"ماذا لو؟":lang==="ru"?"Что, если?":"What if?")+' · SODO THOUGHTS</div><h1 class="article-title">'+a.title+'</h1><p class="article-deck">'+a.deck+'</p><div class="meta"><time class="publish-date" datetime="'+publishedAt+'">'+publishedLabel+' '+formattedDate+'</time><span>'+a.read+'</span></div><div class="article-body">'+a.body+'</div></main>';
 })();
