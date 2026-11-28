@@ -7,8 +7,8 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.cdnfonts.com; font-src 'self' data: https://fonts.gstatic.com https://fonts.cdnfonts.com; img-src 'self' data: https:; connect-src 'self'; form-action 'self'; upgrade-insecure-requests">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="theme-color" content="#080a08">
-<meta name="description" content="مشاريع وتجارب إبداعية وأفكار تتحول إلى واقع.">
-<title>Projects — SODO</title>
+<meta name="description" content="The personal SODO library — books worth reading and reflecting on.">
+<title>Books — SODO</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -131,13 +131,29 @@
       margin-bottom: 55px;
     }
 
-    .project {
-      background: var(--panel);
+    .library-empty {
+      padding: 54px 28px;
+      margin-top: 12px;
+      text-align: center;
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 27px;
-      margin-bottom: 18px;
+      border-radius: 16px;
+      background: linear-gradient(145deg, rgba(200,255,77,.045), var(--panel) 58%);
     }
+    .library-mark {
+      width: 58px;
+      height: 58px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 20px;
+      border: 1px solid rgba(200,255,77,.35);
+      border-radius: 16px;
+      color: var(--accent);
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: -2px;
+    }
+    .library-empty h2 { margin: 0 0 9px; font-size: 22px; }
+    .library-empty p { max-width: 440px; margin: 0 auto; color: var(--muted); }
 
     .project small {
       color: var(--accent);
@@ -185,7 +201,7 @@
       .nav-links { gap: 16px; }
       .site-tools { margin: 5px 0; }
       main { padding-top: 60px; }
-      .project { padding: 22px; }
+      .library-empty { padding: 42px 20px; }
     }
   
     .footer-socials {
@@ -249,42 +265,17 @@
   </header>
 
   <main>
-    <div class="eyebrow">Ideas into reality</div>
+    <div class="eyebrow">PERSONAL LIBRARY</div>
 
-    <h1>Projects<span>.</span></h1>
+    <h1>Books<span>.</span></h1>
 
-    <p class="intro">
-      A space for experiments, creative ideas,
-      and things built with curiosity and passion.
-      Every project begins with an idea.
-    </p>
+    <p class="intro">A space for books and ideas that leave a mark. A quiet library, growing one book at a time.</p>
 
-    <article class="project">
-      <small>01 — DIGITAL SPACE</small>
-      <h2>SODO Website</h2>
-      <p>
-        A personal digital space for thoughts,
-        cinema, creativity, and expression.
-      </p>
-    </article>
-
-    <article class="project">
-      <small>02 — CREATIVE EXPLORATION</small>
-      <h2>Visual Experiments</h2>
-      <p>
-        Exploring visual identity, design,
-        colors, and creative possibilities.
-      </p>
-    </article>
-
-    <article class="project">
-      <small>03 — COMING SOON</small>
-      <h2>More Ideas</h2>
-      <p>
-        New experiments and projects will find
-        their place here over time.
-      </p>
-    </article>
+    <section class="library-empty" aria-labelledby="library-empty-title">
+      <div class="library-mark" aria-hidden="true">B.</div>
+      <h2 id="library-empty-title">The library is just beginning</h2>
+      <p>Selected books, short notes, and reading details will appear here.</p>
+    </section>
   </main>
 
   <footer>
