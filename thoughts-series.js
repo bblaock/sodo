@@ -104,11 +104,15 @@ if(!slug){
    const card='<article class="featured" data-category="what-if"><div class="featured-copy"><span class="tag">'+labels[i]+'</span><h2>'+a.title+'</h2><p>'+a.card+'</p><a class="read-link" href="/sodo/'+lang+'/thoughts/'+key+'/">'+labels[2]+' →</a></div></article>';
    heading.insertAdjacentHTML("beforebegin",card);
   });
+  const humanExtinction=lang==="ar"?{tag:"ماذا لو؟ · العدد 05",title:"هل ينقرض الإنسان بعد الحرب النووية الشاملة؟",card:"هل تنتهي البشرية بعد حرب نووية شاملة، أم ينجو بعض البشر من انهيار الحضارة؟"}:lang==="ru"?{tag:"Что, если? · № 05",title:"Исчезнет ли человечество после полномасштабной ядерной войны?",card:"Исчезнет ли человечество после полномасштабной ядерной войны или часть людей переживёт крах цивилизации?"}:{tag:"What if? · No. 05",title:"Would Humans Go Extinct After a Full-Scale Nuclear War?",card:"Would humanity disappear after a full-scale nuclear war, or could some people survive civilizational collapse?"};
+  const humanCard='<article class="featured" data-category="what-if"><div class="featured-copy"><span class="tag">'+humanExtinction.tag+'</span><h2>'+humanExtinction.title+'</h2><p>'+humanExtinction.card+'</p><a class="read-link" href="/sodo/'+lang+'/thoughts/human-extinction/">'+(lang==="ar"?"اقرأ الفكرة":lang==="ru"?"Читать статью":"Read the essay")+' →</a></div></article>';
+  heading.insertAdjacentHTML("beforebegin",humanCard);
   const published={
    "world-war-three":"2026-11-28T12:56:00",
    "nuclear-war":"2026-11-28T12:56:00",
    "no-borders":"2026-11-28T12:32:00",
-   "what-if-ww2":"2026-11-28T02:55:00"
+   "what-if-ww2":"2026-11-28T02:55:00",
+   "human-extinction":"2026-11-28T17:20:00",
   };
   const dateLabel=lang==="ar"?"نُشر في":lang==="ru"?"Опубликовано":"Published";
   const cards=[...root.querySelectorAll(".featured")].map(card=>{
