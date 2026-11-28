@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - "thoughts/**"
+      - "thoughts.js"
+      - "thoughts.css"
       - "ar/thoughts/**"
       - "en/thoughts/**"
       - "ru/thoughts/**"
